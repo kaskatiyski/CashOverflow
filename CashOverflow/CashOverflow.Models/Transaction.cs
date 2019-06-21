@@ -17,8 +17,6 @@ namespace CashOverflow.Models
 
         public virtual Category Category { get; set; }
 
-        public int UserId { get; set; }
-
         public virtual IdentityUser User { get; set; }
     }
 }

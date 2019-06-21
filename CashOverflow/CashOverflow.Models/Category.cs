@@ -22,8 +22,6 @@ namespace CashOverflow.Models
 
         public string ImagePath { get; set; }
 
-        public int UserId { get; set; }
-
         public virtual IdentityUser User { get; set; }
 
         public virtual ICollection<Transaction> Transactions { get; set; }
