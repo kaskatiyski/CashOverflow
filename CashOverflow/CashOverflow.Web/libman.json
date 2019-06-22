@@ -11,5 +11,10 @@
   "library": "moment.js@2.24.0",
   "destination": "wwwroot/lib/moment.js/"
 }
+,
+{
+  "library": "apexcharts@3.6.12",
+  "destination": "wwwroot/lib/apexcharts/"
+}
 ]
 }
