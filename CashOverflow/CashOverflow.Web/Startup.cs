@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using CashOverflow.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CashOverflow.Services.Contracts;
+using CashOverflow.Services;
 using CashOverflow.Web.MapperConfiguration;
 using AutoMapper;
 
@@ -47,6 +49,10 @@ namespace CashOverflow.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddAutoMapper();
+
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITransactionService, TransactionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
