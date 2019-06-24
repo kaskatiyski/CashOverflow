@@ -13,6 +13,9 @@ namespace CashOverflow.Web.MapperConfiguration
     {
         public CashOverflowProfile()
         {
+            // Home
+            this.CreateMap<Transaction, HomeTransactionViewModel>();
+            this.CreateMap<Category, HomeCategoryViewModel>();
         }
     }
 }
