@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CashOverflow.Data\CashOverflow.Data.csproj" />
+    <ProjectReference Include="..\CashOverflow.Models\CashOverflow.Models.csproj" />
+  </ItemGroup>
+
 </Project>
