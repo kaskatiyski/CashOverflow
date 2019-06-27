@@ -5,16 +5,18 @@
     {
       "library": "font-awesome@5.8.2",
       "destination": "wwwroot/lib/font-awesome/"
+    },
+    {
+      "library": "moment.js@2.24.0",
+      "destination": "wwwroot/lib/moment.js/"
+    },
+    {
+      "library": "apexcharts@3.6.12",
+      "destination": "wwwroot/lib/apexcharts/"
+    },
+    {
+      "library": "air-datepicker@2.2.3",
+      "destination": "wwwroot/lib/air-datepicker/"
     }
-  ,
-{
-  "library": "moment.js@2.24.0",
-  "destination": "wwwroot/lib/moment.js/"
-}
-,
-{
-  "library": "apexcharts@3.6.12",
-  "destination": "wwwroot/lib/apexcharts/"
-}
-]
+  ]
 }
