@@ -9,7 +9,9 @@ namespace CashOverflow.Models
 
         public decimal Ammount { get; set; }
 
-        public string Description { get; set; }
+        public string Recipient { get; set; }
+
+        public string Notes { get; set; }
 
         public DateTime Date { get; set; }
 
