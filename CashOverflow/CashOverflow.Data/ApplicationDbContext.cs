@@ -18,6 +18,8 @@ namespace CashOverflow.Web.Data
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<Location> Locations { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }

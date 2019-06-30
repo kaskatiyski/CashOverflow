@@ -53,6 +53,7 @@ namespace CashOverflow.Web
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ILocationService, LocationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,6 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190621193925_RemoveUnnecessaryColumnsFromCategoriesAndTransactions.cs" />
+    <Compile Remove="Migrations\20190621193925_RemoveUnnecessaryColumnsFromCategoriesAndTransactions.Designer.cs" />
+    <Compile Remove="Migrations\20190629190013_UpdatedTransactionModelWithRecipientField.cs" />
+    <Compile Remove="Migrations\20190629190013_UpdatedTransactionModelWithRecipientField.Designer.cs" />
+    <Compile Remove="Migrations\20190629195814_AddedLocationFieldToTransactionModel.cs" />
+    <Compile Remove="Migrations\20190629195814_AddedLocationFieldToTransactionModel.Designer.cs" />
+    <Compile Remove="Migrations\20190630163639_CreatedLocationModel.cs" />
+    <Compile Remove="Migrations\20190630163639_CreatedLocationModel.Designer.cs" />
+    <Compile Remove="Migrations\20190630163714_AddedLocationFieldToTransactionModel.cs" />
+    <Compile Remove="Migrations\20190630163714_AddedLocationFieldToTransactionModel.Designer.cs" />
+    <Compile Remove="Migrations\20190630164119_AddedLocationFieldToTransactionModel.cs" />
+    <Compile Remove="Migrations\20190630164119_AddedLocationFieldToTransactionModel.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />

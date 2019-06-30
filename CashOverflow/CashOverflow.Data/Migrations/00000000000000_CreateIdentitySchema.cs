@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CashOverflow.Web.Data.Migrations
+namespace WebApplication8.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

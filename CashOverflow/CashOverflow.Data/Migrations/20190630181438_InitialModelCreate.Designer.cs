@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace CashOverflow.Web.Data.Migrations
+namespace WebApplication8.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190629190013_UpdatedTransactionModelWithRecipientField")]
-    partial class UpdatedTransactionModelWithRecipientField
+    [Migration("20190630181438_InitialModelCreate")]
+    partial class InitialModelCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,9 +23,8 @@ namespace CashOverflow.Web.Data.Migrations
 
             modelBuilder.Entity("CashOverflow.Models.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ImagePath");
 
@@ -42,17 +41,36 @@ namespace CashOverflow.Web.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("CashOverflow.Models.Location", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Address");
+
+                    b.Property<decimal>("Latitude");
+
+                    b.Property<decimal>("Longitude");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Locations");
+                });
+
             modelBuilder.Entity("CashOverflow.Models.Transaction", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<decimal>("Ammount");
 
-                    b.Property<int>("CategoryId");
+                    b.Property<string>("CategoryId");
 
                     b.Property<DateTime>("Date");
+
+                    b.Property<string>("LocationId");
 
                     b.Property<string>("Notes");
 
@@ -63,6 +81,8 @@ namespace CashOverflow.Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("UserId");
 
@@ -245,8 +265,11 @@ namespace CashOverflow.Web.Data.Migrations
                 {
                     b.HasOne("CashOverflow.Models.Category", "Category")
                         .WithMany("Transactions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("CashOverflow.Models.Location", "Location")
+                        .WithMany("Transactions")
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()

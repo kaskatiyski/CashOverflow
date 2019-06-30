@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace CashOverflow.Models
 {
@@ -10,10 +11,11 @@ namespace CashOverflow.Models
     {
         public Category()
         {
+            this.Id = Guid.NewGuid().ToString();
             this.Transactions = new List<Transaction>();
         }
 
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Name { get; set; }
 
