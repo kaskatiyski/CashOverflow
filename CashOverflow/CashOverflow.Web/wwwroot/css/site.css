@@ -45,7 +45,7 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
 }
 
 .box-shadow {
-    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
 }
 
 .box-shadow-small {
@@ -118,4 +118,100 @@ button.accept-policy {
     bottom: 90px;
     z-index: 100;
 }
+
+.text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
 /* TODO: When max-width is smaller make category image smaller */
+
+
+
+
+
+/*
+    Custom List
+*/
+
+.custom-list-group-key {
+    font-weight: 300;
+}
+
+.custom-list-group-item {
+    border-radius: 6px !important;
+    padding: 0.75rem 1.25rem;
+    background-color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+/*
+    Custom Card
+*/
+
+.custom-card {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+    margin: 1rem 0;
+}
+
+.custom-card-header {
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.custom-card-header-non-interactive {
+    cursor: initial;
+    display: block;
+}
+
+.custom-card-header-title {
+}
+
+    .custom-card-header-title .form-control {
+        margin: 3px 0 0 0;
+        /*font-weight: 300;*/
+        font-size: 1.2rem;
+        padding: 0;
+        border: none;
+    }
+
+.custom-card-header-arrow {
+    margin-left: auto;
+}
+
+.custom-card-header-maintitle {
+    font-size: 1.0rem;
+    font-weight: bold;
+}
+
+    .custom-card-header-maintitle.regular {
+        font-weight: normal;
+    }
+
+.custom-card-header-subtitle {
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 0.75rem;
+    color: #767676;
+}
+
+    .custom-card-header-subtitle.regular {
+        font-weight: normal;
+        text-transform: none;
+        font-weight: normal;
+        font-size: 0.85rem;
+        color: #212529;
+    }
+
+.custom-card-body {
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid #ebebeb;
+}

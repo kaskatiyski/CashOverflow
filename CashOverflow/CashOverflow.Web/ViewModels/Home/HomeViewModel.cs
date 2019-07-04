@@ -5,6 +5,6 @@ namespace CashOverflow.Web.ViewModels.Home
 {
     public class HomeViewModel
     {
-        public IEnumerable<HomeTransactionViewModel> Transactions { get; set; }
+        public IEnumerable<TransactionViewModel> Transactions { get; set; }
     }
 }

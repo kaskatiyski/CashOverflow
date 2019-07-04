@@ -18,5 +18,20 @@ namespace CashOverflow.Services
         {
             this.db = db;
         }
+
+        public void Create(string username, Category category)
+        {
+            category.UserId = this.db.Users.FirstOrDefault(u => u.UserName == username).Id;
+
+            this.db.Add(category);
+            this.db.SaveChanges();
+        }
+
+        public IEnumerable<Category> GetCategoriesByUsername(string username)
+        {
+            var categories = this.db.Categories.Where(x => x.User.UserName == username);
+
+            return categories;
+        }
     }
 }

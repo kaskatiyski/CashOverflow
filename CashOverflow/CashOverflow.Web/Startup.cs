@@ -48,12 +48,12 @@ namespace CashOverflow.Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(Startup));
 
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ITransactionService, TransactionService>();
-            services.AddScoped<ILocationService, LocationService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ILocationService, LocationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,6 +79,11 @@ namespace CashOverflow.Web
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                    name: "transactionsslash",
+                    template: "Transactions",
+                    defaults: new { controller = "Transactions", action = "All" });
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

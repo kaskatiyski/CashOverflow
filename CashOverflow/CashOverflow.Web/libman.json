@@ -11,12 +11,12 @@
       "destination": "wwwroot/lib/moment.js/"
     },
     {
-      "library": "apexcharts@3.6.12",
-      "destination": "wwwroot/lib/apexcharts/"
-    },
-    {
       "library": "air-datepicker@2.2.3",
       "destination": "wwwroot/lib/air-datepicker/"
+    },
+    {
+      "library": "Chart.js@2.8.0",
+      "destination": "wwwroot/lib/Chart.js/"
     }
   ]
 }

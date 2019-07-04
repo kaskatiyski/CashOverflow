@@ -1,0 +1,174 @@
+﻿@model CashOverflow.Web.ViewModels.Category.CreateCategoryInputModel
+
+@using CashOverflow.Models.Enum
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+<style>
+
+    .income-toggle-button, .income-toggle-button img {
+        cursor: pointer;
+    }
+
+    .category-image {
+        width: 75px;
+        height: 75px;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+
+        .category-image:hover {
+            transform: scale(1.1);
+        }
+
+    .category-image-small {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .category-image-active {
+        border: 2px solid #007bff;
+        border-radius: 7px;
+        border-style: dashed;
+    }
+
+    .category-type-image {
+        height: 70px;
+        -webkit-filter: grayscale(100);
+        filter: grayscale(100);
+        transition: 0.2s;
+    }
+
+    category-type:hover, .category-type-active {
+        -webkit-filter: grayscale(0);
+        filter: grayscale(0);
+    }
+
+</style>
+
+<h1>Create</h1>
+
+<h4>Category</h4>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6 col-sm-12 px-lg-5 my-3 my-md-0">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                <label asp-for="Name" class="control-label"></label>
+
+                <div class="input-group">
+
+                    <input data-val="true" asp-for="Name" class="form-control" />
+
+                    <input id="category-submit" type="submit" value="Create" class="btn btn-primary" style="transition: 0s" disabled />
+
+                </div>
+
+                <span asp-validation-for="Name" class="text-danger"></span>
+
+            </div>
+                       
+            @* TODO: Choose Freepik icons or add credits for these one ( DinosoftLabs ) *@
+            <div class="">
+                <div class="mb-3">
+                    Please choose your category type and image.
+                </div>
+
+                @foreach (var catType in Enum.GetValues(typeof(CategoryType)))
+                {
+                    var typeName = catType.ToString();
+                    var typeNameLower = catType.ToString().ToLower() + ".svg";
+                    var typeId = "category" + typeName;
+
+                    <label for="@catType" id="@typeId" onclick="setType('@typeName')" class="income-toggle-button text-center font-weight-bold">
+                        <img class="category-type-image" src="~/resources/icons/type/@typeNameLower" />
+                        <div class="category-type-text text-dark">@typeName</div>
+                    </label>
+
+                    @Html.RadioButtonFor(model => model.Type, catType, new { id = catType.ToString(), style = "display: none" })
+                }
+
+            </div>
+
+
+            <div class="form-group" style="display: none">
+                <input id="ImagePath" asp-for="ImagePath" class="form-control" />
+                @*<span asp-validation-for="ImagePath" class="text-danger"></span>*@
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6 col-sm-12 my-3 my-md-0">
+        <div class="">
+            <h5>Expense Images</h5>
+
+            @foreach (var imagePath in this.ViewData["CategoryExpenseImages"] as IEnumerable<string>)
+            {
+                <img class="category-image p-2" src="@imagePath" onclick="setPathValue(event)" />
+            }
+
+        </div>
+        <hr />
+
+        <div class="">
+            <h5>Income Images</h5>
+
+            @foreach (var imagePath in this.ViewData["CategoryIncomeImages"] as IEnumerable<string>)
+            {
+                <img class="category-image p-2" src="@imagePath" onclick="setPathValue(event)" />
+            }
+
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    function setPathValue(e) {
+        $('#ImagePath').val(e.target.src);
+        $('.category-image').removeClass('category-image-active');
+        $(e.target).addClass("category-image-active");
+
+        let submitButton = $('#category-submit');
+
+        if (submitButton.is('.btn-success, .btn-danger')) {
+            submitButton.removeAttr('disabled');
+        }
+    }
+
+    function setType(type) {
+        let element = $('#category' + type);
+        let label = element.children('.category-type-text');
+        let image = element.children('.category-type-image');
+        let submitButton = $('#category-submit');
+
+        $('.category-type-text').removeClass('text-dark text-danger text-success');
+        $('.category-type-image').removeClass('category-type-active');
+        submitButton.removeClass('btn-danger btn-success');
+
+        if (type == 'Income') {
+            label.addClass('text-success');
+            submitButton.addClass('btn-success');
+        }
+        else if (type == 'Expense') {
+            label.addClass('text-danger');
+            submitButton.addClass('btn-danger');
+        }
+
+        if ($('#ImagePath').val()) {
+            submitButton.removeAttr('disabled');
+        }
+
+        image.addClass('category-type-active');
+    }
+</script>

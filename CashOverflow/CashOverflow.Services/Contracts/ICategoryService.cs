@@ -8,5 +8,9 @@ namespace CashOverflow.Services.Contracts
 {
     public interface ICategoryService
     {
+        IEnumerable<Category> GetCategoriesByUsername(string username);
+
+        void Create(string username, Category category);
+
     }
 }

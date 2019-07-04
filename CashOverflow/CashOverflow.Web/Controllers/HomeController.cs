@@ -28,12 +28,15 @@ namespace CashOverflow.Web.Controllers
             if (this.User.Identity.IsAuthenticated)
             {
                 // TODO: Find a way to get client date
-                var transactions = this.transactionService.GetTransactionsByDay(this.User.Identity.Name, DateTime.UtcNow.ToString()).ToList();
+                var date = this.Request.Cookies["localDate"] != null ? this.Request.Cookies["localDate"] : DateTime.UtcNow.ToString("yyyy-MM-dd");
+                var transactions = this.transactionService.GetTransactionsByDay(this.User.Identity.Name, date).ToList();
 
                 HomeViewModel homeViewModel = new HomeViewModel()
                 {
-                    Transactions = transactions.Select(x => mapper.Map<HomeTransactionViewModel>(x))
+                    Transactions = transactions.Select(x => mapper.Map<TransactionViewModel>(x))
                 };
+
+                var a = homeViewModel.Transactions.GroupBy(x => "kur");
 
                 return this.View("IndexLoggedIn", homeViewModel);
             }

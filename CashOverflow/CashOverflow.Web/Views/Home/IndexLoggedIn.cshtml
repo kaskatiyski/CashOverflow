@@ -6,108 +6,61 @@
     ViewData["Title"] = "Dashboard";
 }
 
-    <style>
-        .list-group-item {
-            border: none;
-            border-radius: 100px !important;
-            margin-bottom: 10px;
-        }
-    </style>
-
-    <div class="row py-5 align-items-baseline">
-        <div class="text-center col-sm-6 col-12 mb-5 mb-sm-0">
-            <div class="pb-2">
-                <a href="~/Transactions/Create?type=@CategoryType.Income" class="btn btn-success btn-lg btn-circle" role="button">
-                    <i class="fas fa-plus"></i>
-                </a>
-                <a href="~/Transactions/Create?type=@CategoryType.Expense" class="btn btn-danger btn-lg btn-circle" role="button">
-                    <i class="fas fa-minus"></i>
-                </a>
-            </div>
-            <div class="font-weight-light fs-5">add new transaction</div>
-            <div class="font-weight-light fs-3">or</div>
-            <div style="width: 60px; cursor: pointer;" class="m-auto">
-                <a href="~/Transactions">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><path fill="#14a085" d="M32 7h10v45H32z" /><path fill="#f29c1f" d="M17 38h10v14H17z" /><path fill="#e57e25" d="M2 29h10v23H2z" /><path fill="#71c285" d="M47 15h10v37H47z" /><path d="M59 53H1a1 1 0 1 1 0-2h58a1 1 0 1 1 0 2z" fill="#556080" /></svg>
-                </a>
-            </div>
-            <div class="font-weight-light fs-5">visit the dashboard</div>
+<div class="row py-5 align-items-baseline">
+    <div class="text-center col-sm-6 col-12 mb-5 mb-sm-0">
+        <div class="pb-2">
+            <a href="~/Transactions/Create?type=@CategoryType.Income" class="btn btn-success btn-lg btn-circle" role="button">
+                <i class="fas fa-plus"></i>
+            </a>
+            <a href="~/Transactions/Create?type=@CategoryType.Expense" class="btn btn-danger btn-lg btn-circle" role="button">
+                <i class="fas fa-minus"></i>
+            </a>
         </div>
-
-        <div class="col-sm-6 col-12 text-center font-weight-light ">
-            <div class="fs-7">Summary for today:</div>
-            @{ 
-                // TODO: Set client date here
-            }
-            <div style="margin-top: -7px; margin-bottom: 5px;">@DateTime.UtcNow.ToString("D")</div>
-            @{
-                var incomeSum = Model.Transactions.Where(x => x.Category.Type == CategoryType.Income).Sum(x => x.Ammount);
-                var expenseSum = Model.Transactions.Where(x => x.Category.Type == CategoryType.Expense).Sum(x => x.Ammount);
-
-                if (!(incomeSum > 0 || expenseSum > 0))
-                {
-                    <div class="fs-3">no transactions today</div>
-                }
-                else
-                {
-                    <hr style="width:85%" />
-
-                    if (incomeSum > 0)
-                    {
-                        <div class="text-success fs-8">@incomeSum BGN</div>
-                        <div style="margin-top: -12px;">income</div>
-                    }
-
-
-                    if (expenseSum > 0)
-                    {
-                        <div class="text-danger fs-8">@expenseSum BGN</div>
-                        <div style="margin-top: -12px;">expenses</div>
-                    }
-                }
-            }
+        <div class="font-weight-light fs-5">add new transaction</div>
+        <div class="font-weight-light fs-3">or</div>
+        <div style="width: 60px; cursor: pointer;" class="m-auto">
+            <a href="~/Transactions">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><path fill="#14a085" d="M32 7h10v45H32z" /><path fill="#f29c1f" d="M17 38h10v14H17z" /><path fill="#e57e25" d="M2 29h10v23H2z" /><path fill="#71c285" d="M47 15h10v37H47z" /><path d="M59 53H1a1 1 0 1 1 0-2h58a1 1 0 1 1 0 2z" fill="#556080" /></svg>
+            </a>
         </div>
+        <div class="font-weight-light fs-5">visit the dashboard</div>
     </div>
 
-    @if (Model.Transactions.Count() > 0)
-    {
-        <div class="font-weight-light">
-            <div class="fs-9 mb-2">Today</div>
-        </div>
+    <div class="col-sm-6 col-12 text-center font-weight-light ">
+        <div class="fs-7">Summary for today:</div>
+        @{
+            // TODO: Set client date here
+        }
+        <div style="margin-top: -7px; margin-bottom: 5px;">@DateTime.UtcNow.ToString("D")</div>
+        @{
+            var incomeSum = Model.Transactions.Where(x => x.Category.Type == CategoryType.Income).Sum(x => x.Ammount);
+            var expenseSum = Model.Transactions.Where(x => x.Category.Type == CategoryType.Expense).Sum(x => x.Ammount);
 
-        <div class="container-fluid">
-            <ul class="list-group">
-                @foreach (var transaction in Model.Transactions.OrderByDescending(x => x.Date))
+            if (!(incomeSum > 0 || expenseSum > 0))
+            {
+                <div class="fs-3">no transactions today</div>
+            }
+            else
+            {
+                <hr style="width:85%" />
+
+                if (incomeSum > 0)
                 {
-                    <li class="list-group-item box-shadow-small align-items-center row d-flex" >
-                        <div class="pr-2">
-                            <div class="fs-7">
-                                <i class="fab fa-accessible-icon"></i>
-                                @*<img src="@transaction.Category.ImagePath" alt="Alternate Text" width="40" />*@
-                            </div>
-                        </div>
-                        <div class="mr-auto px-2">
-                            <div class="font-weight-bold">@transaction.Description</div>
-                            <div class="fs-2">@transaction.Category.Name</div>
-                        </div>
-
-                        @if (transaction.Category.Type == CategoryType.Expense)
-                        {
-                            <div class="text-danger text-right pl-2">
-                                BGN @transaction.Ammount
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="text-success text-right pl-2">
-                                BGN @transaction.Ammount
-                            </div>
-                        }
-                    </li>
+                    <div class="text-success fs-8">@incomeSum BGN</div>
+                    <div style="margin-top: -12px;">income</div>
                 }
-            </ul>
-        </div>
-    }
 
 
-    
+                if (expenseSum > 0)
+                {
+                    <div class="text-danger fs-8">@expenseSum BGN</div>
+                    <div style="margin-top: -12px;">expenses</div>
+                }
+            }
+        }
+    </div>
+</div>
+
+@await Html.PartialAsync("_TransactionsListPartial", Model.Transactions.GroupBy(x => "Today"))
+
+

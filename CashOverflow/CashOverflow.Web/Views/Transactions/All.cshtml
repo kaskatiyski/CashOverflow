@@ -1,0 +1,238 @@
+﻿@model CashOverflow.Web.ViewModels.Transaction.AllTransactionsViewModel
+
+@using CashOverflow.Models.Enum
+
+@{
+    ViewData["Title"] = "All";
+}
+
+<h1>Transactions</h1>
+
+<a asp-action="Create" class="btn btn-primary btn-circle btn-float">
+    <i class="fas fa-plus"></i>
+</a>
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="custom-card">
+            <div class="custom-card-header" id="dateHeading" data-toggle="collapse" data-target="#dateWrapper" aria-expanded="false" aria-controls="dateWrapper">
+                <div class="custom-card-header-title">
+                    <div class="custom-card-header-subtitle">period</div>
+                    <div class="custom-card-header-maintitle">@DateTime.UtcNow</div>
+                </div>
+                <div class="custom-card-header-arrow">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+
+            <div id="dateWrapper" class="collapse" aria-labelledby="dateHeading">
+                <div class="custom-card-body text-center">
+                    <div class="fs-5 font-weight-light mb-2">Choose a period:</div>
+                    <div class="fs-3 mb-3 btn-group">
+                        <div class="btn btn-secondary" onclick="openDatepicker('years', 'YYYY', 'yyyy')" style="cursor: pointer">Year</div>
+                        <div class="btn btn-secondary" onclick="openDatepicker('months', 'YYYY-MM', 'M yyyy')" style="cursor: pointer">Month</div>
+                        <div class="btn btn-secondary" onclick="openDatepicker('days', 'YYYY-MM-DD', 'dd M yyyy')" style="cursor: pointer">Day</div>
+                        <div class="btn btn-secondary" onclick="openDatepicker('custom', 'YYYY-MM-DD', 'dd M yyyy')" style="cursor: pointer">Custom</div>
+                    </div>
+                    <form action="/" method="post" autocomplete="off">
+                        <div class="input-group">
+                            <input id="searchDatepicker" class="form-control" readonly="readonly" />
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon1" onclick="search()" style="cursor: pointer"><i class="fas fa-search"></i></span>
+                            </div>
+                        </div>
+                        <input id="rawDateInput" type="hidden" class="form-control" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="custom-card">
+            <div class="custom-card-header">
+                <div class="custom-card-header-title">
+                    <div class="custom-card-header-maintitle">Income</div>
+                </div>
+            </div>
+            <div class="custom-card-body">
+                <div>
+                    <canvas id="chartIncome" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <div class="custom-card">
+            <div class="custom-card-header">
+                <div class="custom-card-header-title">
+                    <div class="custom-card-header-maintitle">Expenses</div>
+                </div>
+            </div>
+            <div class="custom-card-body">
+                <div>
+                    <canvas id="chartExpense" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    /*
+     * Period picker
+     */
+
+    let setFormattedValue;
+
+    let options = {
+        language: 'en',
+        //inline: true,
+        onSelect: function (formattedDate, date) {
+            setFormattedValue(formattedDate, date);
+        }
+    };
+
+    function search() {
+        var el = $("#rawDateInput");
+        window.location.href = "/Transactions?&date=" + el.val();
+    }
+
+    function openDatepicker(type, formatMoment, formatDatepicker) {
+        period = type;
+
+        let el = $("#searchDatepicker");
+
+        let myDatepicker = el.datepicker().data('datepicker');
+        myDatepicker.destroy();
+
+        if (type == 'custom') {
+            setFormattedValue = function (formattedDate, date) {
+                let startDate = moment(date[0]).format(formatMoment);
+                let endDate = moment(date[1]).format(formatMoment);
+
+                $('#rawDateInput').val(startDate + ">" + endDate);
+                $('#formattedDateInput').val(formattedDate);
+            }
+
+            el.datepicker({
+                range: true,
+                multipleDatesSeparator: ' - ',
+                dateFormat: formatDatepicker,
+                ...options
+            });
+        } else {
+            setFormattedValue = function (formattedDate, date) {
+                $('#rawDateInput').val(moment(date).format(formatMoment));
+                $('#formattedDateInput').val(formattedDate);
+            }
+
+            el.datepicker({
+                view: type,
+                minView: type,
+                dateFormat: formatDatepicker,
+                ...options
+            });
+        }
+
+        el.trigger('focus');
+    }
+
+    openDatepicker('months');
+
+    /*
+     * Chart drawing
+     */
+
+    let expenses = {};
+    let income = {};
+
+    @{
+        var allTransactions = Model.Transactions.SelectMany(group => group);
+
+        var expenses = allTransactions.Where(x => x.Category.Type == CategoryType.Expense).GroupBy(x => x.Category.Name);
+
+        var income = allTransactions.Where(x => x.Category.Type == CategoryType.Income).GroupBy(x => x.Category.Name);
+
+        foreach (var group in expenses)
+        {
+            @:expenses['@group.Key'] = @group.Sum(x => x.Ammount);
+        }
+
+        foreach (var group in income)
+        {
+            @:income['@group.Key'] = @group.Sum(x => x.Ammount);
+        }
+    }
+
+    let dataIncome = Object.values(income).sort(function(a, b){return a - b}).reverse();
+    let keysIncome = Object.keys(income).sort(function(a,b){return income[a]-income[b]}).reverse();
+
+    let dataExpenses = Object.values(expenses).sort(function(a, b){return a - b}).reverse();
+    let keysExpenses = Object.keys(expenses).sort(function(a,b){return expenses[a]-expenses[b]}).reverse();
+
+    let incomeChartElement = $('#chartIncome');
+    let incomeChart = new Chart(incomeChartElement, {
+        type: 'doughnut',
+        data: {
+            labels: keysIncome,
+            datasets: [{
+                label: 'Income',
+                data: dataIncome,
+                backgroundColor: [
+                    '#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51',
+                ],
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    display: false
+                }],
+                yAxes: [{
+                    display: false
+                }],
+            }
+        }
+    });
+
+    let expenseChartElement = $('#chartExpense');
+    let expenseChart = new Chart(expenseChartElement, {
+        type: 'doughnut',
+        data: {
+            labels: keysExpenses,
+            datasets: [{
+                label: 'Expenses',
+                data: dataExpenses,
+                backgroundColor: [
+                    '#ff6666','#ffa366','#ffe966','#abff66','#66ffee','#66adff','#a566ff','#ff66ef','#ff6666','#ffa366','#ffe966','#abff66','#66ffee','#66adff','#a566ff','#ff66ef','#ff6666','#ffa366','#ffe966','#abff66','#66ffee','#66adff','#a566ff','#ff66ef',
+                ],
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    display: false
+                }],
+                yAxes: [{
+                    display: false
+                }],
+            }
+        }
+    });
+
+</script>
+
+@await Html.PartialAsync("_TransactionsListPartial", Model.Transactions)
+
+<br /><br /><br /><br />
