@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CashOverflow.Web.ViewModels.Transaction
+namespace CashOverflow.Web.ViewModels.Calendar
 {
-    public class TransactionCategoryViewModel
+    public class CalendarCategoryViewModel
     {
         public string Name { get; set; }
 

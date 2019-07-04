@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "View";
+}
+
+<h1>Calendar</h1>
+
+<div id="calendar"></div>
+
+<script>
+    let transactions = {};
+
+    $(document).ready(function () {
+        let date = moment();
+
+        let startDay = date.startOf('month').day();
+        let endDay = date.endOf('month').day();
+
+        console.log({ startDay, endDay});
+
+        for (var i = 0; i < length; i++) {
+
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetTransactionsForMonth")',
+            dataType: 'json',
+            data: {
+                date: moment().format("YYYY-MM")
+            },
+            success: function (data) {
+                console.log(data);
+            }
+
+        });
+    });
+
+</script>
