@@ -40,9 +40,10 @@ namespace CashOverflow.Web.Controllers
             CalendarViewModel calendarViewModel = new CalendarViewModel();
 
             calendarViewModel.Transactions = transactions.Select(t => mapper.Map<CalendarTransactionViewModel>(t))
-                                                         .GroupBy(t => t.Date.Day.ToString());
+                                                         .GroupBy(t => t.Date.ToString("yyyyMMdd"))
+                                                         .ToDictionary(gdc => gdc.Key, gdc => gdc.ToList());
 
-            return this.Json(calendarViewModel);
+                return this.Json(calendarViewModel);
         }
     }
 }

@@ -8,6 +8,6 @@ namespace CashOverflow.Web.ViewModels.Calendar
 {
     public class CalendarViewModel
     {
-        public IEnumerable<IGrouping<string, CalendarTransactionViewModel>> Transactions { get; set; }
+        public Dictionary<string, List<CalendarTransactionViewModel>> Transactions { get; set; }
     }
 }
