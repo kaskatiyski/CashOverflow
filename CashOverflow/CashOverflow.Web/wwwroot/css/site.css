@@ -125,6 +125,10 @@ button.accept-policy {
     text-overflow: ellipsis;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 /* TODO: When max-width is smaller make category image smaller */
 
 
