@@ -82,14 +82,16 @@ namespace CashOverflow.Services
             return transactions;
         }
 
-        public void Create(string username, Transaction transaction)
+        public async Task CreateAsync(string username, Transaction transaction)
         {
-            transaction.UserId = this.db.Users.FirstOrDefault(u => u.UserName == username).Id;
+            var user = await this.userService.GetUserByUsernameAsync(username);
+            var location = await this.locationService.CreateAsync(transaction.Location);
 
-            transaction.Location = this.locationService.Create(transaction.Location);
+            transaction.UserId = user.Id;
+            transaction.Location = location;
 
             this.db.Add(transaction);
-            this.db.SaveChanges();
+            await this.db.SaveChangesAsync();
         }
 
         public async Task<Transaction> GetTransactionByIdAsync(string username, string id)
@@ -103,17 +105,19 @@ namespace CashOverflow.Services
             
         }
 
-        public async Task UpdateTransaction(string username, Transaction transaction)
+        public async Task UpdateTransactionAsync(string username, Transaction transaction)
         {
-            transaction.UserId = this.db.Users.FirstOrDefault(u => u.UserName == username).Id;
+            var user = await this.userService.GetUserByUsernameAsync(username);
+            var location = await this.locationService.CreateAsync(transaction.Location);
 
-            transaction.Location = this.locationService.Create(transaction.Location);
+            transaction.UserId = user.Id;
+            transaction.Location = location;
 
             this.db.Transactions.Update(transaction);
             await this.db.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteTransaction(string username, string id)
+        public async Task<bool> DeleteTransactionAsync(string username, string id)
         {
             var transaction = await this.GetTransactionByIdAsync(username, id);
 

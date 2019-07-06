@@ -1,7 +1,9 @@
 ﻿using CashOverflow.Models;
 using CashOverflow.Services.Contracts;
 using CashOverflow.Web.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CashOverflow.Services
 {
@@ -14,14 +16,14 @@ namespace CashOverflow.Services
             this.db = db;
         }
 
-        public Location Create(Location location)
+        public async Task<Location> CreateAsync(Location location)
         {
-            var exists = this.GetLocationByPlaceId(location.PlaceId);
+            var exists = await this.GetLocationByPlaceIdAsync(location.PlaceId);
 
             if (exists == null)
             {
                 this.db.Add(location);
-                this.db.SaveChanges();
+                await this.db.SaveChangesAsync();
 
                 return location;
             }
@@ -29,9 +31,9 @@ namespace CashOverflow.Services
             return exists;
         }
 
-        public Location GetLocationByPlaceId(string placeId)
+        public async Task<Location> GetLocationByPlaceIdAsync(string placeId)
         {
-            Location location = this.db.Locations.FirstOrDefault(l => l.PlaceId == placeId);
+            Location location = await this.db.Locations.FirstOrDefaultAsync(l => l.PlaceId == placeId);
 
             return location;
         }

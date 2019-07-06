@@ -173,28 +173,21 @@
         }
     }
 
-    let dataIncome = Object.values(income).sort(function(a, b){return a - b}).reverse();
-    let keysIncome = Object.keys(income).sort(function(a,b){return income[a]-income[b]}).reverse();
-
-    let dataExpenses = Object.values(expenses).sort(function(a, b){return a - b}).reverse();
-    let keysExpenses = Object.keys(expenses).sort(function(a,b){return expenses[a]-expenses[b]}).reverse();
-
-    let incomeChartElement = $('#chartIncome');
-    let incomeChart = new Chart(incomeChartElement, {
+    let chartOptions = {
         type: 'doughnut',
-        data: {
-            labels: keysIncome,
-            datasets: [{
-                label: 'Income',
-                data: dataIncome,
-                backgroundColor: [
-                    '#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51',
-                ],
-            }],
-        },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+            },
             scales: {
                 xAxes: [{
                     display: false
@@ -204,11 +197,32 @@
                 }],
             }
         }
+    }
+
+    let dataIncome = Object.values(income).sort(function(a, b){return a - b}).reverse();
+    let keysIncome = Object.keys(income).sort(function(a,b){return income[a]-income[b]}).reverse();
+
+    let dataExpenses = Object.values(expenses).sort(function(a, b){return a - b}).reverse();
+    let keysExpenses = Object.keys(expenses).sort(function(a,b){return expenses[a]-expenses[b]}).reverse();
+
+    let incomeChartElement = $('#chartIncome');
+    let incomeChart = new Chart(incomeChartElement, {
+        
+        data: {
+            labels: keysIncome,
+            datasets: [{
+                label: 'Income',
+                data: dataIncome,
+                backgroundColor: [
+              '#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51',
+                ],
+            }],
+        },
+        ...chartOptions
     });
 
     let expenseChartElement = $('#chartExpense');
     let expenseChart = new Chart(expenseChartElement, {
-        type: 'doughnut',
         data: {
             labels: keysExpenses,
             datasets: [{
@@ -219,18 +233,7 @@
                 ],
             }],
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    display: false
-                }],
-                yAxes: [{
-                    display: false
-                }],
-            }
-        }
+        ...chartOptions
     });
 
 </script>

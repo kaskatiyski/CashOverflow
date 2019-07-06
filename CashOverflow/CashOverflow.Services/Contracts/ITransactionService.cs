@@ -16,13 +16,13 @@ namespace CashOverflow.Services.Contracts
 
         IEnumerable<Transaction> GetTransactionsByRange(string username, string startDate, string endDate);
 
-        void Create(string username, Transaction transaction);
+        Task CreateAsync(string username, Transaction transaction);
 
         Task<Transaction> GetTransactionByIdAsync(string username, string id);
 
-        Task UpdateTransaction(string username, Transaction transaction);
+        Task UpdateTransactionAsync(string username, Transaction transaction);
 
-        Task<bool> DeleteTransaction(string username, string id);
+        Task<bool> DeleteTransactionAsync(string username, string id);
 
 
     }

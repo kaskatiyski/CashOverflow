@@ -93,11 +93,11 @@ namespace CashOverflow.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateTransactionInputModel model)
+        public async Task<ActionResult> Create(CreateTransactionInputModel model)
         {
             try
             {
-                this.transactionService.Create(this.User.Identity.Name, mapper.Map<Transaction>(model));
+                await this.transactionService.CreateAsync(this.User.Identity.Name, mapper.Map<Transaction>(model));
 
                 return this.Redirect("/");
             }
@@ -153,7 +153,7 @@ namespace CashOverflow.App.Controllers
             {
                 //try
                 //{
-                    await this.transactionService.UpdateTransaction(this.User.Identity.Name, transaction);
+                    await this.transactionService.UpdateTransactionAsync(this.User.Identity.Name, transaction);
                 //}
                 //catch (DbUpdateConcurrencyException)
                 //{
@@ -179,7 +179,7 @@ namespace CashOverflow.App.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<bool> DeleteConfirmed(string id)
         {
-            return await this.transactionService.DeleteTransaction(this.User.Identity.Name, id);
+            return await this.transactionService.DeleteTransactionAsync(this.User.Identity.Name, id);
         }
 
 

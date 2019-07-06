@@ -4,6 +4,8 @@ using CashOverflow.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace CashOverflow.Services
 {
@@ -17,6 +19,13 @@ namespace CashOverflow.Services
         {
             this.db = db;
             this.userManager = userManager;
+        }
+
+        public async Task<IdentityUser> GetUserByUsernameAsync(string username)
+        {
+            var user = await this.db.Users.FirstOrDefaultAsync(u => u.UserName == username);
+
+            return user;
         }
     }
 }

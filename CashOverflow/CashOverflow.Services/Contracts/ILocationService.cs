@@ -1,11 +1,12 @@
 ﻿using CashOverflow.Models;
+using System.Threading.Tasks;
 
 namespace CashOverflow.Services.Contracts
 {
     public interface ILocationService
     {
-        Location Create(Location location);
+        Task<Location> CreateAsync(Location location);
 
-        Location GetLocationByPlaceId(string placeId);
+        Task<Location> GetLocationByPlaceIdAsync(string placeId);
     }
 }
