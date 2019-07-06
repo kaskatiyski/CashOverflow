@@ -67,5 +67,15 @@ namespace CashOverflow.Services
                 return false;
             }
         }
+
+        public async Task UpdateCategoryAsync(string username, Category category)
+        {
+            var user = await this.userService.GetUserByUsernameAsync(username);
+
+            category.UserId = user.Id;
+
+            this.db.Categories.Update(category);
+            await this.db.SaveChangesAsync();
+        }
     }
 }

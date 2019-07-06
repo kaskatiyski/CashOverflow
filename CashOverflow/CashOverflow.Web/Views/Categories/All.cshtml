@@ -7,38 +7,6 @@
 }
 
 <style>
-    .card-header {
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    .card-wrapper {
-        background: white;
-        border-radius: 3px;
-    }
-</style>
-<style>
-    .card-header {
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    .card-wrapper {
-        background: white;
-        border-radius: 3px;
-    }
-
-    .tab-pane {
-        overflow-x: auto;
-        overflow-y: hidden;
-        width: 100%;
-    }
-
-    .income-toggle-button, .income-toggle-button img {
-        cursor: pointer;
-    }
 
     .category-image {
         width: 75px;
@@ -115,28 +83,25 @@
 @foreach (var group in Model.Categories.GroupBy(c => c.Type))
 {
     <h3>@group.Key</h3>
-    <div class="row">
+    <div class="custom-list-group row m-0">
 
         @foreach (var category in group)
         {
-            <div class='py-2 col-12 col-sm-6 ' id="@category.Id">
-                <div class='card-wrapper px-3 box-shadow-small'>
-                    <div class='card-header row'>
-                        <div class="row flex-grow-1 m-0">
-                            <img class='category-image-small mr-3' src='@category.ImagePath'>
-                            <div class=''>
-                                <div class='font-weight-bold'>@category.Name</div>
-                                <div style='font-size: 0.8rem'><b>@category.Transactions.Count()</b> transactions</div>
-                            </div>
-                            <div class='text-right ml-auto'>
-                                <div class='font-weight-bold'>This month</div>
-                                <div style='font-size: 0.8rem' class='font-weight-bold text-danger'>@category.Transactions.Sum(transaction => transaction.Ammount) BGN</div>
-                            </div>
-                        </div>
-                        <div class="pl-3">
-                            <div><a class="col-12 p-0 no-style" asp-action="Edit" asp-route-id="@category.Id"><i class="fas fa-pen"></i></a></div>
-                            <div><button onclick='updateDeleteModal(@Html.Raw(Json.Serialize(category)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteConfirmModal"><i class="fas fa-trash"></i></button></div>
-                        </div>
+            <div class="custom-list-group-item-wrapper col-12 col-sm-6">
+                <div class='custom-list-group-item' id="@category.Id">
+                    <img class='category-image-small mr-3' src='@category.ImagePath'>
+                    <div class=''>
+                        <div class='font-weight-bold'>@category.Name</div>
+                        <div style='font-size: 0.8rem'><b>@category.Transactions.Count()</b> transactions</div>
+                    </div>
+                    <div class='text-right ml-auto'>
+                        <div class='font-weight-bold'>This month</div>
+                        <div style='font-size: 0.8rem' class='font-weight-bold text-danger'>@category.Transactions.Sum(transaction => transaction.Ammount) BGN</div>
+                    </div>
+
+                    <div class="pl-3">
+                        <div><a class="col-12 p-0 no-style" asp-action="Edit" asp-route-id="@category.Id"><i class="fas fa-pen"></i></a></div>
+                        <div><button onclick='updateDeleteModal(@Html.Raw(Json.Serialize(category)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteConfirmModal"><i class="fas fa-trash"></i></button></div>
                     </div>
                 </div>
             </div>
@@ -145,29 +110,12 @@
     </div>
 }
 
-
-
-
-
-
-
-
-
 <script>
-
-$(document).ready(function () {
-
-    
-
-});
-
-
-         
     function updateDeleteModal(category) {
         $('#modalDeleteButton').attr("onclick", "deleteCategory('" + category.id + "')");
 
         let categoryStats = $(`
-            
+
         `);
 
         $('#modalCategoryView').text('');
@@ -192,6 +140,5 @@ $(document).ready(function () {
             }
 
         });
-    }
-
+        }
 </script>

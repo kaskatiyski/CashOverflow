@@ -1,26 +1,22 @@
-﻿@model CashOverflow.Web.ViewModels.Category.CreateCategoryInputModel
+﻿@model CashOverflow.Web.ViewModels.Category.EditCategoryInputModel
 
 @using CashOverflow.Models.Enum
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
 @section scripts{
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
 
+<h1>Edit</h1>
+
 <link rel="stylesheet" href="~/css/Categories/categories-post.css" />
-
-<h1>Create</h1>
-
-<h4>Category</h4>
-
-<hr />
 
 <div class="row">
     <div class="col-md-6 col-sm-12 px-lg-5 my-3 my-md-0">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
 
@@ -30,19 +26,19 @@
 
                     <input data-val="true" asp-for="Name" class="form-control" />
 
-                    <input id="category-submit" type="submit" value="Create" class="btn btn-primary" style="transition: 0s" disabled />
+                    <input id="category-submit" type="submit" value="Edit" class="btn btn-primary" style="transition: 0s" disabled />
 
                 </div>
 
                 <span asp-validation-for="Name" class="text-danger"></span>
 
             </div>
-                       
+
             @* TODO: Choose Freepik icons or add credits for these one ( DinosoftLabs ) *@
-        <div class="">
-            <div class="mb-3">
-                Please choose your category type and image.
-            </div>
+            <div class="">
+                <div class="mb-3">
+                    Please choose your category type and image.
+                </div>
                 <label for="Income" id="categoryIncome" onclick="setType('Income')" class="income-toggle-button text-center font-weight-bold">
                     <img class="category-type-image" src="~/resources/icons/type/income.svg" />
                     <div class="category-type-text text-dark">Income</div>
@@ -54,9 +50,9 @@
                     <img class="category-type-image" src="~/resources/icons/type/expense.svg" />
                     <div class="category-type-text text-dark">Expense</div>
                 </label>
-                
+
                 @Html.RadioButtonFor(model => model.Type, CategoryType.Expense, new { id = "Expense", style = "display: none" })
-        </div>
+            </div>
 
             <div class="form-group" style="display: none">
                 <input id="ImagePath" asp-for="ImagePath" class="form-control" />
@@ -92,6 +88,16 @@
 </div>
 
 <script>
+    $(document).ready(function () {
+        setType('@Model.Type');
+
+        $('.category-image').filter(function (index, element) {
+            let path = '@Model.ImagePath';
+            let pathSplit = path.split('/');
+            return $(element).attr('src').includes(pathSplit[pathSplit.length - 1]);
+        }).addClass("category-image-active");
+    });
+
     function setPathValue(e) {
         $('#ImagePath').val(e.target.src);
         $('.category-image').removeClass('category-image-active');
