@@ -191,10 +191,10 @@
             let incomeTotal = income.reduce(function (prev, cur) { return prev + cur.ammount; }, 0);
 
 
+//<div class="font-weight-bolder fs-3 text-uppercase">${keys[i].slice(keys[i].length - 2, keys[i].length)} ${currentMonth.format("MMM YYYY")}</div>
 
             let tooltipContent =
                 `
-<div class="font-weight-bolder fs-3 text-uppercase">${keys[i].slice(keys[i].length - 2, keys[i].length)} ${currentMonth.format("MMM YYYY")}</div>
 
 
 <div class="row">
@@ -255,8 +255,8 @@ tooltipContent += "</div>"
 
 
 
-                    $('#' + keys[i]).attr('title', tooltipContent);
-            $('#' + keys[i]).tooltip();
+            $('#' + keys[i]).attr('title', keys[i].slice(keys[i].length - 2, keys[i].length) + " " + currentMonth.format("MMM YYYY"));
+            $('#' + keys[i]).attr('data-content', tooltipContent);
 
             let week = Math.floor(moment(keys[i]).date() / 7);
 
@@ -269,6 +269,7 @@ tooltipContent += "</div>"
     }
 
 
+    
 
     function drawCalendar() {
         let calendar = [];
@@ -298,11 +299,12 @@ tooltipContent += "</div>"
         }
 
         let weekNumber = 0;
+
         for (var i = 0; i < calendar.length; i++, weekNumber++) {
             let week = $('<div class="calendar-week">');
 
             for (var j = 0; j < calendar[i].days.length; j++) {
-                let day = $('<div data-toggle="tooltip" data-html="true" data-placement="bottom" id="' + calendar[i].days[j].format("YYYYMMDD") + '" class="calendar-day"></div>');
+                let day = $('<div data-toggle="popover" data-trigger="focus" data-html="true" data-placement="bottom" id="' + calendar[i].days[j].format("YYYYMMDD") + '" class="calendar-day"></div>');
 
                 if (calendar[i].days[j] < currentMonth.clone().startOf('month') || calendar[i].days[j] > currentMonth.clone().endOf('month')) {
                     day.addClass('calendar-day-other-month');
@@ -314,8 +316,11 @@ tooltipContent += "</div>"
                 let key = calendar[i].days[j].format("YYYYMMDD");
 
                 day.on('click', function () {   
+
+                    $('.calendar-day').popover('hide');
+
                     updateData(weekValue, key);
-                    showWeekInfo(weekValue, dayValue, day);
+                    showWeekInfo(weekValue, dayValue, day);  
                 });
 
                 let dayNumber = $('<div class="calendar-day-number"></div>');
@@ -346,13 +351,14 @@ tooltipContent += "</div>"
         let weekInfo = $('#weekInfo' + week);
         let weekInfoAll = $('.week-info-collapse');
 
+
         if (!weekInfoAll.hasClass('collapsing')) {
             if (currentWeekDay === day) {
                 $('.calendar-day-selected').removeClass('calendar-day-selected');
                 weekInfoAll.collapse('hide');
                 currentWeekDay = 0;
                 currentWeek = -1;
-            } else if (currentWeekDay !== day) {
+            } else if (currentWeekDay !== day) {dayElement.popover('show');
                 if (currentWeek === week) {
                 
                 } else if (currentWeek !== week) {
@@ -366,14 +372,13 @@ tooltipContent += "</div>"
 
                     currentWeek = week;
                 }
-
+                //$('.calendar-day').popover('hide');
+                //dayElement.popover('show');
                 currentWeekDay = day;
                 $('.calendar-day-selected').removeClass('calendar-day-selected');
                 dayElement.addClass('calendar-day-selected');
             }
-        }
-
-        
+        }        
     }
 
 </script>
