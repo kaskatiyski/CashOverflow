@@ -1,0 +1,37 @@
+﻿.income-toggle-button, .income-toggle-button img {
+    cursor: pointer;
+}
+
+.category-image {
+    width: 75px;
+    height: 75px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+    .category-image:hover {
+        transform: scale(1.1);
+    }
+
+.category-image-small {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.category-image-active {
+    border: 2px solid #007bff;
+    border-radius: 7px;
+    border-style: dashed;
+}
+
+.category-type-image {
+    height: 70px;
+    -webkit-filter: grayscale(100);
+    filter: grayscale(100);
+    transition: 0.2s;
+}
+
+category-type:hover, .category-type-active {
+    -webkit-filter: grayscale(0);
+    filter: grayscale(0);
+}
