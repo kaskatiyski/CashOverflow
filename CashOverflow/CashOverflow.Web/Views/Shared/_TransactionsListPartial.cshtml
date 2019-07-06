@@ -130,7 +130,7 @@
 
                     <div class="text-right pl-2 ml-auto" style="width: 125px;">
                         <div class="${transaction.category.type === 2 ? 'text-danger' : 'text-success'}">
-                            BGN ${transaction.ammount}
+                            BGN ${transaction.ammount.toFixed(2)}
                         </div>
                         <div class="fs-2">${moment(transaction.date).format('DD MMM YYYY')}</div>
                     </div>
