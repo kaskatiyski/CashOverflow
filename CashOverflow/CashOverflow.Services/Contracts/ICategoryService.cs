@@ -3,6 +3,7 @@ using CashOverflow.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CashOverflow.Services.Contracts
 {
@@ -10,7 +11,10 @@ namespace CashOverflow.Services.Contracts
     {
         IEnumerable<Category> GetCategoriesByUsername(string username);
 
-        void Create(string username, Category category);
+        Task<Category> GetCategoryByIdAsync(string username, string id);
 
+        Task CreateAsync(string username, Category category);
+
+        Task<bool> DeleteCategoryAsync(string username, string id);
     }
 }

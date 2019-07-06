@@ -6,470 +6,192 @@
     ViewData["Title"] = "All";
 }
 
+<style>
+    .card-header {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .card-wrapper {
+        background: white;
+        border-radius: 3px;
+    }
+</style>
+<style>
+    .card-header {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .card-wrapper {
+        background: white;
+        border-radius: 3px;
+    }
+
+    .tab-pane {
+        overflow-x: auto;
+        overflow-y: hidden;
+        width: 100%;
+    }
+
+    .income-toggle-button, .income-toggle-button img {
+        cursor: pointer;
+    }
+
+    .category-image {
+        width: 75px;
+        height: 75px;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+
+        .category-image:hover {
+            transform: scale(1.1);
+        }
+
+    .category-image-small {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .category-image-active {
+        border: 2px solid #007bff;
+        border-radius: 7px;
+        border-style: dashed;
+    }
+
+    .category-type-image {
+        height: 70px;
+        -webkit-filter: grayscale(100);
+        filter: grayscale(100);
+        transition: 0.2s;
+    }
+
+    category-type:hover, .category-type-active {
+        -webkit-filter: grayscale(0);
+        filter: grayscale(0);
+    }
+</style>
+
+
 <!-- Title -->
 
 <h1>All Categories</h1>
 
 <!-- Create new category -->
 
-<a asp-action="Create">
-    <button class="btn btn-primary btn-circle btn-create">
-        <i class="fas fa-plus"></i>
-    </button>
+<a asp-action="Create" class="btn btn-primary btn-circle btn-float">
+    <i class="fas fa-plus"></i>
 </a>
 
 <!-- Confirm delete dialog -->
 
 <input type="hidden" id="confirmDeleteInput" />
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmLabel">Delete <span id="modalTitleNamePlaceholder"></span></h5>
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Delete</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                Are you sure you want to delete the <span id="modalBodyNamePlaceholder"></span> category?
+            <div class="modal-body px-4">
+                Are you sure you want to delete this category?
+                <div id="modalTransactionView"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" onclick="Delete()">Delete</button>
+                <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="modalDeleteButton" class="btn btn-danger">Delete</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Categories list -->
 
-<h3>Expenses</h3>
-<div class="row">
+@foreach (var group in Model.Categories.GroupBy(c => c.Type))
+{
+    <h3>@group.Key</h3>
+    <div class="row">
 
-    <div class="col-12 col-lg-6" id="leftColumnExpense">
-
-    </div>
-    <div class="col-12 col-lg-6" id="rightColumnExpense">
-
-    </div>
-
-</div>
-
-<h3>Income</h3>
-<div class="row">
-
-    <div class="col-12 col-lg-6" id="leftColumnIncome">
-
-    </div>
-    <div class="col-12 col-lg-6" id="rightColumnIncome">
-
-    </div>
-
-</div>
-
-
-
-@{
-    var categories = Model.Categories.ToList();
-
-    <script type="text/javascript">
-
-
-        let currentColumn;
-
-        @for (int i = 0; i < categories.Count(); i++)
+        @foreach (var category in group)
         {
-            decimal monthlySum = categories[i].Transactions.Sum(transaction => transaction.Ammount);
-            int totalTransactions = categories[i].Transactions.Count();
-            string collapseId = "collapse" + i;
-            string chartWeeklyId = "chartWeekly" + categories[i].Name.Replace(" ", string.Empty);
-            string chartMonthlyId = "chartMonthly" + categories[i].Name.Replace(" ", string.Empty);
-            string chartAnnuallyId = "chartAnnually" + categories[i].Name.Replace(" ", string.Empty);
-            string triggerWeeklyId = "triggerWeekly" + categories[i].Name.Replace(" ", string.Empty);
-            string triggerMonthlyId = "triggerMonthly" + categories[i].Name.Replace(" ", string.Empty);
-            string triggerAnnuallyId = "triggerAnnually" + categories[i].Name.Replace(" ", string.Empty);
-            string weeklyId = "weekly" + categories[i].Name.Replace(" ", string.Empty);
-            string monthlyId = "monthly" + categories[i].Name.Replace(" ", string.Empty);
-            string annuallyId = "annually" + categories[i].Name.Replace(" ", string.Empty);
-            string cardHeaderRowId = categories[i].Name.Replace(" ", string.Empty) + "HeaderRow";
-            string cardId = categories[i].Id + "Card";
-
-
-            <text>
-
-                currentColumn = @i % 2 == 0 ? document.getElementById("leftColumn" + "@categories[i].Type") : document.getElementById("rightColumn" + "@categories[i].Type");
-
-                currentColumn.innerHTML +=
-                `<div class='py-2' id="@cardId">
-                        <div class='card-wrapper px-3'>
-                            <div class='card-header row' data-toggle='collapse' data-target='#@collapseId' aria-expanded='false' aria-controls='@collapseId' role='button'>
-                                <div id="@cardHeaderRowId" class="row flex-grow-1 m-0">
-                                    <img class='category-image-small mr-3' src='@categories[i].ImagePath'>
-                                    <div class=''>
-                                        <div class='font-weight-bold'>@categories[i].Name</div>
-                                        <div style='font-size: 0.8rem'><b>@totalTransactions</b> transactions</div>
-                                    </div>
-                                    <div class='text-right ml-auto'>
-                                        <div class='font-weight-bold'>This month</div>
-                                        <div style='font-size: 0.8rem' class='font-weight-bold text-danger'>@monthlySum BGN</div>
-                                    </div>
-                                </div>
-                                <div class='text-right ml-2'>
-                                    <div>
-                                        <a asp-action="Edit" asp-route-id="@categories[i].Id" class="link-style"><i class="fas fa-pencil-alt"></i></a>
-
-                                    </div>
-                                    <div style="color: red">
-                                        <a onclick="confirmDelete(@categories[i].Id, '@categories[i].Name')" class="link-style"><i class="fas fa-trash-alt"></i></a>
-
-                                    </div>
-                                </div>
+            <div class='py-2 col-12 col-sm-6 ' id="@category.Id">
+                <div class='card-wrapper px-3 box-shadow-small'>
+                    <div class='card-header row'>
+                        <div class="row flex-grow-1 m-0">
+                            <img class='category-image-small mr-3' src='@category.ImagePath'>
+                            <div class=''>
+                                <div class='font-weight-bold'>@category.Name</div>
+                                <div style='font-size: 0.8rem'><b>@category.Transactions.Count()</b> transactions</div>
                             </div>
-
-                            <div id='@collapseId' class='collapse'>
-                                <div class='card-body'>
-
-                                    <ul class='nav nav-tabs' role='tablist'>
-                                        <li class='nav-item'>
-                                            <a class='nav-link' id='@triggerWeeklyId' data-toggle='tab' href='#@weeklyId' role='tab' aria-controls='@weeklyId' aria-selected='false'>Weekly</a>
-                                        </li>
-                                        <li class='nav-item'>
-                                            <a class='nav-link active' id='@triggerMonthlyId' data-toggle='tab' href='#@monthlyId' role='tab' aria-controls='@monthlyId' aria-selected='true'>Monthly</a>
-                                        </li>
-                                        <li class='nav-item'>
-                                            <a class='nav-link' id='@triggerAnnuallyId' data-toggle='tab' href='#@annuallyId' role='tab' aria-controls='@annuallyId' aria-selected='false'>Annually</a>
-                                        </li>
-                                    </ul>
-                                    <div class='tab-content pt-3'>
-
-                                        <div class='tab-pane fade' id='@weeklyId' role='tabpanel' aria-labelledby='home-tab'>
-                                            <div class="chart-nav left" onclick="loadChart(@categories[i].Id, '@categories[i].Name', 'Weekly', -2)">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </div>
-                                            <div id='@chartWeeklyId'></div>
-                                            <div class="chart-nav right" onclick="loadChart(@categories[i].Id, '@categories[i].Name', 'Weekly', 2)">
-                                                <i class="fas fa-chevron-right"></i>
-                                            </div>
-                                        </div>
-                                        <div class='tab-pane fade show active' id='@monthlyId' role='tabpanel' aria-labelledby='profile-tab'>
-                                            <div class="chart-nav left" onclick="loadChart(@categories[i].Id, '@categories[i].Name', 'Monthly', -2)">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </div>
-                                            <div id='@chartMonthlyId'></div>
-                                            <div class="chart-nav right" onclick="loadChart(@categories[i].Id, '@categories[i].Name', 'Monthly', 2)">
-                                                <i class="fas fa-chevron-right"></i>
-                                            </div>
-                                        </div>
-                                        <div class='tab-pane fade' id='@annuallyId' role='tabpanel' aria-labelledby='contact-tab'>
-                                            <div class="chart-nav left" onclick="loadChart(@categories[i].Id, '@categories[i].Name', 'Yearly', -1)">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </div>
-                                            <div id='@chartAnnuallyId'></div>
-                                            <div class="chart-nav right" onclick="loadChart(@categories[i].Id, '@categories[i].Name', 'Yearly', 1)">
-                                                <i class="fas fa-chevron-right"></i>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                </div>
+                            <div class='text-right ml-auto'>
+                                <div class='font-weight-bold'>This month</div>
+                                <div style='font-size: 0.8rem' class='font-weight-bold text-danger'>@category.Transactions.Sum(transaction => transaction.Ammount) BGN</div>
                             </div>
                         </div>
-                    </div>`;
-
-                $(document).ready(function() {
-                    $('#@triggerWeeklyId').one('click', function () {
-                        loadChart(@categories[i].Id, '@categories[i].Name.Replace(" ", string.Empty)', 'Weekly');
-                    });
-
-                    $('#@triggerMonthlyId, #@cardHeaderRowId').one('click', function () {
-                        loadChart(@categories[i].Id, '@categories[i].Name.Replace(" ", string.Empty)', 'Monthly');
-                    });
-
-                    $('#@triggerAnnuallyId').one('click', function () {
-                        loadChart(@categories[i].Id, '@categories[i].Name.Replace(" ", string.Empty)', 'Annually');
-                    });
-                });
-
-            </text>
+                        <div class="pl-3">
+                            <div><a class="col-12 p-0 no-style" asp-action="Edit" asp-route-id="@category.Id"><i class="fas fa-pen"></i></a></div>
+                            <div><button onclick='updateDeleteModal(@Html.Raw(Json.Serialize(category)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteConfirmModal"><i class="fas fa-trash"></i></button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
 
-    </script>
+    </div>
 }
 
 
-<script>
-    /* Categories/All */
 
-let totalTransactions = {};
-let charts = {};
-let chartOptions = {}
+
+
+
+
+
+
+<script>
 
 $(document).ready(function () {
 
-    // If browser does not support input type date use another date
-    let isDateSupported = function () {
-        var input = document.createElement('input');
-        var value = 'a';
-        input.setAttribute('type', 'date');
-        input.setAttribute('value', value);
-        return (input.value !== value);
-    };
-
-    if (!isDateSupported) {
-        $('input[type="date"]').datepicker({
-            format: 'yyyy-mm-dd',
-            weekStart: 1
-        });
-    }
-
-    chartOptions = {
-        chart: {
-            height: 350,
-            type: 'line',
-        },
-        stroke: {
-            curve: 'straight',
-        },
-        grid: {
-            row: {
-                colors: ['#f3f3f3', 'transparent'],
-                opacity: 0.5
-            },
-        },
-    }
+    
 
 });
 
 
-function calculateKeys(keys, groupBy, move) {
-    let date, from, to;
+         
+    function updateDeleteModal(category) {
+        $('#modalDeleteButton').attr("onclick", "deleteCategory('" + category.id + "')");
 
-    return keys.filter(function (key) {
-        switch (groupBy.toLowerCase()) {
-            case 'y':
-            case 'a':
-            case 'yearly':
-            case 'annually':
-                date = moment(key + '-01');
-                from = moment().add(-2 + move, 'years').startOf('year');
-                to = moment().add(2 + move, 'years').endOf('year');
-                break;
-            case 'm':
-            case 'monthly':
-            default:
-                date = moment(key);
-                from = moment().add(-2 + move, 'months').startOf('month');
-                to = moment().add(2 + move, 'months').endOf('month');
-                break;
-            case 'w':
-            case 'weekly':
-                date = moment(key.split('#')[0]);
-                from = moment().add(-2 + move, 'weeks').startOf('isoWeek');
-                to = moment().add(2 + move, 'weeks').endOf('isoWeek');
-                break;
-        }
+        let categoryStats = $(`
+            
+        `);
 
-        if (date >= from && date <= to) {
-            return true;
-        }
-
-        return false;
-    })
-}
-
-async function loadChart(categoryId, categoryName, groupBy, move) {
-    let result = await getTransactions(categoryId, categoryName, groupBy);
-
-    if (!result) {
-        $('#' + groupBy.toLowerCase() + categoryName).text("No transactions for this period.");
-        return false;
+        $('#modalCategoryView').text('');
+        $('#modalCategoryView').append(categoryStats);
     }
 
-    const chartId = "chart" + groupBy + categoryName;
-    let chartData = charts[chartId];
+    function deleteCategory(id) {
+       $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Delete")',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data) {
+                    let categoryElement = $('#' + id);
 
-    let keys, values;
+                    categoryElement.remove();
 
-    if (!chartData) {
-
-        keys = calculateKeys(Object.keys(result), groupBy, 0);
-        values = keys.map(key => result[key]);
-
-        chartOptions.series = [{
-            name: categoryName,
-            data: values
-        }];
-
-        chartOptions.chart.id = chartId;
-
-        chartOptions.xaxis = {
-            categories: keys
-        };
-
-        chartOptions.title = {
-            text: groupBy + ' Recap',
-            align: 'left'
-        };
-
-        let chartElement = document.querySelector("#chart" + groupBy + categoryName);
-
-        chartData = charts[chartId] = {};
-        chartData.location = 0;
-
-        chartData.chart = new ApexCharts(
-            chartElement,
-            chartOptions
-        );
-
-        chartData.chart.render();
-    }
-    else {
-        chartData.location += move;
-
-        keys = calculateKeys(Object.keys(result), groupBy, chartData.location);
-        values = keys.map(key => result[key]);
-
-        ApexCharts.exec("chart" + groupBy + categoryName, "updateOptions", {
-            xaxis: {
-                categories: keys
+                    $('#deleteConfirmModal').modal('hide');
+                }
             }
+
         });
-
-        ApexCharts.exec("chart" + groupBy + categoryName, "updateSeries", [
-            {
-                data: values
-            }
-        ]);
     }
-}
-
-
-function formatByYear(d) {
-    return moment(d).format('YYYY');
-}
-
-function formatByMonth(d) {
-    return moment(d).format('YYYY-MM');
-}
-
-function formatByWeek(d) {
-    d = moment(d);
-
-    const dFirst = moment(d).startOf('isoWeek');
-    const dLast = moment(d).endOf('isoWeek');
-
-    //return dFirst.format('YYYY-MM-DD');
-    return dFirst.format('YYYY-MM-DD') + "#" + dLast.format('YYYY-MM-DD');
-}
-
-async function getTransactions(categoryId, categoryName, groupBy) {
-    if (!totalTransactions[categoryName]) {
-        totalTransactions[categoryName] = {};
-    }
-
-    if (totalTransactions[categoryName][groupBy]) {
-        return totalTransactions[categoryName][groupBy];
-    }
-
-    let result = await pullTransactions(categoryId);
-
-    if (!result) {
-        return false;
-    }
-
-    let resultSum = {};
-
-    let firstDate = moment(result[Object.keys(result)[0]].date);
-    let lastDate = moment(result[Object.keys(result)[Object.keys(result).length - 1]].date);
-
-    let addDays;
-
-    switch (groupBy.toLowerCase()) {
-        case 'y':
-        case 'a':
-        case 'yearly':
-        case 'annually':
-            result = _.groupBy(result, item => formatByYear(item.date));
-            addDays = function (date) {
-                dateFormatted = formatByYear(date);
-                date.add(1, 'years');
-
-                return { newDate: date, dateFormatted }
-            }
-            break;
-        case 'm':
-        case 'monthly':
-        default:
-            result = _.groupBy(result, item => formatByMonth(item.date));
-            addDays = function (date) {
-                dateFormatted = formatByMonth(date);
-                date.add(1, 'months');
-
-                return { newDate: date, dateFormatted }
-            }
-            break;
-        case 'w':
-        case 'weekly':
-            result = _.groupBy(result, item => formatByWeek(item.date));
-            addDays = function (date) {
-                dateFormatted = formatByWeek(date);
-                date.add(1, 'isoWeek')
-
-                return { newDate: date, dateFormatted }
-            }
-            break;
-    }
-
-    for (var i = firstDate; i <= lastDate;) {
-        let resultDate = addDays(i);
-
-        i = new moment(resultDate.newDate);
-
-        let dateFormatted = resultDate.dateFormatted;
-
-        resultSum[dateFormatted] = result[dateFormatted] ? result[dateFormatted].reduce((a, b) => a + (b.ammount || 0), 0) : 0;
-    }
-
-    if (!totalTransactions[categoryName][groupBy]) {
-        totalTransactions[categoryName][groupBy] = resultSum;
-    }
-
-    return resultSum;
-}
-
-function confirmDelete(id, name) {
-    $('#confirmDeleteInput').val(id);
-    $('#exampleModal').modal('show');
-    $('#modalTitleNamePlaceholder, #modalBodyNamePlaceholder').text(name);
-}
-
-function Delete() {
-    var id = $('#confirmDeleteInput').val();
-
-    $.ajax({
-        type: 'POST',
-        url: 'DeleteConfirm',
-        //url: '@Url.Action("DeleteConfirm")',
-        data: { id: id },
-        success: function (result) {
-            if (result) {
-                $('#' + id + "Card").remove();
-                $('#exampleModal').modal('hide');
-            }
-        }
-    });
-}
-
-function pullTransactions(categoryId) {
-    return $.ajax({
-        type: 'GET',
-        url: 'GetTransactionsAsJson',
-        //url: '@Url.Action("GetTransactionsAsJson")',
-        dataType: 'json',
-        data: { categoryId: categoryId }
-    });
-}
 
 </script>

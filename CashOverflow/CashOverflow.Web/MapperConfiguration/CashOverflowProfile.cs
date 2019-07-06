@@ -24,7 +24,7 @@ namespace CashOverflow.Web.MapperConfiguration
 
                 // Calendar
                 this.CreateMap<Transaction, CalendarTransactionViewModel>();
-            
+
             // Categories
             this.CreateMap<CreateCategoryInputModel, Category>();
             this.CreateMap<Category, CategoryViewModel>();
@@ -32,9 +32,10 @@ namespace CashOverflow.Web.MapperConfiguration
                 // Transactions
                 this.CreateMap<Category, CreateTransactionCaregoryViewModel>();
                 this.CreateMap<Category, TransactionCategoryViewModel>();
+                this.CreateMap<Category, TransactionAmountViewModel>();
 
-                // Calendar
-                this.CreateMap<Category, CalendarCategoryViewModel>();
+            // Calendar
+            this.CreateMap<Category, CalendarCategoryViewModel>();
 
             // Locations
             this.CreateMap<CreateLocationInputModel, Location>().ReverseMap();

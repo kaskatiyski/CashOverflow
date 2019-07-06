@@ -79,27 +79,24 @@
             </div>
                        
             @* TODO: Choose Freepik icons or add credits for these one ( DinosoftLabs ) *@
-            <div class="">
-                <div class="mb-3">
-                    Please choose your category type and image.
-                </div>
-
-                @foreach (var catType in Enum.GetValues(typeof(CategoryType)))
-                {
-                    var typeName = catType.ToString();
-                    var typeNameLower = catType.ToString().ToLower() + ".svg";
-                    var typeId = "category" + typeName;
-
-                    <label for="@catType" id="@typeId" onclick="setType('@typeName')" class="income-toggle-button text-center font-weight-bold">
-                        <img class="category-type-image" src="~/resources/icons/type/@typeNameLower" />
-                        <div class="category-type-text text-dark">@typeName</div>
-                    </label>
-
-                    @Html.RadioButtonFor(model => model.Type, catType, new { id = catType.ToString(), style = "display: none" })
-                }
-
+        <div class="">
+            <div class="mb-3">
+                Please choose your category type and image.
             </div>
+                <label for="Income" id="categoryIncome" onclick="setType('Income')" class="income-toggle-button text-center font-weight-bold">
+                    <img class="category-type-image" src="~/resources/icons/type/income.svg" />
+                    <div class="category-type-text text-dark">Income</div>
+                </label>
 
+                @Html.RadioButtonFor(model => model.Type, CategoryType.Income, new { id = "Income", style = "display: none" })
+
+                <label for="Expense" id="categoryExpense" onclick="setType('Expense')" class="income-toggle-button text-center font-weight-bold">
+                    <img class="category-type-image" src="~/resources/icons/type/expense.svg" />
+                    <div class="category-type-text text-dark">Expense</div>
+                </label>
+                
+                @Html.RadioButtonFor(model => model.Type, CategoryType.Expense, new { id = "Expense", style = "display: none" })
+        </div>
 
             <div class="form-group" style="display: none">
                 <input id="ImagePath" asp-for="ImagePath" class="form-control" />
@@ -117,6 +114,7 @@
             }
 
         </div>
+
         <hr />
 
         <div class="">

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using CashOverflow.Models;
 using CashOverflow.Services.Contracts;
@@ -127,34 +128,18 @@ namespace CashOverflow.App.Controllers
 
 
 
-        // GET: Categories
-        //public ActionResult All()
-        //{
-        //    var categories = this.categoryService.GetAllCategoriesByUsername(this.User.Identity.Name).Select(x => new CategoryViewModel()
-        //    {
-        //        Id = x.Id,
-        //        Name = x.Name,
-        //        Type = x.Type,
-        //        ImagePath = x.ImagePath
-        //    }).ToList();
+        //GET: Categories
+        public ActionResult All()
+        {
+            var categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name);
 
-        //    var allCategoriesViewModel = new AllCategoriesViewModel()
-        //    {
-        //        Categories = categories
-        //    };
+            var allCategoriesViewModel = new AllCategoriesViewModel()
+            {
+                Categories = categories.Select(c => mapper.Map<CategoryViewModel>(c))
+            };
 
-        //    foreach (var category in allCategoriesViewModel.Categories)
-        //    {
-        //        var transactions = this.transactionService.GetTransactionsByCategoryId(category.Id)
-        //            .OrderBy(transaction => transaction.Date)
-        //            .Select(x => new TransactionAmountViewModel() { Ammount = x.Ammount })
-        //            .ToList();
-
-        //        category.Transactions = transactions;
-        //    }
-
-        //    return View(allCategoriesViewModel);
-        //}
+            return this.View(allCategoriesViewModel);
+        }
 
         // GET: Categories/Details/5
         //public ActionResult Details(int id)
@@ -174,9 +159,9 @@ namespace CashOverflow.App.Controllers
         // POST: Categories/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateCategoryInputModel model)
+        public async Task<ActionResult> Create(CreateCategoryInputModel model)
         {
-            this.categoryService.Create(this.User.Identity.Name, mapper.Map<Category>(model));
+            await this.categoryService.CreateAsync(this.User.Identity.Name, mapper.Map<Category>(model));
 
             return this.Redirect("/");
         }
@@ -204,27 +189,14 @@ namespace CashOverflow.App.Controllers
         //    }
         //}
 
-        //// GET: Categories/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
         // POST: Categories/Delete/5
         // TODO: Maybe remove try/catch, research a better way for deleting items and make it secure
-        //[HttpPost]
-        //public JsonResult DeleteConfirm(int id)
-        //{
-        //    try
-        //    {
-        //        this.categoryService.Delete(id);
-
-        //        return Json(true);
-        //    }
-        //    catch
-        //    {
-        //        return Json(false);
-        //    }
-        //}
+        // POST: Transactions1/Delete/5
+        [HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        public async Task<bool> DeleteConfirmed(string id)
+        {
+            return await this.categoryService.DeleteCategoryAsync(this.User.Identity.Name, id);
+        }
     }
 }
