@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CashOverflow.Services.Contracts
 {
@@ -16,6 +17,13 @@ namespace CashOverflow.Services.Contracts
         IEnumerable<Transaction> GetTransactionsByRange(string username, string startDate, string endDate);
 
         void Create(string username, Transaction transaction);
+
+        Task<Transaction> GetTransactionByIdAsync(string username, string id);
+
+        Task UpdateTransaction(string username, Transaction transaction);
+
+        Task<bool> DeleteTransaction(string username, string id);
+
 
     }
 }

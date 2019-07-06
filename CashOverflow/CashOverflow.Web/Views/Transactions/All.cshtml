@@ -83,6 +83,8 @@
 
 
 
+@await Html.PartialAsync("_TransactionsListPartial", Model.Transactions)
+
 <script>
 
     /*
@@ -232,7 +234,5 @@
     });
 
 </script>
-
-@await Html.PartialAsync("_TransactionsListPartial", Model.Transactions)
 
 <br /><br /><br /><br />

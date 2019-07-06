@@ -17,6 +17,8 @@ namespace CashOverflow.Web.MapperConfiguration
         {
             // Transactions
             this.CreateMap<CreateTransactionInputModel, Transaction>();
+            this.CreateMap<EditTransactionInputModel, Transaction>().ReverseMap();
+            this.CreateMap<Transaction, EditTransactionViewModel>();
             this.CreateMap<Transaction, TransactionViewModel>();
             this.CreateMap<Transaction, TransactionAmountViewModel>();
 
@@ -35,7 +37,7 @@ namespace CashOverflow.Web.MapperConfiguration
                 this.CreateMap<Category, CalendarCategoryViewModel>();
 
             // Locations
-            this.CreateMap<CreateLocationInputModel, Location>();
+            this.CreateMap<CreateLocationInputModel, Location>().ReverseMap();
             this.CreateMap<Location, LocationViewModel>();
 
                 // Transactions

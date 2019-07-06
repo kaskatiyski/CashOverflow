@@ -1,66 +1,87 @@
 ﻿@model IEnumerable<IGrouping<string, CashOverflow.Web.ViewModels.Transaction.TransactionViewModel>>
 
 @using CashOverflow.Models.Enum
-    
+
 @{
     ViewData["Title"] = "_TransactionsListPartial";
 }
 
 
-@if (Model.Count() > 0){
+@if (Model.Count() > 0)
+{
 
     <div class="">
 
         @foreach (var group in Model)
         {
-            <div class="custom-list-group-key mb-2">
-                <div class="fs-9">@group.Key</div>
+            <div class="custom-list-group">
+
+                <div class="custom-list-group-key mb-2">
+                    <div class="fs-9">@group.Key</div>
+                </div>
+
+                @foreach (var transaction in group.ToList())
+                {
+
+                    <div class="custom-list-group-item box-shadow-small" id="@transaction.Id">
+                        <div class="pr-3">
+                            <div class="fs-7">
+                                @*<i class="fab fa-accessible-icon"></i>*@
+                                <img src="@transaction.Category.ImagePath" width="40" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="font-weight-bold">@transaction.Recipient</div>
+                            <div class="fs-2">@transaction.Category.Name</div>
+                        </div>
+
+                        <div class="col-5 fs-2 ml-auto d-none d-md-block">
+                            @if (transaction.Notes != null)
+                            {
+                                <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
+                            }
+
+                            @if (transaction.Location.Address != null)
+                            {
+                                <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
+                            }
+                        </div>
+
+                        <div class="text-right pl-2 ml-auto ml-md-0" style="width: 125px;">
+                            @if (transaction.Category.Type == CategoryType.Expense)
+                            {
+                                <div class="text-danger">
+                                    BGN @transaction.Ammount
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-success">
+                                    BGN @transaction.Ammount
+                                </div>
+                            }
+                            <div class="fs-2">@transaction.Date.ToString("dd MMM yyyy")</div>
+                        </div>
+                        <div class="d-flex flex-column pl-3">
+                            <a class="col-12 p-0 no-style" href="Transactions/Edit/@transaction.Id"><i class="fas fa-pen"></i></a>
+                            <button onclick='updateModal(@Html.Raw(Json.Serialize(transaction)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteConfirmModal"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="col-12 d-block d-md-none px-0 pt-2 mt-2" style="border-top: 1px solid #ebebeb">
+                            @if (transaction.Notes != null)
+                            {
+                                <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
+                            }
+
+                            @if (transaction.Location.Address != null)
+                            {
+                                <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
+                            }
+                        </div>
+                    </div>
+
+                }
+
             </div>
-
-            @foreach (var transaction in group.ToList())
-            {
-
-            <div class="custom-list-group-item box-shadow-small">
-                <div class="pr-3">
-                    <div class="fs-7">
-                        @*<i class="fab fa-accessible-icon"></i>*@
-                        <img src="@transaction.Category.ImagePath" width="40" />
-                    </div>
-                </div>
-                <div class="">
-                    <div class="font-weight-bold">@transaction.Recipient</div>
-                    <div class="fs-2">@transaction.Category.Name</div>
-                </div>
-
-                <div class="col-5 ml-auto d-none d-md-block">
-                    <div class="fs-2 text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
-                    <div class="fs-2 text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
-
-                </div>
-
-                <div class="text-right pl-2 ml-auto ml-md-0" style="width: 125px;">
-                    @if (transaction.Category.Type == CategoryType.Expense)
-                        {
-                    <div class="text-danger">
-                        BGN @transaction.Ammount
-                    </div>
-                        }
-                        else
-                        {
-                    <div class="text-success">
-                        BGN @transaction.Ammount
-                    </div>
-                        }
-                    <div class="fs-2">@transaction.Date.ToString("dd MMM yyyy")</div>
-                </div>
-
-                <div class="col-12 d-block d-md-none px-0 pt-2 mt-2" style="border-top: 1px solid #ebebeb">
-                    <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
-                    <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
-                </div>
-            </div>
-
-            }
 
         }
 
@@ -68,5 +89,86 @@
 
 }
 
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body px-4">
+                Are you sure you want to delete this transaction?
+                <div id="kor"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="modalDeleteButton" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    function updateModal(transaction) {
+        $('#modalDeleteButton').attr("onclick", "deleteTransaction('" + transaction.id + "')");
+
+        let transactionElement = $(`
+            <div>
+                <div class="custom-list-group-item px-0">
+                    <div class="pr-3">
+                        <div class="fs-7">
+                            @*<i class="fab fa-accessible-icon"></i>*@
+                            <img src="${transaction.category.imagePath}" width="40" />
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="font-weight-bold">${transaction.recipient}</div>
+                        <div class="fs-2">${transaction.category.name}</div>
+                    </div>
+
+                    <div class="text-right pl-2 ml-auto" style="width: 125px;">
+                        <div class="${transaction.category.type === 2 ? 'text-danger' : 'text-success'}">
+                            BGN ${transaction.ammount}
+                        </div>
+                        <div class="fs-2">${moment(transaction.date).format('DD MMM YYYY')}</div>
+                    </div>
+                    <div class="col-12 d-block px-0 pt-2 mt-2 fs-2" style="border-top: 1px solid #ebebeb">
+                        ${transaction.notes ? `<div class="text-ellipsis"><b>Notes:</b> ${transaction.notes}</div>` : ""}
+                        ${transaction.location.address ? `<div class="text-ellipsis"><b>Location: </b> ${transaction.location.address}</div>` : ""}
+                    </div>
+                </div>
+            </div>
+        `);
+
+        $('#kor').text('');
+        $('#kor').append(transactionElement);
+    }
+
+    function deleteTransaction(id) {
+       $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Delete")',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data) {
+                    let transactionElement = $('#' + id);
+                    let transactionElementParent = transactionElement.parent();
+
+                    $('#' + id).remove();
+
+                    if (transactionElementParent.children().length <= 1) {
+                        transactionElementParent.remove();
+                    }
+
+                    $('#deleteConfirmModal').modal('hide');
+                }
+            }
+
+        });
+    }
+</script>
 

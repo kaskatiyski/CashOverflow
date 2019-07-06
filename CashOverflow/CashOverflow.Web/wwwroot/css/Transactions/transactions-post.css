@@ -1,0 +1,137 @@
+﻿.input-amount {
+    border: none;
+    box-shadow: none !important;
+    background: none !important;
+    font-size: 2.5rem;
+    font-weight: 100;
+    padding-left: 0;
+}
+
+.input-hidden {
+    display: none;
+}
+
+.input-wrapper {
+    background: white;
+    margin: 0.7rem 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    /*padding: 0.75rem 1.25rem;*/
+}
+
+.input-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+}
+
+.input-header-non-interactive {
+    display: block;
+    cursor: initial;
+}
+
+.input-header-arrow {
+    margin-left: auto;
+}
+
+.input-header-title {
+    font-size: 0.85rem;
+}
+
+.input-body {
+    padding: 0.75rem 1.25rem;
+}
+
+
+.category-list {
+}
+
+.category-list-hidden {
+    display: none;
+}
+
+.category-item-wrapper {
+    padding: 0.1rem;
+}
+
+.category-item {
+    text-align: center;
+    padding: 0.5rem 0;
+    border: 1px solid #ededed;
+    border-bottom: 3px solid #d9d9d9;
+    border-radius: 6px;
+    background: #fcfcfc;
+    cursor: pointer;
+}
+
+    .category-item:hover {
+        background: #f4f4f4;
+    }
+
+
+
+.switch-group {
+    margin: auto;
+    font-size: 1em;
+    height: 2em;
+    line-height: 2em;
+    border-radius: 0.3em;
+    background: #ccc;
+    position: relative;
+    display: flex;
+    flex: 1;
+}
+
+.switch {
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    display: block;
+    -webkit-transition: 300ms ease-out;
+    -moz-transition: 300ms ease-out;
+    transition: 300ms ease-out;
+    padding: 0 1em;
+    flex: 1;
+}
+
+.switch-selector {
+    text-align: center;
+    position: absolute;
+    width: 0;
+    box-sizing: border-box;
+    -webkit-transition: 300ms ease-out;
+    -moz-transition: 300ms ease-out;
+    transition: 300ms ease-out;
+    border-radius: 0.3em;
+    color: white;
+    -moz-box-shadow: 0px 2px 4px 0px #9b9b9b;
+    -webkit-box-shadow: 0px 2px 4px 0px #9b9b9b;
+    -o-box-shadow: 0px 2px 4px 0px #9b9b9b;
+    box-shadow: 0px 2px 4px 0px #9b9b9b;
+    filter: progid:DXImageTransform.Microsoft.Shadow(color=#9b9b9b, Direction=180, Strength=4);
+}
+
+#categorySwitch .Income {
+    background: #28a745;
+}
+
+#categorySwitch .Expense {
+    background: #dc3545;
+}
+
+#categorySwitch .Transfer {
+    background: #6c757d;
+}
+
+
+
+#map {
+    width: 100%;
+    height: 535px;
+    background-color: grey;
+}
+
+#placeSearchBox {
+    margin: 1rem 0;
+    width: 100%;
+}

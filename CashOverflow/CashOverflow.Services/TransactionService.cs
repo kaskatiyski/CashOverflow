@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CashOverflow.Services
 {
@@ -89,6 +90,43 @@ namespace CashOverflow.Services
 
             this.db.Add(transaction);
             this.db.SaveChanges();
+        }
+
+        public async Task<Transaction> GetTransactionByIdAsync(string username, string id)
+        {
+            var transaction = await this.db.Transactions
+                .Include(x => x.Location)
+                .Include(x => x.Category)
+                .FirstOrDefaultAsync(t => t.User.UserName == username && t.Id == id);
+
+            return transaction;
+            
+        }
+
+        public async Task UpdateTransaction(string username, Transaction transaction)
+        {
+            transaction.UserId = this.db.Users.FirstOrDefault(u => u.UserName == username).Id;
+
+            transaction.Location = this.locationService.Create(transaction.Location);
+
+            this.db.Transactions.Update(transaction);
+            await this.db.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteTransaction(string username, string id)
+        {
+            var transaction = await this.GetTransactionByIdAsync(username, id);
+
+            try
+            {
+                this.db.Transactions.Remove(transaction);
+                await this.db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

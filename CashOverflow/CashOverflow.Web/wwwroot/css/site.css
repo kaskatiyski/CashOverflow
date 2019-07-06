@@ -129,6 +129,8 @@ button.accept-policy {
     cursor: pointer;
 }
 
+
+
 /* TODO: When max-width is smaller make category image smaller */
 
 
@@ -138,6 +140,10 @@ button.accept-policy {
 /*
     Custom List
 */
+
+.custom-list-group {
+
+}
 
 .custom-list-group-key {
     font-weight: 300;
