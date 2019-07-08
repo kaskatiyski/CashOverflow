@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashOverflow.Web", "CashOverflow.Web\CashOverflow.Web.csproj", "{85FC4A2F-6A04-43AC-8349-0C09960C1F01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashOverflow.Data", "CashOverflow.Data\CashOverflow.Data.csproj", "{837DCF3D-8685-4FB6-8FED-2D94C43CC936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashOverflow.Data", "CashOverflow.Data\CashOverflow.Data.csproj", "{837DCF3D-8685-4FB6-8FED-2D94C43CC936}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashOverflow.Models", "CashOverflow.Models\CashOverflow.Models.csproj", "{3CC4BD4E-6E8D-4979-9517-2C68D9F83F43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashOverflow.Models", "CashOverflow.Models\CashOverflow.Models.csproj", "{3CC4BD4E-6E8D-4979-9517-2C68D9F83F43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashOverflow.Services", "CashOverflow.Services\CashOverflow.Services.csproj", "{3C494992-ED61-4034-89FC-50031A182D66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashOverflow.Services", "CashOverflow.Services\CashOverflow.Services.csproj", "{3C494992-ED61-4034-89FC-50031A182D66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashOverflow.Utilities", "CashOverflow.Utilities\CashOverflow.Utilities.csproj", "{E23F5F1F-5ACA-4DA8-A1A4-E416BC6AC5C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashOverflow.Utilities", "CashOverflow.Utilities\CashOverflow.Utilities.csproj", "{E23F5F1F-5ACA-4DA8-A1A4-E416BC6AC5C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,6 +17,23 @@
     {
       "library": "Chart.js@2.8.0",
       "destination": "wwwroot/lib/Chart.js/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "chartjs-plugin-datalabels@0.6.0",
+      "destination": "wwwroot/lib/chartjs-plugin-datalabels/",
+      "files": [
+        "dist/chartjs-plugin-datalabels.js",
+        "dist/chartjs-plugin-datalabels.min.js"
+      ]
+    },
+    {
+      "library": "chartjs-plugin-zoom@0.6.6",
+      "destination": "wwwroot/lib/chartjs-plugin-zoom/"
+    },
+    {
+      "library": "hammer.js@2.0.8",
+      "destination": "wwwroot/lib/hammer.js/"
     }
   ]
 }
