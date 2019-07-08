@@ -126,7 +126,11 @@ button.accept-policy {
 }
 
 .cursor-pointer {
-    cursor: pointer;
+    cursor: pointer !important;
+}
+
+.cursor-unset {
+    cursor: unset !important;
 }
 
 
