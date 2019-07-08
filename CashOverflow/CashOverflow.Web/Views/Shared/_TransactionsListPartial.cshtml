@@ -41,7 +41,7 @@
                                 <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
                             }
 
-                            @if (transaction.Location.Address != null)
+                            @if (transaction.Location != null)
                             {
                                 <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
                             }
@@ -63,7 +63,7 @@
                             <div class="fs-2">@transaction.Date.ToString("dd MMM yyyy")</div>
                         </div>
                         <div class="pl-3">
-                            <div><a class="col-12 p-0 no-style" asp-action="Edit" asp-route-id="@transaction.Id"><i class="fas fa-pen"></i></a></div>
+                            <div><a class="col-12 p-0 no-style" asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.Id"><i class="fas fa-pen"></i></a></div>
                             <div><button onclick='updateDeleteModal(@Html.Raw(Json.Serialize(transaction)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteConfirmModal"><i class="fas fa-trash"></i></button></div>
                         </div>
                         <div class="col-12 d-block d-md-none px-0 pt-2 mt-2" style="border-top: 1px solid #ebebeb">
@@ -72,7 +72,7 @@
                                 <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
                             }
 
-                            @if (transaction.Location.Address != null)
+                            @if (transaction.Location != null)
                             {
                                 <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
                             }
@@ -134,9 +134,9 @@
                         </div>
                         <div class="fs-2">${moment(transaction.date).format('DD MMM YYYY')}</div>
                     </div>
-                    <div class="col-12 d-block px-0 pt-2 mt-2 fs-2" style="border-top: 1px solid #ebebeb">
+                    <div class="col-12 d-block px-0 pt-2 mt-2 fs-2" style="${transaction.notes || transaction.location ? `border-top: 1px solid #ebebeb` : ""}">
                         ${transaction.notes ? `<div class="text-ellipsis"><b>Notes:</b> ${transaction.notes}</div>` : ""}
-                        ${transaction.location.address ? `<div class="text-ellipsis"><b>Location: </b> ${transaction.location.address}</div>` : ""}
+                        ${transaction.location ? transaction.location.address ? `<div class="text-ellipsis"><b>Location: </b> ${transaction.location.address}</div>` : "" : ""}
                     </div>
                 </div>
             </div>
@@ -149,7 +149,7 @@
     function deleteTransaction(id) {
        $.ajax({
             type: 'POST',
-            url: '@Url.Action("Delete")',
+            url: '@Url.Content("~/Transactions/Delete")',
             data: {
                 id: id
             },
