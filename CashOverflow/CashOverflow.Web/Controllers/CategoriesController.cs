@@ -36,15 +36,24 @@ namespace CashOverflow.App.Controllers
             this.transactionService = transactionService;
         }
                
-        public ActionResult All()
+        public async Task<ActionResult> All()
         {
             var categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name);
 
             var allCategoriesViewModel = new AllCategoriesViewModel()
             {
-                Categories = categories.Select(c => mapper.Map<CategoryViewModel>(c))
+                Categories = categories.Select(c => mapper.Map<CategoryViewModel>(c)).ToList()
             };
 
+            foreach (var category in allCategoriesViewModel.Categories)
+            {
+                var count = await this.transactionService.GetTransactionsCountByCategoryAsync(this.User.Identity.Name, category.Id);
+                var sum = await this.transactionService.GetTransactionsSumByCategoryAsync(this.User.Identity.Name, category.Id);
+
+                category.TransactionCount = count;
+                category.TransactionSum = sum;
+            }
+            
             return this.View(allCategoriesViewModel);
         }
         
@@ -127,6 +136,21 @@ namespace CashOverflow.App.Controllers
             return View(category);
         }
 
+
+        public async Task<ActionResult> Details(string id)
+        {
+            var category = await this.categoryService.GetCategoryByIdAsync(this.User.Identity.Name, id);
+
+            var detailsCategoryViewModel = mapper.Map<DetailsCategoryViewModel>(category);
+
+            var transactions = this.transactionService.GetTransactionsByCategoryAsync(this.User.Identity.Name, category.Id);
+
+            detailsCategoryViewModel.Transactions = transactions.Select(t => mapper.Map<TransactionViewModel>(t)).OrderBy(t => t.Date).GroupBy(t => t.Date.ToString("MMMM yyyy"));
+            
+            return this.View(detailsCategoryViewModel);
+        }
+
+
         // POST: Categories/Delete/5
         // TODO: Maybe remove try/catch, research a better way for deleting items and make it secure
         // POST: Transactions1/Delete/5
@@ -136,5 +160,6 @@ namespace CashOverflow.App.Controllers
         {
             return await this.categoryService.DeleteCategoryAsync(this.User.Identity.Name, id);
         }
+
     }
 }

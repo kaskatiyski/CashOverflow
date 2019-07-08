@@ -1,0 +1,228 @@
+﻿@model CashOverflow.Web.ViewModels.Category.DetailsCategoryViewModel
+
+@using CashOverflow.Models.Enum
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+<h2>@Model.Name</h2>
+
+@await Html.PartialAsync("_CategoryDeleteModel")
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="custom-card">
+            <div class="custom-card-header cursor-unset">
+                <div class="custom-card-header-title">
+                    <div class="custom-card-header-subtitle">
+                        Total transactions
+                    </div>
+                    <div class="custom-card-header-maintitle">
+                    </div>
+                </div>
+            </div>
+            <div class="custom-card-body">
+                @Model.Transactions.Select(x => x.Count()).Sum()
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="custom-card">
+            <div class="custom-card-header cursor-unset">
+                <div class="custom-card-header-title">
+                    <div class="custom-card-header-subtitle">
+                        Total amount
+                    </div>
+                    <div class="custom-card-header-maintitle">
+
+                    </div>
+                </div>
+            </div>
+            <div class="custom-card-body">
+                @Model.Transactions.Select(x => x.Select(y => y.Ammount).Sum()).Sum()
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="custom-card">
+            <div class="custom-card-header cursor-unset">
+                <div class="custom-card-header-title">
+                    <div class="custom-card-header-subtitle">
+                        growth
+                    </div>
+                    <div class="custom-card-header-maintitle">
+
+                    </div>
+                </div>
+            </div>
+            <div class="custom-card-body">
+                @{
+                    var lastMonthAmount = Model.Transactions.First(x => x.Key == "May 2019").Select(x => x.Ammount).Sum();
+                    var thisMonthAmount = Model.Transactions.First(x => x.Key == "June 2019").Select(x => x.Ammount).Sum();
+
+                    <span>@($"{(((thisMonthAmount - lastMonthAmount) / lastMonthAmount) * 100):F2}")%</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        <a asp-action="All">Back to List</a>
+    </div>
+    @*<hr />*@
+    <div class="row">
+        <dt class="col-sm-2 col-12">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10 col-12">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2 col-12">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10 col-12">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2 col-12">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class="col-sm-10 col-12">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        @*<dt class="col-sm-2 col-12">
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </dt>
+            <dd class="col-sm-10 col-12">
+                @Html.DisplayFor(model => model.ImagePath)
+            </dd>*@
+
+        <dd>
+
+        </dd>
+    </div>
+</div>
+
+<div>
+    <canvas id="chartTransactions" width="400" height="400"></canvas>
+</div>
+
+
+@await Html.PartialAsync("_TransactionsListPartial", Model.Transactions)
+
+
+
+<script>
+    let transactions = {};
+
+    @{
+        var startDate = DateTime.Parse(Model.Transactions.FirstOrDefault().Key).AddMonths(-1);
+        var currentDate = startDate;
+        var endDate = DateTime.Parse(Model.Transactions.LastOrDefault().Key).AddMonths(1);
+
+        while (currentDate <= endDate)
+        {
+            var key = currentDate.ToString("MMMM yyyy");
+            var group = Model.Transactions.FirstOrDefault(g => g.Key == key);
+            decimal sum;
+
+            if (group != null)
+            {
+                sum = group.Sum(x => x.Ammount);
+            }
+            else
+            {
+                sum = 0;
+            }
+
+            @:transactions['@key'] = @sum;
+
+            currentDate = currentDate.AddMonths(1);
+        }
+    }
+
+    let chartOptions = {
+        type: 'line',
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    //clip: true,
+                    backgroundColor: function (context) {
+                        return context.dataset.borderColor;
+                    },
+                    borderRadius: 4,
+                    color: 'white',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: Math.round
+                },
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                titleFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+            },
+            legend: {
+                display: false
+            },
+			title: {
+				display: true,
+				text: '@Model.Name'
+			},
+			hover: {
+				mode: 'nearest',
+				intersect: true
+            },
+            pan: {
+                enabled: true,
+                speed: 2,
+                threshold: 100,
+                mode: 'x'
+            },
+            zoom: {
+                enabled: true,
+                sensitivity: 2,
+                mode: 'x',
+            },
+        },
+    }
+
+    let data = Object.values(transactions);
+    let keys = Object.keys(transactions);
+
+    let transactionsChartElement = $('#chartTransactions');
+    let transactionsChart = new Chart(transactionsChartElement, {
+        data: {
+            labels: keys,
+            datasets: [{
+                label: '@Model.Name',
+                data: data,
+                fill: false,
+                borderColor: '#@(Model.Type == CategoryType.Expense ? "c45850" : "2a9d8f")',
+                lineTension: 0,
+                //lineTension: 100,
+            }],
+        },
+        ...chartOptions
+    });
+
+
+</script>

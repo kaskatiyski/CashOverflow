@@ -76,6 +76,6 @@ namespace CashOverflow.Services
 
             this.db.Categories.Update(category);
             await this.db.SaveChangesAsync();
-        }
+        }        
     }
 }

@@ -24,6 +24,10 @@ namespace CashOverflow.Services.Contracts
 
         Task<bool> DeleteTransactionAsync(string username, string id);
 
+        IEnumerable<Transaction> GetTransactionsByCategoryAsync(string username, string categoryId);
 
+        Task<int> GetTransactionsCountByCategoryAsync(string username, string categoryId);
+
+        Task<decimal> GetTransactionsSumByCategoryAsync(string username, string categoryId);
     }
 }

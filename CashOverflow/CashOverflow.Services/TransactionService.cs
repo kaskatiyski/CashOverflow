@@ -132,5 +132,33 @@ namespace CashOverflow.Services
                 return false;
             }
         }
+
+        public IEnumerable<Transaction> GetTransactionsByCategoryAsync(string username, string categoryId)
+        {
+            var count = this.db.Transactions
+                               .Include(t => t.Location)
+                               .Where(t => t.User.UserName == username && t.CategoryId == categoryId);
+
+            return count;
+        }
+
+        public async Task<int> GetTransactionsCountByCategoryAsync(string username, string categoryId)
+        {
+            var count = await this.db.Transactions
+                               .Where(t => t.User.UserName == username && t.CategoryId == categoryId)
+                               .CountAsync();
+
+            return count;
+        }
+
+        public async Task<decimal> GetTransactionsSumByCategoryAsync(string username, string categoryId)
+        {
+            var sum = await this.db.Transactions
+                               .Where(t => t.User.UserName == username && t.CategoryId == categoryId)
+                               .Select(t => t.Ammount)
+                               .SumAsync();
+
+            return sum;
+        }
     }
 }

@@ -85,6 +85,11 @@ namespace CashOverflow.Web
                     defaults: new { controller = "Transactions", action = "All" });
 
                 routes.MapRoute(
+                    name: "categoriesslash",
+                    template: "Categories",
+                    defaults: new { controller = "Categories", action = "All" });
+
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
