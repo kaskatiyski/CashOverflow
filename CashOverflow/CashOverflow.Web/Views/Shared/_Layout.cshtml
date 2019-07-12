@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -39,14 +43,12 @@
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
                 crossorigin="anonymous"
-                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
-        </script>
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
                 crossorigin="anonymous"
-                integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
-        </script>
+                integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o"></script>
         <script src="~/lib/air-datepicker/js/datepicker.min.js"></script>
         <script src="~/lib/air-datepicker/js/i18n/datepicker.en.min.js"></script>
         <script src="~/lib/moment.js/moment.min.js"></script>
@@ -57,9 +59,8 @@
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
-<body @*style="font-size:14px"*@>
-    <script>
-        // TODO: Check if this is the correct way
+<body>
+    <script>// TODO: Check if this is the correct way
         function createLocalDateCookie() {
             var expires = "";
             var date = new Date();
@@ -72,11 +73,105 @@
         createLocalDateCookie();
 
         // Unregister Chart.js Datalabels
-        Chart.plugins.unregister(ChartDataLabels);
+        Chart.plugins.unregister(ChartDataLabels);</script>
 
 
-    </script>
-    <header>
+    <div id="pageWrapper" class="page-wrapper toggled">
+        <a id="open-sidenav" class="btn btn-sm btn-dark" href="#">
+            <i class="fas fa-bars"></i>
+        </a>
+        <nav class="sidenav-wrapper">
+
+            <div id="close-sidenav">
+                <i class="fas fa-times"></i>
+            </div>
+            @*<div class="sidenav-separator"></div>*@
+            <div class="sidenav-item sidenav-brand">
+                <a asp-action="Index" asp-controller="Home" class="cursor-pointer">
+                    <span class="cash">CASH</span><span class="overflow">OVERFLOW</span>
+                </a>
+            </div>
+            @*<div class="sidenav-separator"></div>*@
+            <div class="sidenav-item sidenav-profile">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <img class="user-image" src="https://cheerscreative.com/wp-content/uploads/2014/12/LEGO_LOGO_RGB-300x300.jpg" width="45px" height="45px" />
+                    <div class="">
+                        <a class="user-name" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@User.Identity.Name</a>
+                        <div class="user-title">Administrator</div>
+                    </div>
+                }
+                else
+                {
+                    @*<div>Welcome to CashOverflow</div>*@
+                    <a role="button" asp-area="Identity" asp-page="/Account/Login" style="background: #9663b0" class="btn btn-sm text-light">Login</a>
+                    @:&nbsp;or&nbsp; 
+                    <a role="button" asp-area="Identity" asp-page="/Account/Register" style="background: #9663b0" class="btn btn-sm text-light">Register</a>
+                        
+                    @*<div>
+                        <a asp-area="Identity" asp-page="/Account/Login">Login</a> to your account.
+                        If you don't have one you can <a asp-area="Identity" asp-page="/Account/Register">register</a> here.
+                    </div>*@
+                }
+            </div>
+            @*<div class="sidenav-separator"></div>*@
+            <div class="sidenav-item sidenav-menu">
+                <ul>
+                    <li class="title">General</li>
+                    <li><a asp-area="" asp-controller="Transactions" asp-action="All"><div class="icon"><i class="fas fa-tachometer-alt"></i></div>Dashboard</a></li>
+                    <li><a asp-area="" asp-controller="Transactions" asp-action="All"><div class="icon"><i class="fas fa-coins"></i></div>Transactions</a></li>
+                    <li><a asp-area="" asp-controller="Categories" asp-action="All"><div class="icon"><i class="fas fa-book"></i></div>Categories</a></li>
+                    <li><a asp-area="" asp-controller="Calendar" asp-action="Index"><div class="icon"><i class="fas fa-calendar-alt"></i></div>Calendar</a></li>
+                    <li><a asp-area="" asp-controller="Calendar" asp-action="Index"><div class="icon"><i class="fas fa-map-marked-alt"></i></div>Map</a></li>
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="title">Account</li>
+                        <li><a asp-area="" asp-controller="Transactions" asp-action="All"><div class="icon"><i class="fas fa-cog"></i></div>Settings</a></li>
+                        <li>
+
+                        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <span style="margin-left: -2px" onclick="document.getElementById('logoutForm').submit()" class="">
+                                <div class="icon"><i class="fas fa-sign-out-alt"></i></div>Logout
+                            </span>
+                        </form>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="sidenav-item sidenav-footer">
+                &copy; 2019 - CashOverflow.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </nav>
+        <main class="page-content px-5 py-4" role="main">
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </main>
+        @*<partial name="_CookieConsentPartial" />
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>*@
+    </div>
+
+
+
+
+    @*<footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2019 - CashOverflow.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+
+
+        </footer>*@
+
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+@*<header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CashOverflow.Web</a>
@@ -99,29 +194,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Calendar" asp-action="Index">Calendar</a>
                         </li>
-                        @*<li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </li>*@
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
                     </ul>
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2019 - CashOverflow.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-
-    
-
-    @RenderSection("Scripts", required: false)
-</body>
-</html>
+    </header>*@

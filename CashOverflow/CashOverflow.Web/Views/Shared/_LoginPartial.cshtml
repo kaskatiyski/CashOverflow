@@ -2,25 +2,87 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<ul class="navbar-nav">
+<style>
+    .profile-card {
+        display: flex;
+        color: var(--light-color);
+    }
+
+    .profile-header {
+        display: flex;
+    }
+
+    .user-settings {
+        margin-left: auto;
+    }
+
+    .profile-content {
+        width: 160px;
+        padding: 0 10px;
+    }
+
+    .user-name {
+        font-size: 0.9rem;
+        text-decoration: none !important;
+        color: var(--light-color) !important;
+    }
+
+    .user-title {
+        font-size: 0.75rem;
+    }
+</style>
+
+
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
+    <div class="profile-card">
+        @*<div class="user-image" style="width:45px; height:45px; background: url('https://cheerscreative.com/wp-content/uploads/2014/12/LEGO_LOGO_RGB-300x300.jpg') no-repeat repeat center;background-size: cover;">*@
+        <img src="https://cheerscreative.com/wp-content/uploads/2014/12/LEGO_LOGO_RGB-300x300.jpg" width="45px" height="45px"/>
+        <div class="profile-content">
+            <div class="profile-header">
+                <a class="user-name" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" >Gosho</a>
+                @*<div class="user-name">@User.Identity.Name</div>*@
+                @*<div class="user-settings"><i class="fas fa-cog"></i></div>*@
+            </div>
+            <div class="profile-body">
+                <div class="user-title">Administrator</div>
+            </div>
+        </div>
+    </div>
+
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <div>
+        <a asp-area="Identity" asp-page="/Account/Login">Sign in</a> to your account. 
+        If you don't have one you can <a asp-area="Identity" asp-page="/Account/Register">register</a> here.
+    </div>
 }
-</ul>
+
+
+@*@using Microsoft.AspNetCore.Identity
+    @inject SignInManager<IdentityUser> SignInManager
+    @inject UserManager<IdentityUser> UserManager
+
+    <ul class="navbar-nav">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+            </li>
+            <li class="nav-item">
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            </li>
+        }
+    </ul>*@

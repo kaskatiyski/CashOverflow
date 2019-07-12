@@ -16,11 +16,6 @@ html {
     }
 }
 
-body {
-    margin-bottom: 60px;
-    background: #eef6f7;
-}
-
 /* Hide input type number up and down arrows */
 input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -138,6 +133,208 @@ button.accept-policy {
 /* TODO: When max-width is smaller make category image smaller */
 
 
+body {
+    /*--accent-color: #FED766;*/
+    /*--dark-color: #333333;
+    --light-color: #F7F2EA;*/
+    /*--text-color: #2B2429;*/
+    --accent-color: #9663b0;
+    --text-color: #464743;
+    --background-color: rgb(246, 245, 246);
+
+
+    color: var(--text-color);
+    background: var(--background-color);
+}
+
+a {
+    text-decoration: none !important;
+}
+
+
+
+
+
+
+
+
+/*
+    -----------
+    Page Layout
+    -----------
+*/
+
+
+
+    .page-wrapper {
+        height: 100vh;
+    }
+
+    .page-content {
+        width: 100%;
+        transition: 0.3s;
+    }
+
+    /*
+        Sidenav
+    */
+
+    .page-wrapper.toggled .sidenav-wrapper {
+        left: 0px;
+    }
+
+    .page-wrapper.toggled #open-sidenav {
+        left: -40px;
+    }
+
+    @media screen and (min-width: 992px) {
+        .page-wrapper.toggled .page-content {
+            padding-left: 300px !important;
+        }
+    }
+
+    #open-sidenav {
+        position: fixed;
+        left: 0;
+        top: 10px;
+        border-radius: 0 4px 4px 0px;
+        width: 35px;
+        /*transition-delay: 0.3s;*/
+    }
+
+    #close-sidenav {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .sidenav-wrapper {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        height: 100%;
+        width: 260px;
+        overflow-x: hidden;
+        z-index: 1;
+        transition: 0.3s;
+        background: white;
+        box-shadow: 2px 0px 9px rgba(0,0,0,.04);
+    }
+
+    .sidenav-item {
+        padding: 20px;
+    }
+
+        .sidenav-item .title {
+            padding: 10px 0;
+            font-weight: 800;
+        }
+
+    /*
+        Anchor Tags
+    */
+
+    .sidenav-brand a, .sidenav-menu a, .sidenav-profile a {
+        color: var(--text-color);
+    }
+
+    /*
+        Brand
+    */
+
+    .sidenav-brand .cash {
+        font-weight: 400;
+    }
+
+    .sidenav-brand .overflow {
+        font-weight: 900;
+        color: var(--accent-color);
+    }
+
+    /*
+        Menus
+    */
+
+    .sidenav-menu {
+        font-size: 0.8rem;
+    }
+
+        .sidenav-menu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .sidenav-menu ul li {
+                padding: 10px 0;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+
+                .sidenav-menu ul li:hover {
+                    transform: translate(10px);
+                }
+
+                .sidenav-menu ul li.title {
+                    cursor: initial;
+                }
+
+                    .sidenav-menu ul li.title:hover {
+                        transform: translate(0px);
+                    }
+
+                .sidenav-menu ul li .icon {
+                    width: 20px;
+                    display: inline-block;
+                    text-align: center;
+                    margin-right: 16px;
+                }
+
+
+    /*
+        Profile
+    */
+
+    .sidenav-profile {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+
+    .sidenav-profile .user-image {
+        width: 45px;
+        height: 45px;
+        margin-right: 10px;
+    }
+
+    .sidenav-profile .user-name {
+
+    }
+
+    .sidenav-profile .user-title {
+        font-size: 0.8rem;
+    }
+
+    /*
+        Footer
+    */
+
+    .sidenav-footer {
+        font-size: 0.8rem;
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -146,7 +343,6 @@ button.accept-policy {
 */
 
 .custom-list-group {
-
 }
 
 .custom-list-group-key {
