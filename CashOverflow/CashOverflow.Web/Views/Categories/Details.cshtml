@@ -6,26 +6,77 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-<h2>@Model.Name</h2>
+<style>
 
-<div>
+    .page-title-wrapper {
+
+    }
+
+    .page-title {
+
+    }
+
+    .page-maintitle {
+        font-size: 1.8rem;
+        line-height: 1;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+    }
+
+    .page-title-actions {
+
+    }
+
+        .page-title-actions .btn {
+            /*rgb(143, 95, 218)*/
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.75rem;
+        }
+
+</style>
+
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            @Model.Name
+        </div>
+        <div class="page-subtitle">
+            Categories
+        </div>
+    </div>
+    <div class="page-title-actions col-auto">
+        @*<button class="btn btn-sm btn-primary text-light">
+            @Html.ActionLink("Edit", "Edit", new
+            {
+                id = Model.Id,
+            })
+        </button>*@
+        <a role="button" href="/Categories/Edit/@Model.Id" class="btn btn-sm">Edit</a>
+        <a role="button" asp-action="All" class="btn btn-sm">List</a>
+        <button class="btn btn-sm">Filters</button>
+    </div>
+</div>
+
+@*<div>
     @Html.ActionLink("Edit", "Edit", new
     {
         id = Model.Id
     }) |
     <a asp-action="All">Back to List</a>
-</div>
+</div>*@
 
 @await Html.PartialAsync("_CategoryDeleteModel")
 
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-xl-3 col-md-6">
         <div class="custom-card">
             <div class="custom-card-header cursor-unset">
                 <div class="custom-card-header-title">
                     <div class="custom-card-header-subtitle">
-                        Total transactions
+                        transactions
                     </div>
                     <div class="custom-card-header-maintitle">
                         <span id="count">@Model.Transactions.Select(x => x.Count()).Sum()</span>
@@ -34,12 +85,12 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-xl-3 col-md-6">
         <div class="custom-card">
             <div class="custom-card-header cursor-unset">
                 <div class="custom-card-header-title">
                     <div class="custom-card-header-subtitle">
-                        Total amount
+                        amount
                     </div>
                     <div class="custom-card-header-maintitle">
                         <span id="sum"></span> BGN
@@ -49,7 +100,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-xl-3 col-md-6">
         <div class="custom-card">
             <div class="custom-card-header cursor-unset">
                 <div class="custom-card-header-title">
@@ -60,6 +111,68 @@
                         <span id="avg"></span> BGN per month
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <style>
+
+        .progress-wrapper {
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .progress-title-wrapper {
+
+        }
+
+        .progress-title-text {
+
+        }
+
+        .progress-title-value {
+            float: right;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 7px;
+            background: rgb(246, 245, 246);
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 37.5543%;
+            background: #c45850;
+            border-radius: 5px;
+        }
+    </style>
+    <div class="col-xl-3 col-md-6">
+        <div class="custom-card">
+            <div class="custom-card-header cursor-unset">
+                <div class="custom-card-header-title">
+                    <div class="custom-card-header-subtitle">
+                        budget
+                    </div>
+                    @*<div class="custom-card-header-maintitle">
+
+                    </div>*@
+                </div>
+            </div>
+            <div class="custom-card-body">
+                <div class="progress-wrapper">
+                    <div class="progress-title-wrapper">
+                        Bills
+                        <span class="progress-title-value">215.59 / 600</span>
+                    </div>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+                @*You haven't set a budget for this category yet.
+                <br />
+                To set a budget <a href="">click here.</a>*@
             </div>
         </div>
     </div>

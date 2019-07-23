@@ -175,6 +175,9 @@ a {
         transition: 0.3s;
     }
 
+    .page-content a {
+        color: var(--text-color);
+    }
     /*
         Sidenav
     */
@@ -388,6 +391,7 @@ a {
 }
 
 .custom-card-header-title {
+    width: 100%;
 }
 
     .custom-card-header-title .form-control {
@@ -403,8 +407,8 @@ a {
 }
 
 .custom-card-header-maintitle {
-    font-size: 1.0rem;
-    font-weight: bold;
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
     .custom-card-header-maintitle.regular {
@@ -416,6 +420,7 @@ a {
     font-weight: 900;
     font-size: 0.75rem;
     color: #767676;
+    margin-bottom: -2px;
 }
 
     .custom-card-header-subtitle.regular {
@@ -427,6 +432,7 @@ a {
     }
 
 .custom-card-body {
+    font-size: 0.9rem;
     padding: 0.85rem 1.25rem;
     border-top: 1px solid #ebebeb;
 }
