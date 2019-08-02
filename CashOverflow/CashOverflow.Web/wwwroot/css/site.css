@@ -83,7 +83,7 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
     font-size: 3rem;
 }
 
-a.no-style {
+a.no-style, a.no-style:hover {
     color: #000000 !important;
     text-decoration: none;
 }
@@ -176,8 +176,9 @@ a {
     }
 
     .page-content a {
-        color: var(--text-color);
+        /*color: var(--text-color);*/
     }
+
     /*
         Sidenav
     */
@@ -192,7 +193,7 @@ a {
 
     @media screen and (min-width: 992px) {
         .page-wrapper.toggled .page-content {
-            padding-left: 300px !important;
+            padding-left: 260px !important;
         }
     }
 
@@ -236,7 +237,7 @@ a {
         }
 
     /*
-        Anchor Tags
+        Sidenav Anchor Tags
     */
 
     .sidenav-brand a, .sidenav-menu a, .sidenav-profile a {
@@ -244,7 +245,7 @@ a {
     }
 
     /*
-        Brand
+       Sidenav Brand
     */
 
     .sidenav-brand .cash {
@@ -257,7 +258,7 @@ a {
     }
 
     /*
-        Menus
+        Sidenav Menus
     */
 
     .sidenav-menu {
@@ -298,7 +299,7 @@ a {
 
 
     /*
-        Profile
+        Sidenav Profile
     */
 
     .sidenav-profile {
@@ -322,13 +323,42 @@ a {
     }
 
     /*
-        Footer
+        Sidenav Footer
     */
 
     .sidenav-footer {
         font-size: 0.8rem;
     }
 
+    /*
+        Page Title
+    */
+
+    .page-title-wrapper {
+        margin-bottom: 1rem;
+    }
+
+    .page-title {
+    }
+
+    .page-maintitle {
+        font-size: 1.8rem;
+        line-height: 1;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+    }
+
+    .page-title-actions {
+    }
+
+        .page-title-actions .btn {
+            /*rgb(143, 95, 218)*/
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.9rem;
+        }
 
 
 
@@ -375,7 +405,7 @@ a {
     background: white;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
-    margin: 1rem 0;
+    margin: 0.5rem 0;
 }
 
 .custom-card-header {

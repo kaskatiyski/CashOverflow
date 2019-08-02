@@ -6,38 +6,6 @@
     ViewData["Title"] = "Details";
 }
 
-<style>
-
-    .page-title-wrapper {
-
-    }
-
-    .page-title {
-
-    }
-
-    .page-maintitle {
-        font-size: 1.8rem;
-        line-height: 1;
-    }
-
-    .page-subtitle {
-        font-size: 1rem;
-    }
-
-    .page-title-actions {
-
-    }
-
-        .page-title-actions .btn {
-            /*rgb(143, 95, 218)*/
-            background: var(--accent-color);
-            color: white;
-            font-size: 0.75rem;
-        }
-
-</style>
-
 <div class="page-title-wrapper row align-items-center">
     <div class="page-title col">
         <div class="page-maintitle">
@@ -48,25 +16,11 @@
         </div>
     </div>
     <div class="page-title-actions col-auto">
-        @*<button class="btn btn-sm btn-primary text-light">
-            @Html.ActionLink("Edit", "Edit", new
-            {
-                id = Model.Id,
-            })
-        </button>*@
-        <a role="button" href="/Categories/Edit/@Model.Id" class="btn btn-sm">Edit</a>
-        <a role="button" asp-action="All" class="btn btn-sm">List</a>
         <button class="btn btn-sm">Filters</button>
+        <a role="button" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm">Edit</a>
+        <a role="button" asp-action="All" class="btn btn-sm">Back to List</a>
     </div>
 </div>
-
-@*<div>
-    @Html.ActionLink("Edit", "Edit", new
-    {
-        id = Model.Id
-    }) |
-    <a asp-action="All">Back to List</a>
-</div>*@
 
 @await Html.PartialAsync("_CategoryDeleteModel")
 

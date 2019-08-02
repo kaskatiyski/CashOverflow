@@ -9,11 +9,13 @@ function hideSidenav() {
 $(document).ready(function () {
     onResize();
 
-    $("#close-sidenav").click(function() {
+    let width = $(window).width();
+
+    $("#close-sidenav").click(function () {
         hideSidenav();
     });
 
-    $("#open-sidenav").click(function() {
+    $("#open-sidenav").click(function () {
         showSidenav();
     });
 

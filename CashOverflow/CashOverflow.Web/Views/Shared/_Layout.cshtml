@@ -82,7 +82,7 @@
         </a>
         <nav class="sidenav-wrapper">
 
-            <div id="close-sidenav">
+            <div id="close-sidenav" class="d-lg-none d-block">
                 <i class="fas fa-times"></i>
             </div>
             @*<div class="sidenav-separator"></div>*@
@@ -127,14 +127,13 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="title">Account</li>
-                        <li><a asp-area="" asp-controller="Transactions" asp-action="All"><div class="icon"><i class="fas fa-cog"></i></div>Settings</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><div class="icon"><i class="fas fa-cog"></i></div>Settings</a></li>
                         <li>
-
-                        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                            <span style="margin-left: -2px" onclick="document.getElementById('logoutForm').submit()" class="">
-                                <div class="icon"><i class="fas fa-sign-out-alt"></i></div>Logout
-                            </span>
-                        </form>
+                            <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <span style="margin-left: -2px" onclick="document.getElementById('logoutForm').submit()" class="">
+                                    <div class="icon"><i class="fas fa-sign-out-alt"></i></div>Logout
+                                </span>
+                            </form>
                         </li>
                     }
                 </ul>
@@ -143,8 +142,8 @@
                 &copy; 2019 - CashOverflow.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </nav>
-        <main class="page-content px-5 py-4" role="main">
-            <div class="container-fluid">
+        <main class="page-content py-4" role="main">
+            <div class="container">
                 @RenderBody()
             </div>
         </main>
