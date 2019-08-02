@@ -9,6 +9,8 @@ namespace CashOverflow.Web.ViewModels.Transaction
 {
     public class TransactionCategoryViewModel
     {
+        public string Id { get; set; }
+
         public string Name { get; set; }
 
         [EnumDataType(typeof(CategoryType))]

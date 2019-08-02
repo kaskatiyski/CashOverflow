@@ -6,7 +6,6 @@
     ViewData["Title"] = "_TransactionsListPartial";
 }
 
-
 @if (Model.Count() > 0)
 {
 
@@ -32,7 +31,7 @@
                         </div>
                         <div class="">
                             <div class="font-weight-bold">@transaction.Recipient</div>
-                            <div class="fs-2">@transaction.Category.Name</div>
+                            <div class="fs-2"><a class="no-style" asp-controller="Categories" asp-action="Details" asp-route-id="@transaction.Category.Id">@transaction.Category.Name</a></div>
                         </div>
 
                         <div class="col-5 fs-2 ml-auto d-none d-md-block">
@@ -64,7 +63,7 @@
                         </div>
                         <div class="pl-3">
                             <div><a class="col-12 p-0 no-style" asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.Id"><i class="fas fa-pen"></i></a></div>
-                            <div><button onclick='updateDeleteModal(@Html.Raw(Json.Serialize(transaction)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteConfirmModal"><i class="fas fa-trash"></i></button></div>
+                            <div><button onclick='updateTransactionDeleteModal(@Html.Raw(Json.Serialize(transaction)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteTransactionConfirmModal"><i class="fas fa-trash"></i></button></div>
                         </div>
                         <div class="col-12 d-block d-md-none px-0 pt-2 mt-2" style="border-top: 1px solid #ebebeb">
                             @if (transaction.Notes != null)
@@ -89,7 +88,7 @@
 
 }
 
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteTransactionConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -111,7 +110,7 @@
 </div>
 
 <script>
-    function updateDeleteModal(transaction) {
+    function updateTransactionDeleteModal(transaction) {
         $('#modalDeleteButton').attr("onclick", "deleteTransaction('" + transaction.id + "')");
 
         let transactionElement = $(`
@@ -164,7 +163,7 @@
                         transactionElementParent.remove();
                     }
 
-                    $('#deleteConfirmModal').modal('hide');
+                    $('#deleteTransactionConfirmModal').modal('hide');
                 }
             }
 
