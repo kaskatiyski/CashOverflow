@@ -4,16 +4,16 @@ using System.Text;
 
 namespace CashOverflow.Models
 {
-    public class Reminder
+    public class Note
     {
-        public Reminder()
+        public Note()
         {
             this.Id = Guid.NewGuid().ToString();
         }
 
         public string Id { get; set; }
 
-        public string Note { get; set; }
+        public string Content { get; set; }
 
         public DateTime Date { get; set; }
 

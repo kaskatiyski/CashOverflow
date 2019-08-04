@@ -22,7 +22,7 @@ namespace CashOverflow.Web.Data
 
         public DbSet<Todo> Todos { get; set; }
 
-        public DbSet<Reminder> Reminders { get; set; }
+        public DbSet<Note> Reminders { get; set; }
 
         public DbSet<RecurringPayment> RecurringPayments { get; set; }
 
