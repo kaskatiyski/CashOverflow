@@ -1,4 +1,5 @@
 ﻿using CashOverflow.Models.Enum;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,5 +28,9 @@ namespace CashOverflow.Models
         public string CategoryId { get; set; }
 
         public virtual Category Category { get; set; }
+
+        public string UserId { get; set; }
+
+        public virtual IdentityUser User { get; set; }
     }
 }

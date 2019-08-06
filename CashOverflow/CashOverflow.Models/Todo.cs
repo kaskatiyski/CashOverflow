@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using CashOverflow.Models.Enum;
+using Microsoft.AspNetCore.Identity;
 
 namespace CashOverflow.Models
 {
@@ -23,5 +24,9 @@ namespace CashOverflow.Models
 
         [EnumDataType(typeof(TodoStatus))]
         public TodoStatus Status { get; set; }
+
+        public string UserId { get; set; }
+
+        public virtual IdentityUser User { get; set; }
     }
 }
