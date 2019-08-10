@@ -23,8 +23,16 @@ $(document).ready(function () {
 
 $(window).resize(onResize);
 
+let widthBefore = $(window).width();
+let initialResize = false;
+
 function onResize() {
     let width = $(window).width();
+
+    if (width == widthBefore && initialResize) return; 
+
+    initialResize = true;
+    widthBefore = $(window).width();
 
     if (width <= 992) {
         hideSidenav();

@@ -203,6 +203,7 @@ a {
         top: 10px;
         border-radius: 0 4px 4px 0px;
         width: 35px;
+        z-index: 2;
         /*transition-delay: 0.3s;*/
     }
 
@@ -221,7 +222,7 @@ a {
         height: 100%;
         width: 260px;
         overflow-x: hidden;
-        z-index: 1;
+        z-index: 2;
         transition: 0.3s;
         background: white;
         box-shadow: 2px 0px 9px rgba(0,0,0,.04);
