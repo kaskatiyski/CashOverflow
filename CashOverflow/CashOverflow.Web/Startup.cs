@@ -81,6 +81,11 @@ namespace CashOverflow.Web
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "dashboardslash",
+                    template: "Dashboard",
+                    defaults: new { controller = "Dashboard", action = "Dashboard" });
+
+                routes.MapRoute(
                     name: "transactionsslash",
                     template: "Transactions",
                     defaults: new { controller = "Transactions", action = "All" });
