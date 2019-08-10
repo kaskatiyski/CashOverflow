@@ -54,6 +54,7 @@ namespace CashOverflow.Web
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ILocationService, LocationService>();
+            services.AddTransient<ITodoService, TodoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

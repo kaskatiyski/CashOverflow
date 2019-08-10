@@ -8,6 +8,6 @@ namespace CashOverflow.Models.Enum
     {
         Pending = 1,
         Completed = 2,
-        Overdue = 3,
+        // Overdue = 3,
     }
 }
