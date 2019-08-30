@@ -2,6 +2,8 @@
 using CashOverflow.Models.Enum;
 using CashOverflow.Services.Contracts;
 using CashOverflow.Web.ViewModels.Calendar;
+using CashOverflow.Web.ViewModels.Todo;
+using CashOverflow.Web.ViewModels.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -47,7 +49,7 @@ namespace CashOverflow.Web.Controllers
 
             CalendarViewModel calendarViewModel = new CalendarViewModel();
 
-            calendarViewModel.Transactions = transactions.Select(t => mapper.Map<CalendarTransactionViewModel>(t))
+            calendarViewModel.Transactions = transactions.Select(t => mapper.Map<TransactionViewModel>(t))
                                                          .GroupBy(t => t.Date.ToString("yyyyMMdd"))
                                                          .ToDictionary(group => group.Key, group => group.ToList());
 
@@ -55,7 +57,7 @@ namespace CashOverflow.Web.Controllers
             {
                 var todos = this.todoService.GetTodosByMonth(this.User.Identity.Name, date);
 
-                calendarViewModel.Todos = todos.Select(t => mapper.Map<CalendarTodoViewModel>(t))
+                calendarViewModel.Todos = todos.Select(t => mapper.Map<TodoViewModel>(t))
                                                .GroupBy(t => t.Date.ToString("yyyyMMdd"))
                                                .ToDictionary(group => group.Key, group => group.ToList());
 

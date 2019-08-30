@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CashOverflow.Services.Contracts;
 using CashOverflow.Web.ViewModels.Dashboard;
+using CashOverflow.Web.ViewModels.Note;
+using CashOverflow.Web.ViewModels.Todo;
 using CashOverflow.Web.ViewModels.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,16 +37,15 @@ namespace CashOverflow.Web.Controllers
             DashboardViewModel dashboardViewModel = new DashboardViewModel();
 
             dashboardViewModel.Transactions = this.transactionService.GetTransactionsByMonth(this.User.Identity.Name)
-                                                                     //.Select(t => mapper.Map<TransactionViewModel>(t))
-                                                                     .Select(t => mapper.Map<DashboardTransactionViewModel>(t))
+                                                                     .Select(t => mapper.Map<TransactionViewModel>(t))
                                                                      .ToList();
 
             dashboardViewModel.Todos = this.todoService.GetTodosByMonth(this.User.Identity.Name, DateTime.UtcNow.ToString("yyyy-MM-dd"))
-                                                                     .Select(t => mapper.Map<DashboardTodoViewModel>(t))
+                                                                     .Select(t => mapper.Map<TodoViewModel>(t))
                                                                      .ToList();
 
             dashboardViewModel.Notes = this.noteService.GetNotes(this.User.Identity.Name).ToList()
-                                                                     .Select(t => mapper.Map<DashboardNoteViewModel>(t))
+                                                                     .Select(t => mapper.Map<NoteViewModel>(t))
                                                                      .ToList(); ;
 
             return View(dashboardViewModel);

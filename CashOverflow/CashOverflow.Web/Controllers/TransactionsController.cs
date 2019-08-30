@@ -7,6 +7,7 @@ using AutoMapper;
 using CashOverflow.Models;
 using CashOverflow.Services.Contracts;
 using CashOverflow.Utilities.Extensions;
+using CashOverflow.Web.ViewModels.Category;
 using CashOverflow.Web.ViewModels.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -99,7 +100,7 @@ namespace CashOverflow.App.Controllers
             }
 
             var createTransactionViewModel = new CreateTransactionViewModel();
-            createTransactionViewModel.Categories = mapper.Map<List<CreateTransactionCaregoryViewModel>>(categories);
+            createTransactionViewModel.Categories = mapper.Map<List<CategoryViewModel>>(categories);
 
             this.ViewData["Categories"] = createTransactionViewModel;
 
@@ -145,7 +146,7 @@ namespace CashOverflow.App.Controllers
             var editTransactionViewModel = new EditTransactionViewModel();
 
             editTransactionViewModel.Categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name)
-                .Select(x => mapper.Map<CreateTransactionCaregoryViewModel>(x))
+                .Select(x => mapper.Map<CategoryViewModel>(x))
                 .ToList();
                        
             if (id == null)

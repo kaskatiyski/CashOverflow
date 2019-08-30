@@ -1,4 +1,5 @@
-﻿using CashOverflow.Web.ViewModels.Location;
+﻿using CashOverflow.Web.ViewModels.Category;
+using CashOverflow.Web.ViewModels.Location;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +26,7 @@ namespace CashOverflow.Web.ViewModels.Transaction
         [Required]
         public string CategoryId { get; set; }
 
-        public virtual CreateTransactionCaregoryViewModel Category { get; set; }
+        public virtual CategoryViewModel Category { get; set; }
 
         public string LocationId { get; set; }
 

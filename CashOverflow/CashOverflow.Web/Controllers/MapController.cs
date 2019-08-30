@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CashOverflow.Services.Contracts;
 using CashOverflow.Web.ViewModels.Map;
+using CashOverflow.Web.ViewModels.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +36,7 @@ namespace CashOverflow.Web.Controllers
 
             var mapViewModel = new MapViewModel() {
                 Transactions = transactions.Where(transaction => transaction.Location != null)
-                                           .Select(transaction => mapper.Map<MapTransactionViewModel>(transaction))
+                                           .Select(transaction => mapper.Map<TransactionViewModel>(transaction))
             };
 
             return View(mapViewModel);
