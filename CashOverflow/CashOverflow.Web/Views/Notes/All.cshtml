@@ -1,0 +1,63 @@
+﻿@model CashOverflow.Web.ViewModels.Note.AllNotesViewModel
+
+@{
+    ViewData["Title"] = "All";
+}
+
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            Notes
+        </div>
+        <div class="page-subtitle">
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_DeleteAskPartial")
+
+<a asp-action="Create" class="btn bg-accent btn-circle btn-float">
+    <i class="fas fa-plus"></i>
+</a>
+
+@if (Model.Notes.Count() > 0)
+{
+    <div class="row" style="margin-top: -1.5rem;">
+        @foreach (var note in Model.Notes)
+        {
+            <div class="col-12 col-sm-6 col-md-4 mt-4 co-anchor">
+                <div class="note" style="background-color: @(note.BackgroundColor != null ? @note.BackgroundColor : "#FFFF88"); color: @(note.TextColor != null ? @note.TextColor : "black")">
+                    <button class="note-options" style="background-color: @(note.BackgroundColor != null ? @note.BackgroundColor : "#FFFF88"); color: @(note.TextColor != null ? @note.TextColor : "black")" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <div class="dropdown-menu co-dropdown">
+                        @*<a asp-controller="Transactions" asp-action="Edit" asp-route-id="@note.Id" class="co-dropdown-item no-style">
+                                <div class="co-dropdown-icon">
+                                    <i class="fas fa-pen"></i>
+                                </div>
+                                Edit
+                            </a>*@
+                        <a class="co-dropdown-item no-style" onclick='deleteAsk("note", @Html.Raw(Json.Serialize(note)), $(this))' data-toggle="modal" data-target="#deleteAskModal">
+                            <div class="co-dropdown-icon">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            Delete
+                        </a>
+                    </div>
+                    <div class="note-header">
+                        @note.Id
+                    </div>
+                    <div class="note-body">
+                        @note.Content
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="no-data">
+        You haven't created any notes yet.
+    </div>
+}

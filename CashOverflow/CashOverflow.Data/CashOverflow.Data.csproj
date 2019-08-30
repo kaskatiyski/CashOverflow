@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20190630163714_AddedLocationFieldToTransactionModel.Designer.cs" />
     <Compile Remove="Migrations\20190630164119_AddedLocationFieldToTransactionModel.cs" />
     <Compile Remove="Migrations\20190630164119_AddedLocationFieldToTransactionModel.Designer.cs" />
+    <Compile Remove="Migrations\20190829074222_FixedDecimalPercisionInLocationModel.cs" />
+    <Compile Remove="Migrations\20190829074222_FixedDecimalPercisionInLocationModel.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

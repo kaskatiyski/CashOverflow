@@ -17,6 +17,6 @@ namespace CashOverflow.Services.Contracts
 
         Task UpdateCategoryAsync(string username, Category category);
 
-        Task<bool> DeleteCategoryAsync(string username, string id);
+        Task DeleteCategoryAsync(string username, string id);
     }
 }

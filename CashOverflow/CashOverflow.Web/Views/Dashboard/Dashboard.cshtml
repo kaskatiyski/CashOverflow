@@ -1,0 +1,476 @@
+﻿@model CashOverflow.Web.ViewModels.Dashboard.DashboardViewModel
+
+@using CashOverflow.Models.Enum
+@using CashOverflow.Utilities.Extensions
+@using CashOverflow.Web.ViewModels.Partial
+
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var expensesMonth = Model.Transactions.Where(t => t.Category.Type == CategoryType.Expense);
+    var incomeMonth = Model.Transactions.Where(t => t.Category.Type == CategoryType.Income);
+
+    var expensesMonthTotal = expensesMonth.Sum(t => t.Ammount);
+    var incomeMonthTotal = incomeMonth.Sum(t => t.Ammount);
+
+    var expensesTodayTotal = expensesMonth.Where(t => t.Date.Day == DateTime.UtcNow.Day)
+        .Sum(t => t.Ammount);
+    var incomeTodayTotal = incomeMonth.Where(t => t.Date.Day == DateTime.UtcNow.Day)
+        .Sum(t => t.Ammount);
+
+    var profitMonthTotal = incomeMonthTotal - expensesMonthTotal;
+    var profitTodayTotal = incomeTodayTotal - expensesTodayTotal;
+
+    var hasTransactions = Model.Transactions.Count() > 0;
+    var hasTodos = Model.Todos.Count() > 0;
+    var hasNotes = Model.Notes.Count() > 0;
+}
+
+@await Html.PartialAsync("_DeleteAskPartial")
+
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            Dashboard
+        </div>
+    </div>
+</div>
+
+
+<div id="buttonMenu" class="btn-float-group" onclick="toggleButtonMenu()">
+    <button class="btn btn-float-group-toggle btn-accent btn-circle">
+        <i class="fas fa-plus"></i>
+    </button>
+    <div class="btn-float-group-list">
+        <a class="btn btn-float-group-list-item" asp-controller="Transactions" asp-action="Create" data-toggle="tooltip" data-placement="left" title="Create Transaction">
+            <i class="fas fa-coins"></i>
+        </a>
+        <a class="btn btn-float-group-list-item" asp-controller="Categories" asp-action="Create" data-toggle="tooltip" data-placement="left" title="Create Category">
+            <i class="fas fa-book"></i>
+        </a>
+        <a class="btn btn-float-group-list-item" asp-controller="Todos" asp-action="Create" data-toggle="tooltip" data-placement="left" title="Create Todo">
+            <i class="fas fa-tasks"></i>
+        </a>
+    </div>
+</div>
+
+@if (hasTodos || hasTransactions || hasNotes)
+{
+    <div class="row">
+        @* Income *@
+
+        <div class="col-md-4 col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Income</div>
+                        <div class="co-card-title-maintitle">@incomeTodayTotal BGN</div>
+                    </div>
+                    <div class="col-auto">
+                        <img src="https://image.flaticon.com/icons/svg/438/438526.svg" style="width:50px" />
+                    </div>
+                    <div class="col-12">
+                        @incomeMonthTotal BGN this month
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        @* Expenses *@
+        <div class="col-md-4 col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Expenses</div>
+                        <div class="co-card-title-maintitle">@expensesTodayTotal BGN</div>
+                    </div>
+                    <div class="col-auto">
+                        <img src="https://image.flaticon.com/icons/svg/1420/1420341.svg" style="width:50px" />
+                    </div>
+                    <div class="col-12">
+                        @expensesMonthTotal BGN this month
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Profit *@
+        <div class="col-md-4">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Profit</div>
+                        <div class="co-card-title-maintitle">@profitTodayTotal BGN</div>
+                    </div>
+                    <div class="col-auto">
+                        <img src="https://image.flaticon.com/icons/svg/755/755193.svg" style="width:50px" />
+                    </div>
+                    <div class="col-12">
+                        @profitMonthTotal BGN this month
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        @* Analytics *@
+        @if (hasTransactions)
+        {
+            <div class="col-md-5">
+                <div class="co-card">
+                    <div class="row co-card-header">
+                        <div class="col co-card-title">
+                            <div class="co-card-title-subtitle">Analytics</div>
+                            <div class="co-card-title-maintitle"></div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="co-card-action-group">
+                                <button class="co-card-action btn-accent btn" onclick="showAnalytics('income')">income</button>
+                                <button class="co-card-action btn-accent btn" onclick="showAnalytics('expense')">expenses</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="co-card-body" style="height: 400px;">
+                        <div id="chartExpenseWrapper" class="h-100">
+                            @if (expensesMonth.Count() > 0)
+                            {
+                                <canvas id="chartExpense" ></canvas>
+                            }
+                            else
+                            {
+                                <div class="no-data">
+                                    You have no expenses fort this month yet.
+                                </div>
+                            }
+                        </div>
+                        <div id="chartIncomeWrapper" class="h-100 d-none">
+                            @if (incomeMonth.Count() > 0)
+                            {
+                                <canvas id="chartIncome" ></canvas>
+                            }
+                            else
+                            {
+                                <div class="no-data">
+                                    You have no income for this month yet.
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @* Transactions *@
+        @if (hasTransactions)
+        {
+            <div class="col-md-7">
+                <div class="co-card">
+                    <div class="row co-card-header">
+                        <div class="col co-card-title">
+                            <div class="co-card-title-subtitle">Transactions</div>
+                            <div id="transactionsPeriod" class="co-card-title-maintitle">This Month</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="co-card-action-group">
+                                <button class="co-card-action btn-accent btn" onclick="show('Today')">today</button>
+                                <button class="co-card-action btn-accent btn" onclick="show('This Month')">month</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="transactions" class="co-card-body co-card-body-scrollable" style="height: 380px;">
+                        @if (Model.Transactions.Count() > 0)
+                        {
+                            @foreach (var group in Model.Transactions.GroupBy(x => x.Date.ToString("dd MMMM yyyy")))
+                            {
+                                <div class="co-anchor-parent">
+                                    <div class="font-weight-bold @(group.Key != DateTime.UtcNow.ToString("dd MMMM yyyy") ? "transaction-month" : "")">
+                                        @group.Key
+                                    </div>
+                                    @foreach (var transaction in group)
+                                    {
+                                        <div class="row align-items-center p-3 co-list-item co-anchor @(!transaction.Date.IsSameDay(DateTime.UtcNow) ? "transaction-month" : "")">
+                                            <div class="col-auto px-0">
+                                                <img src="@transaction.Category.ImagePath" class="co-list-item-image-sm" />
+                                            </div>
+                                            <div class="col ">
+                                                <div class="" style="line-height: 1">
+                                                    @transaction.Recipient
+                                                </div>
+                                                <div class="" style="font-size: 0.8rem;">
+                                                    @*@transaction.Date.ToString("dd MMM yyyy")*@
+                                                    <a asp-controller="Categories" asp-action="Details" asp-route-id="@transaction.Category.Id" class="no-style fs-2">@transaction.Category.Name</a>
+                                                </div>
+                                            </div>
+                                            @*<i class="fas fa-eye-slash"></i>*@
+                                            <div class="col-auto">
+                                                @if (transaction.Category.Type == CategoryType.Expense)
+                                                {
+                                                    <div class="text-danger">
+                                                        BGN @transaction.Ammount
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="text-success">
+                                                        BGN @transaction.Ammount
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="col-auto px-0">
+                                                <button type="button" class="btn hover text-accent" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </button>
+                                                <div class="dropdown-menu co-dropdown">
+                                                    <a asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.Id" class="co-dropdown-item no-style">
+                                                        <div class="co-dropdown-icon">
+                                                            <i class="fas fa-pen"></i>
+                                                        </div>
+                                                        Edit
+                                                    </a>
+                                                    <a class="co-dropdown-item no-style" onclick='deleteAsk("transaction", @Html.Raw(Json.Serialize(transaction)), $(this))' data-toggle="modal" data-target="#deleteAskModal">
+                                                        <div class="co-dropdown-icon">
+                                                            <i class="fas fa-trash"></i>
+                                                        </div>
+                                                        Delete
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="no-data">
+                                No transactions.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        @* To-dos *@
+        @if (hasTodos)
+        {
+            <div class="@(hasNotes ? "col-md-7" : "col-md-12")">
+                <div class="co-card">
+                    <div class="row co-card-header">
+                        <div class="col co-card-title">
+                            <div class="co-card-title-subtitle">To-dos</div>
+                            <div class="co-card-title-maintitle"></div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="co-card-action-group">
+                                <button class="co-card-action btn-accent btn" onclick="showHidden()">show hidden</button>
+                                <button class="co-card-action btn-accent btn" onclick="hideCompleted()">hide completed</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="todos" class="co-card-body co-card-body-scrollable" style="height: 385px;">
+                        @await Html.PartialAsync("_TodoListPartial", new TodoListViewModel() { Todos = Model.Todos, HideOption = true })
+                    </div>
+                </div>
+            </div>
+        }
+
+
+
+        @* Notes *@
+        @if (hasNotes)
+        {
+            <div class="col-md-5">
+                <div class="co-card">
+                    <div class="row co-card-header">
+                        <div class="col co-card-title">
+                            <div class="co-card-title-subtitle">Notes</div>
+                            <div class="co-card-title-maintitle"></div>
+                        </div>
+                        <div class="col-auto">
+                        </div>
+                    </div>
+                    <div id="transactions" class="co-card-body co-card-body-scrollable" style="height: 400px;">
+                        @foreach (var note in Model.Notes)
+                        {
+                            <div class="co-anchor mt-3">
+                                <div class="note" style="background-color: @(note.BackgroundColor != null ? @note.BackgroundColor : "#FFFF88"); color: @(note.TextColor != null ? @note.TextColor : "black")">
+                                    <button class="note-options" style="background-color: @(note.BackgroundColor != null ? @note.BackgroundColor : "#FFFF88"); color: @(note.TextColor != null ? @note.TextColor : "black")" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu co-dropdown">
+                                        @*<a asp-controller="Transactions" asp-action="Edit" asp-route-id="@note.Id" class="co-dropdown-item no-style">
+                                                <div class="co-dropdown-icon">
+                                                    <i class="fas fa-pen"></i>
+                                                </div>
+                                                Edit
+                                            </a>*@
+                                        <a class="co-dropdown-item no-style" onclick='deleteAsk("note", @Html.Raw(Json.Serialize(note)), $(this))' data-toggle="modal" data-target="#deleteAskModal">
+                                            <div class="co-dropdown-icon">
+                                                <i class="fas fa-trash"></i>
+                                            </div>
+                                            Delete
+                                        </a>
+                                    </div>
+                                    <div class="note-header">
+                                        @note.Id
+                                    </div>
+                                    <div class="note-body">
+                                        @note.Content
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+
+    </div>
+
+
+
+
+    <script>
+
+
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+
+    function show(period) {
+        if (period === 'Today') {
+            $(".transaction-month").addClass('d-none');
+        } else if (period == 'This Month') {
+            $(".transaction-month").removeClass('d-none');
+        }
+
+        $("#transactionsPeriod").text(period);
+    }
+
+    let expenses = {};
+    let income = {};
+
+    @{
+                        foreach (var group in expensesMonth.GroupBy(t => t.Category.Name))
+                        {
+            @:expenses['@group.Key'] = @group.Sum(x => x.Ammount);
+        }
+
+                        foreach (var group in incomeMonth.GroupBy(t => t.Category.Name))
+                        {
+            @:income['@group.Key'] = @group.Sum(x => x.Ammount);
+        }
+    }
+
+    function showAnalytics(chart) {
+        if (chart == "income") {
+            $("#chartExpenseWrapper").addClass("d-none");
+            $("#chartIncomeWrapper").removeClass("d-none");
+        } else if (chart == "expense") {
+            $("#chartExpenseWrapper").removeClass("d-none");
+            $("#chartIncomeWrapper").addClass("d-none");
+
+        }
+    }
+
+    let chartOptions = {
+        type: 'doughnut',
+        plugins: [ChartDataLabels],
+        options: {
+            plugins: {
+                datalabels: {
+                    backgroundColor: function(context) {
+					    return context.dataset.backgroundColor;
+				    },
+				    borderColor: 'white',
+				    borderRadius: 25,
+				    borderWidth: 2,
+				    color: 'white',
+				    display: function(context) {
+					    var dataset = context.dataset;
+					    var count = dataset.data.length;
+					    var value = dataset.data[context.dataIndex];
+					    return value > count * 1.5;
+				    },
+				    font: {
+					    weight: 'bold'
+				    },
+                    formatter: Math.round,
+                    anchor: 'end'
+                },
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+            },
+            scales: {
+                xAxes: [{
+                    display: false
+                }],
+                yAxes: [{
+                    display: false
+                }],
+            }
+        }
+    }
+
+    let dataIncome = Object.values(income).sort(function(a, b){return a - b}).reverse();
+    let keysIncome = Object.keys(income).sort(function(a,b){return income[a]-income[b]}).reverse();
+
+    let dataExpenses = Object.values(expenses).sort(function(a, b){return a - b}).reverse();
+    let keysExpenses = Object.keys(expenses).sort(function(a,b){return expenses[a]-expenses[b]}).reverse();
+
+    let expenseChartElement = $('#chartExpense');
+    let expenseChart = new Chart(expenseChartElement, {
+        data: {
+            labels: keysExpenses,
+            datasets: [{
+                label: 'Expenses',
+                data: dataExpenses,
+                backgroundColor: [
+                    '#ff6666','#ffa366','#ffe966','#abff66','#66ffee','#66adff','#a566ff','#ff66ef','#ff6666','#ffa366','#ffe966','#abff66','#66ffee','#66adff','#a566ff','#ff66ef','#ff6666','#ffa366','#ffe966','#abff66','#66ffee','#66adff','#a566ff','#ff66ef',
+                ],
+            }],
+        },
+        ...chartOptions
+    });
+
+    let incomeChartElement = $('#chartIncome');
+    let incomeChart = new Chart(incomeChartElement, {
+
+        data: {
+            labels: keysIncome,
+            datasets: [{
+                label: 'Income',
+                data: dataIncome,
+                backgroundColor: [
+              '#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51','#264653','#2A9D8F','#E9C46A','#F4A261','#E76F51',
+                ],
+            }],
+        },
+        ...chartOptions
+    });
+    </script>
+}
+else
+{
+    <div class="no-data">
+        There is not data for this month yet.
+    </div>
+}

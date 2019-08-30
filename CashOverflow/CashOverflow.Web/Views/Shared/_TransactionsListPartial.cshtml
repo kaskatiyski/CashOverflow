@@ -1,40 +1,35 @@
-﻿@model IEnumerable<IGrouping<string, CashOverflow.Web.ViewModels.Transaction.TransactionViewModel>>
+﻿@using CashOverflow.Models.Enum
+@using CashOverflow.Web.ViewModels.Partial
 
-@using CashOverflow.Models.Enum
+@model TransactionListViewModel
 
 @{
     ViewData["Title"] = "_TransactionsListPartial";
 }
 
-@if (Model.Count() > 0)
+@if (Model.Transactions.Count() > 0)
 {
+    @foreach (var group in Model.Transactions)
+    {
+        <div class="custom-list-group co-anchor-parent">
 
-    <div class="">
+            <div class="custom-list-group-key mb-2">
+                <div class="fs-9">@group.Key</div>
+            </div>
 
-        @foreach (var group in Model)
-        {
-            <div class="custom-list-group">
+            @foreach (var transaction in group.ToList())
+            {
 
-                <div class="custom-list-group-key mb-2">
-                    <div class="fs-9">@group.Key</div>
-                </div>
-
-                @foreach (var transaction in group.ToList())
-                {
-
-                    <div class="custom-list-group-item" id="@transaction.Id">
-                        <div class="pr-3">
-                            <div class="fs-7">
-                                @*<i class="fab fa-accessible-icon"></i>*@
-                                <img src="@transaction.Category.ImagePath" width="40" />
-                            </div>
+                <div class="co-card co-anchor mb-2">
+                    <div class="co-card-header row">
+                        <div class="col-auto">
+                            <img class="co-list-item-image-md" src="@transaction.Category.ImagePath" />
                         </div>
-                        <div class="">
-                            <div class="font-weight-bold">@transaction.Recipient</div>
-                            <div class="fs-2"><a class="no-style" asp-controller="Categories" asp-action="Details" asp-route-id="@transaction.Category.Id">@transaction.Category.Name</a></div>
+                        <div class="col pl-0">
+                            <div class="font-weight-bold " style="line-height: 1;">@transaction.Recipient</div>
+                            <a asp-controller="Categories" asp-action="Details" asp-route-id="@transaction.Category.Id" class="no-style fs-2">@transaction.Category.Name</a>
                         </div>
-
-                        <div class="col-5 fs-2 ml-auto d-none d-md-block">
+                        <div class="col fs-2 d-sm-block d-none">
                             @if (transaction.Notes != null)
                             {
                                 <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
@@ -42,11 +37,10 @@
 
                             @if (transaction.Location != null)
                             {
-                                <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
+                                <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Name</div>
                             }
                         </div>
-
-                        <div class="text-right pl-2 ml-auto ml-md-0" style="width: 125px;">
+                        <div class="col text-right  pr-0">
                             @if (transaction.Category.Type == CategoryType.Expense)
                             {
                                 <div class="text-danger">
@@ -59,115 +53,53 @@
                                     BGN @transaction.Ammount
                                 </div>
                             }
-                            <div class="fs-2">@transaction.Date.ToString("dd MMM yyyy")</div>
-                        </div>
-                        <div class="pl-3">
-                            <div><a class="col-12 p-0 no-style" asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.Id"><i class="fas fa-pen"></i></a></div>
-                            <div><button onclick='updateTransactionDeleteModal(@Html.Raw(Json.Serialize(transaction)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteTransactionConfirmModal"><i class="fas fa-trash"></i></button></div>
-                        </div>
-                        <div class="col-12 d-block d-md-none px-0 pt-2 mt-2" style="border-top: 1px solid #ebebeb">
-                            @if (transaction.Notes != null)
-                            {
-                                <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
-                            }
 
-                            @if (transaction.Location != null)
+                            @if (Model.ShowDate)
                             {
-                                <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Address</div>
+                                <div class="fs-2">
+                                    @transaction.Date.ToString("dd MMM yyyy")
+                                </div>
                             }
                         </div>
-                    </div>
-
-                }
-
-            </div>
-
-        }
-
-    </div>
-
-}
-
-<div class="modal fade" id="deleteTransactionConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">Delete</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body px-4">
-                Are you sure you want to delete this transaction?
-                <div id="modalTransactionView"></div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="modalDeleteButton" class="btn btn-danger">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function updateTransactionDeleteModal(transaction) {
-        $('#modalDeleteButton').attr("onclick", "deleteTransaction('" + transaction.id + "')");
-
-        let transactionElement = $(`
-            <div>
-                <div class="custom-list-group-item px-0">
-                    <div class="pr-3">
-                        <div class="fs-7">
-                            @*<i class="fab fa-accessible-icon"></i>*@
-                            <img src="${transaction.category.imagePath}" width="40" />
+                        <div class="col-auto">
+                            <button type="button" class="btn hover text-accent" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <div class="dropdown-menu co-dropdown">
+                                <a asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.Id" class="co-dropdown-item no-style">
+                                    <div class="co-dropdown-icon">
+                                        <i class="fas fa-pen"></i>
+                                    </div>
+                                    Edit
+                                </a>
+                                <a class="co-dropdown-item no-style" onclick='deleteAsk("transaction", @Html.Raw(Json.Serialize(transaction)), $(this))' data-toggle="modal" data-target="#deleteAskModal">
+                                    <div class="co-dropdown-icon">
+                                        <i class="fas fa-trash"></i>
+                                    </div>
+                                    Delete
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="">
-                        <div class="font-weight-bold">${transaction.recipient}</div>
-                        <div class="fs-2">${transaction.category.name}</div>
+                    @if (transaction.Notes != null && transaction.Location != null)
+                    {
+                        <div class="col d-sm-none d-block py-3 px-3 fs-2 border-top">
+                        @if (transaction.Notes != null)
+                        {
+                            <div class="text-ellipsis"><b>Notes:</b> @transaction.Notes</div>
+                        }
+
+                        @if (transaction.Location != null)
+                        {
+                            <div class="text-ellipsis"><b>Location: </b>@transaction.Location.Name</div>
+                        }
                     </div>
-
-                    <div class="text-right pl-2 ml-auto" style="width: 125px;">
-                        <div class="${transaction.category.type === 2 ? 'text-danger' : 'text-success'}">
-                            BGN ${transaction.ammount.toFixed(2)}
-                        </div>
-                        <div class="fs-2">${moment(transaction.date).format('DD MMM YYYY')}</div>
-                    </div>
-                    <div class="col-12 d-block px-0 pt-2 mt-2 fs-2" style="${transaction.notes || transaction.location ? `border-top: 1px solid #ebebeb` : ""}">
-                        ${transaction.notes ? `<div class="text-ellipsis"><b>Notes:</b> ${transaction.notes}</div>` : ""}
-                        ${transaction.location ? transaction.location.address ? `<div class="text-ellipsis"><b>Location: </b> ${transaction.location.address}</div>` : "" : ""}
-                    </div>
-                </div>
-            </div>
-        `);
-
-        $('#modalTransactionView').text('');
-        $('#modalTransactionView').append(transactionElement);
-    }
-
-    function deleteTransaction(id) {
-       $.ajax({
-            type: 'POST',
-            url: '@Url.Content("~/Transactions/Delete")',
-            data: {
-                id: id
-            },
-            success: function (data) {
-                if (data) {
-                    let transactionElement = $('#' + id);
-                    let transactionElementParent = transactionElement.parent();
-
-                    transactionElement.remove();
-
-                    if (transactionElementParent.children().length <= 1) {
-                        transactionElementParent.remove();
                     }
+                </div>
 
-                    $('#deleteTransactionConfirmModal').modal('hide');
-                }
             }
 
-        });
-    }
-</script>
+        </div>
 
+    }
+}

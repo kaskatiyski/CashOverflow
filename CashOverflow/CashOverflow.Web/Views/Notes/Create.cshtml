@@ -1,0 +1,117 @@
+﻿@model CashOverflow.Web.ViewModels.Note.CreateNoteInputModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Note</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <input asp-for="Content" class="form-control" />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BackgroundColor" class="control-label"></label>
+                <input asp-for="BackgroundColor" id="backgroundColorInput" class="form-control" />
+                <span asp-validation-for="BackgroundColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TextColor" class="control-label"></label>
+                <input asp-for="TextColor" id="textColorInput" class="form-control" />
+                <span asp-validation-for="TextColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsSticky" class="control-label"></label>
+                <input asp-for="IsSticky" class="form-control" />
+                <span asp-validation-for="IsSticky" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<style>
+    .form-radio {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        display: inline-block;
+        position: relative;
+        /*background-color: #f1f1f1;*/
+        color: #666;
+        top: 10px;
+        height: 30px;
+        width: 30px;
+        border: 2px solid var(--text);
+        border-radius: 50px;
+        cursor: pointer;
+        margin-right: 7px;
+        outline: none;
+    }
+
+        .form-radio:checked::before {
+            /*position: absolute;
+            font: 13px/1 'Open Sans', sans-serif;
+            left: 11px;
+            top: 7px;
+            content: '\02143';
+            transform: rotate(40deg);*/
+        }
+
+        .form-radio:hover {
+            /*background-color: red;*/
+        }
+
+        .form-radio:checked {
+            /*background-color: blue;*/
+        }
+
+    label {
+        font: 15px/1.7 'Open Sans', sans-serif;
+        color: #333;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        cursor: pointer;
+    }
+</style>
+
+<div>
+    Background Color:
+</div>
+<input type="radio" name="backgroundColor" value="#d83e3e" style="background-color: #d83e3e" class="style-picker-background form-radio" checked>
+<input type="radio" name="backgroundColor" value="#99d83e" style="background-color: #99d83e" class="style-picker-background form-radio" checked>
+<input type="radio" name="backgroundColor" value="#3e78d8" style="background-color: #3e78d8" class="style-picker-background form-radio" checked>
+<input type="radio" name="backgroundColor" value="#e6dd2e" style="background-color: #e6dd2e" class="style-picker-background form-radio" checked>
+<div>
+    Background Color:
+</div>
+<input type="radio" name="textColor" value="#ffffff" style="background-color: #ffffff" class="style-picker-text form-radio" checked>
+<input type="radio" name="textColor" value="#000000" style="background-color: #000000" class="style-picker-text form-radio" checked>
+
+<script>
+    $(".style-picker-background").click(function () {
+        $("#backgroundColorInput").val($(this).val());
+    });
+
+    $(".style-picker-text").click(function () {
+        $("#textColorInput").val($(this).val());
+    });
+</script>
+
+@section scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

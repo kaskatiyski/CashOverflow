@@ -74,10 +74,43 @@ namespace CashOverflow.Services
 
         public IEnumerable<Todo> GetTodosByMonth(string username, string date)
         {
-            DateTime dateParsed = DateTime.ParseExact(date, "yyyy-MM", CultureInfo.InvariantCulture);
+            DateTime dateParsed = DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
             var todos = db.Todos
                 .Where(t => t.User.UserName == username && (t.Date.Year == dateParsed.Year && t.Date.Month == dateParsed.Month));
+
+            return todos;
+        }
+
+        public async Task UpdateTodoAsync(string username, Todo todo)
+        {
+            var user = await this.userService.GetUserByUsernameAsync(username);
+
+            todo.UserId = user.Id;
+
+            this.db.Todos.Update(todo);
+            await this.db.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteTodoAsync(string username, string id)
+        {
+            var todo = await this.GetTodoByIdAsync(username, id);
+
+            try
+            {
+                this.db.Todos.Remove(todo);
+                await this.db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public IEnumerable<Todo> GetTodos(string username)
+        {
+            var todos = this.db.Todos.Where(todo => todo.User.UserName == username);
 
             return todos;
         }

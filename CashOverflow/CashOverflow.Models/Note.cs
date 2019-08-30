@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CashOverflow.Models.Enum;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace CashOverflow.Models
@@ -16,9 +18,16 @@ namespace CashOverflow.Models
 
         public string Content { get; set; }
 
-        public DateTime Date { get; set; }
+        [EnumDataType(typeof(NoteStatus))]
+        public NoteStatus Status { get; set; }
 
-        public bool Alert { get; set; }
+        public DateTime DateCreated { get; set; }
+
+        public string BackgroundColor { get; set; }
+
+        public string TextColor { get; set; }
+
+        public bool IsSticky { get; set; }
 
         public string UserId { get; set; }
 

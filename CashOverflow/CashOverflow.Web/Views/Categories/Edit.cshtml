@@ -10,89 +10,107 @@
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
 
-    <div class="page-title-wrapper row align-items-center">
-        <div class="page-title col">
-            <div class="page-maintitle">
-                Edit
-            </div>
-            <div class="page-subtitle">
-                Category
-            </div>
-        </div>
-    </div>
-
 <link rel="stylesheet" href="~/css/Categories/categories-post.css" />
 
-<div class="row">
-    <div class="col-md-6 col-sm-12 px-lg-5 my-3 my-md-0">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
 
-                <label asp-for="Name" class="control-label"></label>
-
-                <div class="input-group">
-
-                    <input data-val="true" asp-for="Name" class="form-control" />
-
-                    <input id="category-submit" type="submit" value="Edit" class="btn btn-primary" style="transition: 0s" disabled />
-
-                </div>
-
-                <span asp-validation-for="Name" class="text-danger"></span>
-
-            </div>
-
-            @* TODO: Choose Freepik icons or add credits for these one ( DinosoftLabs ) *@
-            <div class="">
-                <div class="mb-3">
-                    Please choose your category type and image.
-                </div>
-                <label for="Income" id="categoryIncome" onclick="setType('Income')" class="income-toggle-button text-center font-weight-bold">
-                    <img class="category-type-image" src="~/resources/icons/type/income.svg" />
-                    <div class="category-type-text text-dark">Income</div>
-                </label>
-
-                @Html.RadioButtonFor(model => model.Type, CategoryType.Income, new { id = "Income", style = "display: none" })
-
-                <label for="Expense" id="categoryExpense" onclick="setType('Expense')" class="income-toggle-button text-center font-weight-bold">
-                    <img class="category-type-image" src="~/resources/icons/type/expense.svg" />
-                    <div class="category-type-text text-dark">Expense</div>
-                </label>
-
-                @Html.RadioButtonFor(model => model.Type, CategoryType.Expense, new { id = "Expense", style = "display: none" })
-            </div>
-
-            <div class="form-group" style="display: none">
-                <input id="ImagePath" asp-for="ImagePath" class="form-control" />
-                @*<span asp-validation-for="ImagePath" class="text-danger"></span>*@
-            </div>
-        </form>
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            Edit
+        </div>
+        <div class="page-subtitle">
+            Category
+        </div>
     </div>
-    <div class="col-md-6 col-sm-12 my-3 my-md-0">
-        <div class="">
-            <h5>Expense Images</h5>
+</div>
 
-            @foreach (var imagePath in this.ViewData["CategoryExpenseImages"] as IEnumerable<string>)
-            {
-                <img class="category-image p-2" src="@imagePath" onclick="setPathValue(event)" />
-            }
+<div class="row">
+
+    <form class="col-md-6 col-sm-12" asp-action="Edit">
+        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+        <div class="co-card">
+            <div class="row co-card-header">
+                <div class="col co-card-title">
+                    <div class="co-card-title-subtitle">Name</div>
+                </div>
+                <div class="col-12">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group mb-0">
+                        <div class="input-group">
+
+                            <input data-val="true" asp-for="Name" class="form-control" />
+
+                            @*<input id="category-submit" type="submit" value="Edit" class="btn bg-accent" style="transition: 0s" disabled />*@
+
+                        </div>
+
+                        <span asp-validation-for="Name" class="text-danger"></span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="co-card">
+            <div class="">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Type</div>
+                    </div>
+                    <div class="col-12">
+                    </div>
+                </div>
+                @* TODO: Choose Freepik icons or add credits for these one ( DinosoftLabs ) *@
+                <div class="co-card-body">
+                    @*<div class="mb-3">
+                            Please choose your category type and image.
+                        </div>*@
+                    @foreach (var type in (CategoryType[])Enum.GetValues(typeof(CategoryType)))
+                    {
+                        var typeName = type.ToString();
+
+                        <label for="@typeName" id="category@(typeName)" onclick="setType('@typeName')" class="cursor-pointer text-center font-weight-bold">
+                            <img class="category-type-image" src="http://ivanpetrov.eu/CashOverflow/Resources/Icons/TransactionTypeIcons/@(typeName.ToLower()).svg" />
+                            <div class="category-type-text text-dark">@typeName</div>
+                        </label>
+
+                        @Html.RadioButtonFor(model => model.Type, type, new { id = typeName, style = "display: none" })
+                    }
+                </div>
+
+                <div class="form-group" style="display: none">
+                    <input id="ImagePath" asp-for="ImagePath" class="form-control" />
+                    @*<span asp-validation-for="ImagePath" class="text-danger"></span>*@
+                </div>
+            </div>
 
         </div>
 
-        <hr />
-
         <div class="">
-            <h5>Income Images</h5>
-
-            @foreach (var imagePath in this.ViewData["CategoryIncomeImages"] as IEnumerable<string>)
-            {
-                <img class="category-image p-2" src="@imagePath" onclick="setPathValue(event)" />
-            }
-
+            <input id="category-submit" type="submit" value="Edit" class="btn btn-accent co-submit-lg" disabled />
         </div>
+    </form>
 
 
+
+    <div class="col-md-6 col-sm-12 my-4 my-md-0">
+        <div class="co-card">
+            <div class="co-card-header">
+                <div class="co-card-title">
+                    <div class="co-card-title-subtitle">
+                        Image
+                    </div>
+                </div>
+            </div>
+            <div class="co-card-body co-card-body-scrollable text-center" style="max-height: 340px;">
+                @foreach (var imagePath in this.ViewData["CategoryImages"] as IEnumerable<string>)
+                {
+                    <div class="p-2 category-image cursor-pointer">
+                        <img class="" src="@imagePath" onclick="setPathValue(event)" />
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
@@ -100,48 +118,12 @@
     $(document).ready(function () {
         setType('@Model.Type');
 
-        $('.category-image').filter(function (index, element) {
+        $('.category-image').find('img').filter(function (index, element) {
             let path = '@Model.ImagePath';
             let pathSplit = path.split('/');
             return $(element).attr('src').includes(pathSplit[pathSplit.length - 1]);
-        }).addClass("category-image-active");
+        }).parent().addClass("category-image-active");
     });
-
-    function setPathValue(e) {
-        $('#ImagePath').val(e.target.src);
-        $('.category-image').removeClass('category-image-active');
-        $(e.target).addClass("category-image-active");
-
-        let submitButton = $('#category-submit');
-
-        if (submitButton.is('.btn-success, .btn-danger')) {
-            submitButton.removeAttr('disabled');
-        }
-    }
-
-    function setType(type) {
-        let element = $('#category' + type);
-        let label = element.children('.category-type-text');
-        let image = element.children('.category-type-image');
-        let submitButton = $('#category-submit');
-
-        $('.category-type-text').removeClass('text-dark text-danger text-success');
-        $('.category-type-image').removeClass('category-type-active');
-        submitButton.removeClass('btn-danger btn-success');
-
-        if (type == 'Income') {
-            label.addClass('text-success');
-            submitButton.addClass('btn-success');
-        }
-        else if (type == 'Expense') {
-            label.addClass('text-danger');
-            submitButton.addClass('btn-danger');
-        }
-
-        if ($('#ImagePath').val()) {
-            submitButton.removeAttr('disabled');
-        }
-
-        image.addClass('category-type-active');
-    }
 </script>
+
+<script src="~/js/Categories/categories-post.js" type="text/javascript"></script>

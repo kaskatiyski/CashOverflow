@@ -20,6 +20,8 @@ namespace CashOverflow.Models
 
         public DateTime StartDate { get; set; }
 
+        public int Payments { get; set; }
+
         public ushort Interval { get; set; }
 
         [EnumDataType(typeof(RecurringPeriod))]

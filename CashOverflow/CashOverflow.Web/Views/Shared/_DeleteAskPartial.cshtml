@@ -1,0 +1,158 @@
+﻿<div class="modal fade" id="deleteAskModal" tabindex="-1" role="dialog" aria-labelledby="deleteAskModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAskModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="deleteAskBody" class="modal-body px-4">
+                Are you sure you want to delete this <span id="deleteAskType"></span>?
+                <br /><br />
+                <div id="deleteAskPreview"></div>
+            </div>
+            <div id="deleteAskBodyMessage" class="modal-body px-4 d-none">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="deleteAskModalConfirm" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteAsk(type, item, element) {
+        let preview;
+        let controller;
+
+        switch (type) {
+            case 'todo': {
+                controller = "/Todos";
+                preview = $(`
+                    <div class="" style="line-height: 1">
+                        ${item.content}
+                    </div>
+                    <div class="" style="font-size: 0.8rem;">
+                        ${moment(item.date)}
+                    </div>
+                `);
+            }
+                break; 
+            case 'transaction': {
+                controller = "/Transactions";
+                preview = $(`
+                    <div class="custom-list-group-item px-0" style="box-shadow: none=">
+                        <div class="pr-3">
+                            <div class="fs-7">
+                                <img src="${item.category.imagePath}" width="40" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="font-weight-bold">${item.recipient}</div>
+                            <div class="fs-2">${item.category.name}</div>
+                        </div>
+
+                        <div class="text-right pl-2 ml-auto" style="width: 125px;">
+                            <div class="${item.category.type === 2 ? 'text-danger' : 'text-success'}">
+                                BGN ${item.ammount.toFixed(2)}
+                            </div>
+                            <div class="fs-2">${moment(item.date).format('DD MMM YYYY')}</div>
+                        </div>
+                        <div class="col-12 d-block px-0 pt-2 mt-2 fs-2" style="${item.notes || item.location ? `border-top: 1px solid #ebebeb` : ""}">
+                            ${item.notes ? `<div class="text-ellipsis"><b>Notes:</b> ${item.notes}</div>` : ""}
+                            ${item.location ? item.location.address ? `<div class="text-ellipsis"><b>Location: </b> ${item.location.address}</div>` : "" : ""}
+                        </div>
+                    </div>
+                `);
+            }
+            break;
+            case 'category': {
+                controller = "/Categories";
+                preview = $(`
+                    <div class="row align-items-center p-3 co-list-item category-list-item co-anchor">
+                        <div class="col-auto pl-2 px-0">
+                            <img src="${item.imagePath}" class="co-list-item-image-md" />
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-bold" style="line-height: 1">
+                                ${item.name}
+                            </div>
+                            <div class="fs-2">
+                                <b>${item.transactionCount}</b> transactions
+                            </div>
+                            <div class="fs-2">
+                                Total:
+                                <span class="font-weight-bold amount">
+                                    ${item.transactionSum} BGN
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+                break;
+            case 'note': {
+                let backgroundColor = item.backgroundColor ? item.backgroundColor : "#FFFF88";
+                let textColor = item.textColor ? item.textColor : "#FFFF88";
+
+                controller = "/Notes";
+                preview = $(`
+                    <div class="note" style="background-color: ${backgroundColor}; color: ${textColor}">
+                        <div class="note-header">
+                            ${item.id}
+                        </div>
+                        <div class="note-body">
+                            ${item.content}
+                        </div>
+                    </div>
+                `);
+            }
+                break;
+            default:
+        }
+
+        $('#deleteAskPreview').text('');
+        $('#deleteAskPreview').append(preview);
+
+        $('#deleteAskType').html(type);
+
+        $('#deleteAskModalConfirm').one('click', function () {
+            deleteConfirm(item.id, controller, element)
+        });
+    }
+
+    function deleteConfirm(id, controller, element) {
+        let modal = $('#deleteAskModal');
+
+        let anchor = element.closest(".co-anchor");
+        let anchorParent = anchor.closest(".co-anchor-parent");
+
+        $.ajax({
+            type: 'POST',
+            url: controller + '/Delete',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data == true || data == "true") {
+                    anchor.remove();
+
+                    if (anchorParent.find(".co-anchor").length <= 0) {
+                        anchorParent.remove();
+                    }
+
+                } else if (data == false || data == "false") {
+
+                } else {
+                    alert(data);
+                }
+
+                modal.modal('hide');
+            }
+        });
+    }
+
+</script>
+

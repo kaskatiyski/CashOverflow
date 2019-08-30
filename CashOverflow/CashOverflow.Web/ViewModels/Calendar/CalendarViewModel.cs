@@ -9,5 +9,7 @@ namespace CashOverflow.Web.ViewModels.Calendar
     public class CalendarViewModel
     {
         public Dictionary<string, List<CalendarTransactionViewModel>> Transactions { get; set; }
+
+        public Dictionary<string, List<CalendarTodoViewModel>> Todos { get; set; }
     }
 }

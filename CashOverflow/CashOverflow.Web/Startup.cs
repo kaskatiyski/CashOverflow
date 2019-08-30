@@ -43,6 +43,7 @@ namespace CashOverflow.Web
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -55,6 +56,7 @@ namespace CashOverflow.Web
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ILocationService, LocationService>();
             services.AddTransient<ITodoService, TodoService>();
+            services.AddTransient<INoteService, NoteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,9 +88,29 @@ namespace CashOverflow.Web
                     defaults: new { controller = "Dashboard", action = "Dashboard" });
 
                 routes.MapRoute(
+                    name: "maplash",
+                    template: "Map",
+                    defaults: new { controller = "Map", action = "Map" });
+
+                routes.MapRoute(
+                    name: "calendarlash",
+                    template: "Calendar",
+                    defaults: new { controller = "Calendar", action = "Calendar" });
+
+                routes.MapRoute(
                     name: "transactionsslash",
                     template: "Transactions",
                     defaults: new { controller = "Transactions", action = "All" });
+
+                routes.MapRoute(
+                    name: "todosslash",
+                    template: "Todos",
+                    defaults: new { controller = "Todos", action = "All" });
+
+                routes.MapRoute(
+                    name: "notesslash",
+                    template: "Notes",
+                    defaults: new { controller = "Notes", action = "All" });
 
                 routes.MapRoute(
                     name: "categoriesslash",

@@ -30,13 +30,13 @@
 <div class="row">
     <div class="col-sm-6 col-12">
         <form asp-action="Edit">
-
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
             <input id="inputCategoryId" type="hidden" asp-for="CategoryId" />
 
             <div class="custom-card">
                 <div class="custom-card-header" id="categoryHeading" data-toggle="collapse" data-target="#caregoryWrapper" aria-expanded="true" aria-controls="caregoryWrapper">
                     <div class="custom-card-header-title">
-                        <div class="custom-card-header-subtitle ">Category: </div>
+                        <div class="custom-card-header-subtitle ">Category</div>
                         <div class="custom-card-header-maintitle regular" id="inputCategoryLabel">Choose a category</div>
                     </div>
                     <div class="input-header-arrow">
@@ -48,50 +48,37 @@
                         <div id="categorySwitch" class="switch-group mb-3">
                             <div id="categorySwitchIncome" class="switch" onclick="changeType('Income')">Income</div>
                             <div id="categorySwitchExpense" class="switch" onclick="changeType('Expense')">Expense</div>
-                            <div id="categorySwitchTransfer" class="switch" onclick="changeType('Transfer')">Transfer</div>
+                            @*<div id="categorySwitchTransfer" class="switch" onclick="changeType('Transfer')">Transfer</div>*@
                             <div id="categorySwitchSelector" class="switch-selector"></div>
                         </div>
-                        <div id="expenseCategoriesList" class="category-list category-list-hidden row m-0">
-                            @foreach (var category in categories.Categories.Where(x => x.Type == CategoryType.Expense))
-                            {
-                                <div class="category-item-wrapper col-4">
-                                    <div class="category-item " onclick="setCategoryId('@category.Id', '@category.Name')">@category.Name</div>
-                                </div>
-                            }
-                        </div>
-                        <div id="incomeCategoriesList" class="category-list category-list-hidden row m-0">
-                            @foreach (var category in categories.Categories.Where(x => x.Type == CategoryType.Income))
-                            {
-                                <div class="category-item-wrapper col-4">
-                                    <div class="category-item " onclick="setCategoryId('@category.Id', '@category.Name')">@category.Name</div>
-                                </div>
-                            }
-                        </div>
-                        <div id="transferCategoriesList" class="category-list category-list-hidden row m-0 fs-9 font-weight-bolder">
+
+                        @foreach (var type in (CategoryType[])Enum.GetValues(typeof(CategoryType)))
+                        {
+                            <div id="@type.ToString().ToLower()CategoriesList" class="category-list category-list-hidden row m-0">
+
+                                @foreach (var category in categories.Categories.Where(x => x.Type == type))
+                                {
+                                    <div class="category-item-wrapper col-4">
+                                        <div class="category-item" data-id="@category.Id" onclick="setCategoryId('@category.Id', '@category.Name')">@category.Name</div>
+                                    </div>
+                                }
+
+                            </div>
+                        }
+                        @*<div id="transferCategoriesList" class="category-list category-list-hidden row m-0 fs-9 font-weight-bolder">
                             TODO
-                        </div>
+                        </div>*@
                     </div>
                 </div>
             </div>
 
             <div class="custom-card">
-                <div class="custom-card-header" id="dateHeading" data-toggle="collapse" data-target="#dateWrapper" aria-expanded="false" aria-controls="dateWrapper">
+                <div class="custom-card-header" id="dateHeading">
                     <div class="custom-card-header-title">
-                        <div class="custom-card-header-subtitle ">Date: </div>
-                        <div class="custom-card-header-maintitle regular" id="inputDateLabel"></div>
-                    </div>
-                    <div class="input-header-arrow">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-                <div id="dateWrapper" class="collapse" aria-labelledby="dateHeading">
-                    <div class="custom-card-body">
-                        <div class="form-group">
-                            @*<label asp-for="Date" class="control-label"></label>*@
-                            <div id="inputDatepicker"></div>
-                            <input id="inputDate" asp-for="Date" type="hidden" class="form-control" />
-                            <span asp-validation-for="Date" class="text-danger"></span>
-                        </div>
+                        <div class="custom-card-header-subtitle ">Date</div>
+                        <input id="dateRaw" readonly type="hidden" asp-for="Date" class="form-control" />
+                        <input id="dateFormatted" readonly type="text" class="form-control datepicker-here" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -102,7 +89,8 @@
                 <div class="input-header input-header-non-interactive">
                     @*<label asp-for="Ammount" class="control-label"></label>*@
                     <div class="d-flex justify-content-center align-items-baseline">
-                        <input asp-for="Ammount" type="text" inputmode="numeric" class="form-control input-amount" id="inputAmount" placeholder="00,00" />
+                        <input asp-for="Ammount" type="hidden" inputmode="numeric" class="form-control input-amount" id="inputAmount" placeholder="00,00" />
+                        <input type="text" inputmode="numeric" class="form-control input-amount" id="inputAmountFormatted" placeholder="00,00" />
                         <span class="input-amount">BGN</span>
                     </div>
                     <span asp-validation-for="Ammount" class="text-danger"></span>
@@ -113,7 +101,7 @@
             <div class="custom-card">
                 <div class="custom-card-header custom-card-header-non-interactive">
                     <div class="custom-card-header-title">
-                        <div class="custom-card-header-subtitle ">Recipient:</div>
+                        <div class="custom-card-header-subtitle ">Recipient</div>
                         <input asp-for="Recipient" class="form-control" />
                         <span asp-validation-for="Recipient" class="text-danger"></span>
                     </div>
@@ -124,7 +112,7 @@
             <div class="custom-card">
                 <div class="custom-card-header custom-card-header-non-interactive">
                     <div class="custom-card-header-title">
-                        <div class="custom-card-header-subtitle ">Notes:</div>
+                        <div class="custom-card-header-subtitle ">Notes</div>
                         <input asp-for="Notes" class="form-control" />
                         <span asp-validation-for="Notes" class="text-danger"></span>
                     </div>
@@ -135,9 +123,16 @@
             <div class="custom-card">
                 <div class="custom-card-header custom-card-header-non-interactive">
                     <div class="custom-card-header-title">
-                        <div class="custom-card-header-subtitle ">Location:</div>
-                        <div id="inputLocationName" class="">&nbsp;</div>
-                        <div id="inputLocationAddress" class="fs-2">&nbsp;</div>
+                        <div class="custom-card-header-subtitle ">Location</div>
+                        <div class="d-flex align-items-center">
+                            <div class="col pl-0">
+                                <div id="inputLocationName" class="">&nbsp;</div>
+                                <div id="inputLocationAddress" class="fs-2">&nbsp;</div>
+                            </div>
+                            <button type="button" onclick="deleteLocation()" class="btn col-auto pr-0" style="color: var(--text)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
 
                         <input type="hidden" id="name" asp-for="Location.Name" class="form-control form-control-new" />
                         <input type="hidden" id="addr" asp-for="Location.Address" class="form-control form-control-new" />
@@ -147,9 +142,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
+                <input type="submit" value="Edit" class="btn btn-accent co-submit-lg" />
             </div>
         </form>
     </div>
@@ -163,14 +157,19 @@
 
 <script>
     $(document).ready(function () {
+        changeType("@Model.Category.Type.ToString()");
+        selectItem("@Model.Category.Id");
+        
         document.getElementById('inputCategoryLabel').innerHTML = '@categories.Categories.FirstOrDefault(c => c.Id == Model.CategoryId).Name';
 
         @{
             var dateFormatted = Model.Date.ToString("yyyy-MM-dd");
         }
 
-        document.getElementById('inputDateLabel').innerHTML = moment('@dateFormatted').format("DD MMM YYYY");
-        document.getElementById('inputDate').value = '@dateFormatted';
+        $('#dateRaw').val('@dateFormatted');
+        $("#dateFormatted").val(moment('@dateFormatted').format("DD MMM YYYY"));
+
+        $('#inputAmountFormatted').val($('#inputAmount').val());
 
         document.getElementById('inputLocationName').innerHTML = document.getElementById('name').value || "&nbsp;";
         document.getElementById('inputLocationAddress').innerHTML = document.getElementById('addr').value || "&nbsp;";

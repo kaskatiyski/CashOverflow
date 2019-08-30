@@ -46,9 +46,11 @@ namespace WebApplication8.Data.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<decimal>("Latitude");
+                    b.Property<decimal>("Latitude")
+                        .HasColumnType("decimal(18,16)");
 
-                    b.Property<decimal>("Longitude");
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(18,16)");
 
                     b.Property<string>("Name");
 
@@ -64,11 +66,17 @@ namespace WebApplication8.Data.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("Alert");
+                    b.Property<string>("BackgroundColor");
 
                     b.Property<string>("Content");
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<bool>("IsSticky");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("TextColor");
 
                     b.Property<string>("UserId");
 
@@ -76,7 +84,7 @@ namespace WebApplication8.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reminders");
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("CashOverflow.Models.RecurringPayment", b =>
@@ -89,6 +97,8 @@ namespace WebApplication8.Data.Migrations
                     b.Property<string>("CategoryId");
 
                     b.Property<int>("Interval");
+
+                    b.Property<int>("Payments");
 
                     b.Property<int>("Period");
 

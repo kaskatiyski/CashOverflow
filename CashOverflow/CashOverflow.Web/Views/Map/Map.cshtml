@@ -1,0 +1,128 @@
+﻿@model CashOverflow.Web.ViewModels.Map.MapViewModel
+
+<style>
+    /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+    #map {
+
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .page-content {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+        padding-right: 0px !important;
+
+        overflow: hidden;
+    }
+
+    .container-fluid {
+        padding: 0;
+        max-width: 100% !important;
+    }
+
+</style>
+
+
+<div id="map" style="height: 100vh;"></div>
+
+<style>
+        .gm-style.iw, .gm-style-iw {
+          padding: 12px !important;
+         }    
+        .gm-style-iw-d {
+          /*overflow: hidden !important;*/
+         } 
+
+</style>
+
+<script>
+
+    function initMap() {
+        var infoWindow = new google.maps.InfoWindow();
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: { lat: 42.695189, lng: 23.3330424 },
+            clickableIcons: false,
+            gestureHandling: "greedy"
+        });
+
+        // Create an array of alphabetical characters used to label the markers.
+        //var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        // Add some markers to the map.
+        // Note: The code uses the JavaScript Array.prototype.map() method to
+        // create an array of markers based on a given "locations" array.
+        // The map() method here has nothing to do with the Google Maps API.
+        var markers = transactions.map(function(transaction, i) {
+            return new google.maps.Marker({
+                //icon: new google.maps.MarkerImage(location.imageUrl, null, null, null, new google.maps.Size(32, 32)),
+                position: {lat: transaction.location.latitude, lng: transaction.location.longitude},
+                //label: labels[i % labels.length],
+                title: `<div class="m-0 mb-1 row"><div class="col pl-0">${transaction.recipient}</div><div class="col-auto pr-0">${transaction.ammount.toFixed(2)} BGN</div></div>`,
+                //location: transaction.location.name
+          });
+        });
+
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,
+            {
+                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                zoomOnClick: false,
+            });
+
+         google.maps.event.addListener(markerCluster, 'clusterclick', function (cluster) {
+            var markers = cluster.getMarkers();
+
+            var array = [];
+            var num = 0;
+
+            for (i = 0; i < markers.length; i++) {
+                num++;
+                array.push(markers[i].title);
+             }
+
+                infoWindow.setContent(`<h6 class="">${markers.length} transactions:</h6>${array.join("")}`);
+                infoWindow.setPosition(cluster.getCenter());
+                infoWindow.open(map);
+            
+        });
+
+        for (i = 0; i < markers.length; i++) {
+            var marker = markers[i];
+
+            google.maps.event.addListener(marker, 'click', (function (marker) {
+                return function () {
+                    infoWindow.setContent(this.title/* + `<div><b>${this.location}</b></div>`*/);
+                    infoWindow.open(map, this);
+                }
+            })(marker));
+        }
+    }
+
+    //var locations = [];
+    var transactions = [];
+
+    @foreach (var transaction in Model.Transactions)
+    {
+        @*@:locations.push({ lat: @transaction.Location.Latitude, lng: @transaction.Location.Longitude, imageUrl: '@transaction.Category.ImagePath' });*@
+        @:transactions.push(@Html.Raw(Json.Serialize(transaction)));
+    }
+
+</script>
+
+<!-- Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+        * The callback parameter executes the initMap() function
+        -->
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1Mqcpg5m9oGtEVrYQX2hChKwWKYR34hM&callback=initMap&libraries=places"
+        type="text/javascript"></script>

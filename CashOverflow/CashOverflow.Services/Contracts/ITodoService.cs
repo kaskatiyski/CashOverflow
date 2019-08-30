@@ -11,6 +11,8 @@ namespace CashOverflow.Services.Contracts
     {
         Task CreateAsync(string username, Todo todo);
 
+        IEnumerable<Todo> GetTodos(string username);
+
         IEnumerable<Todo> GetTodosByDate(string username, DateTime date);
 
         IEnumerable<Todo> GetTodosByMonth(string username, string date);
@@ -18,5 +20,9 @@ namespace CashOverflow.Services.Contracts
         Task<TodoStatus> CompleteAsync(string username, Todo todo);
 
         Task<Todo> GetTodoByIdAsync(string username, string id);
+
+        Task UpdateTodoAsync(string username, Todo todo);
+
+        Task<bool> DeleteTodoAsync(string username, string id);
     }
 }

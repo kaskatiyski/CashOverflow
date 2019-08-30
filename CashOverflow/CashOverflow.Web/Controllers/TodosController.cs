@@ -11,77 +11,70 @@ using CashOverflow.Web.ViewModels.Todo;
 using AutoMapper;
 using CashOverflow.Services.Contracts;
 using CashOverflow.Models.Enum;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CashOverflow.Web.Controllers
 {
+    [Authorize]
     public class TodosController : Controller
     {
-        private readonly ApplicationDbContext db;
         private readonly IMapper mapper;
         private readonly ITodoService todoService;
 
         public TodosController(IMapper mapper,
-                               ITodoService todoService,
-                               ApplicationDbContext db)
+                               ITodoService todoService)
         {
-            this.db = db;
             this.mapper = mapper;
             this.todoService = todoService;
         }
 
-        // GET: Todoes
-        public async Task<IActionResult> All()
+        private void SetReturnUrl()
         {
-            var todos = await db.Todos.ToListAsync();
+            this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
+        }
+
+        public IActionResult All()
+        {
+            var todos = this.todoService.GetTodos(this.User.Identity.Name);
 
             AllTodosViewModel allTodosViewModel = new AllTodosViewModel();
             allTodosViewModel.Todos = todos.Select(todo => mapper.Map<TodoViewModel>(todo));
 
             return View(allTodosViewModel);
         }
-
-        // GET: Todoes/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var todo = await db.Todos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (todo == null)
-            {
-                return NotFound();
-            }
-
-            return View(todo);
-        }
-
-        // GET: Todoes/Create
+        
         public IActionResult Create()
         {
+            SetReturnUrl();
+
             return View();
         }
 
-        // POST: Todoes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateTodoInputModel model)
+        public async Task<IActionResult> Create(CreateTodoInputModel model, string returnUrl)
         {
             model.Status = TodoStatus.Pending;
 
             if (ModelState.IsValid)
             {
                 await this.todoService.CreateAsync(this.User.Identity.Name, mapper.Map<Todo>(model));
+
+                if (returnUrl != null)
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(All));
+                }
             }
 
             return this.RedirectToAction(nameof(All));
         }
 
-        // GET: Todoes/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -89,21 +82,28 @@ namespace CashOverflow.Web.Controllers
                 return NotFound();
             }
 
-            var todo = await db.Todos.FindAsync(id);
+            var todo = await this.todoService.GetTodoByIdAsync(this.User.Identity.Name, id);
+
             if (todo == null)
             {
                 return NotFound();
             }
-            return View(todo);
+
+            SetReturnUrl();
+
+            var editTodoInputModel = mapper.Map<EditTodoInputModel>(todo);
+
+            return View(editTodoInputModel);
         }
 
-        // POST: Todoes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Content,Date,Alert,Status")] Todo todo)
+        public async Task<IActionResult> Edit(string id, EditTodoInputModel model, string returnUrl)
         {
+            var todo = mapper.Map<Todo>(model);
+
             if (id != todo.Id)
             {
                 return NotFound();
@@ -111,59 +111,35 @@ namespace CashOverflow.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    db.Update(todo);
-                    await db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TodoExists(todo.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(All));
-            }
-            return View(todo);
-        }
+                await this.todoService.UpdateTodoAsync(this.User.Identity.Name, todo);
 
-        // GET: Todoes/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var todo = await db.Todos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (todo == null)
-            {
-                return NotFound();
+                if (returnUrl != null)
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(All));
+                }
             }
 
             return View(todo);
         }
-
-        // POST: Todoes/Delete/5
+        
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var todo = await db.Todos.FindAsync(id);
-            db.Todos.Remove(todo);
-            await db.SaveChangesAsync();
-            return RedirectToAction(nameof(All));
+        //[ValidateAntiForgeryToken]
+        public async Task<bool> DeleteConfirmed(string id)
+        {          
+            return await this.todoService.DeleteTodoAsync(this.User.Identity.Name, id);
         }
 
-        private bool TodoExists(string id)
+        public async Task<JsonResult> Complete(string id)
         {
-            return db.Todos.Any(e => e.Id == id);
+            var todo = await this.todoService.GetTodoByIdAsync(this.User.Identity.Name, id);
+
+            var status = await this.todoService.CompleteAsync(this.User.Identity.Name, todo);
+
+            return this.Json(status);
         }
     }
 }

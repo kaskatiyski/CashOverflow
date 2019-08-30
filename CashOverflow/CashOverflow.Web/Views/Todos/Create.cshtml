@@ -4,39 +4,114 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+    <div class="page-title-wrapper row align-items-center">
+        <div class="page-title col">
+            <div class="page-maintitle">
+                Create
+            </div>
+            <div class="page-subtitle">
+                To-do
+            </div>
+        </div>
+        <div class="page-title-actions col-auto">
+            <a asp-action="All" class="btn btn-sm btn-accent">Back to List</a>
+        </div>
+    </div>
 
-<h4>CreateTodoInputModel</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">
+                            <label asp-for="Content" class="control-label"></label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="Content" class="form-control" />
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" type="date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
+            <div class="co-card">
+                <div class="row co-card-header align-items-center">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">
+                            <label asp-for="Date" class="control-label"></label>
+                        </div>
+                        @*<div class="co-card-title-maintitle">
+                        <label asp-for="Date" class="control-label"></label>
+                    </div>*@
+                    </div>
+                    @*<button type="button" class="col-auto btn text-accent cursor-pointer" >
+                    <i class="fas fa-calendar-alt"></i>
+                </button>*@
+                    <div class="col-12">
+                        <input id="dateRaw" readonly type="hidden" asp-for="Date" class="form-control" />
+                        <input id="dateFormatted" readonly type="text" class="form-control datepicker-here" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Alert" /> @Html.DisplayNameFor(model => model.Alert)
-                </label>
+
+            <div class="row">
+                <div class="col">
+                    <input type="submit" value="Create" class="btn btn-accent co-submit-lg" />
+                </div>
+                <div class="mr-4 col-auto d-flex align-items-center justify-content-center flex-column">
+                    <div class="">
+                        <label class="checkbox-label text-center">
+                            <input id="alertCheckbox" asp-for="Alert" type="checkbox" onclick="enableAlert()">
+                            @*<span class="checkbox-custom rectangular"></span>*@
+                            <div class="text-accent bell-on d-none">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="text-accent bell-off">
+                                <i class="far fa-bell"></i>
+                            </div>
+                        </label>
+                    </div>
+                    @*<div class="text-center">
+                        @Html.DisplayNameFor(model => model.Alert)
+                    </div>*@
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    
+    $('#dateFormatted').datepicker({
+        language: 'en',
+        todayButton: new Date(),
+        timepicker: true,
+        dateFormat: "yyyy-mm-dd",
+        timeFormat: "hh:ii",
+        onSelect: function (formattedDate, date) {
+            $('#dateRaw').val(formattedDate);
+            $('#dateFormatted').val(moment(date).format("DD MMM YYYY HH:mm"));
+        }
+    });
+
+    function enableAlert() {
+        let element = $("#alertCheckbox");
+        let checked = element.prop("checked");
+
+        if (!checked) {
+            $('.bell-on').addClass('d-none');
+            $('.bell-off').removeClass('d-none');
+        } else {
+            $('.bell-off').addClass('d-none');
+            $('.bell-on').removeClass('d-none');
+        }
+    }
+
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

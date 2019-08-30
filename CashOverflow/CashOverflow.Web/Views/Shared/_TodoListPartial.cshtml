@@ -1,0 +1,145 @@
+﻿@using CashOverflow.Models.Enum
+@using CashOverflow.Web.ViewModels.Partial
+
+@model TodoListViewModel
+
+<style>
+    .co-list-item.todo-list-item.completed {
+        background: #fefaff;
+    }
+
+    .co-list-item.todo-list-item.hidden {
+        transform: translateX(-100%);
+        display: none;
+    }
+
+    .todo-overdue {
+        color: var(--warning);
+        display: inline-block;
+        margin-right: -14px;
+    }
+</style>
+
+@if (Model.Todos.Count() > 0)
+{
+    @foreach (var todo in Model.Todos)
+    {
+        var completed = (int)todo.Status == 2;
+
+        <div class="row align-items-center p-3 co-list-item todo-list-item co-anchor @(completed && Model.HideOption ? "hidden" : "") @(completed ? "completed" : "")">
+            <div class="col-auto">
+                <label class="checkbox-label">
+                    <input type="checkbox" checked="@completed" data-id="@todo.Id" onclick="complete(this)">
+                    <span class="checkbox-custom rectangular"></span>
+                </label>
+            </div>
+            <div class="col">
+                <div class="" style="line-height: 1">
+                    @todo.Content
+                </div>
+                <div class="" style="font-size: 0.8rem;">
+                    @if (todo.Date < DateTime.UtcNow)
+                    {
+                        <div class="todo-overdue @(todo.Status == TodoStatus.Completed ? "d-none" : "")" data-toggle="tooltip" data-placement="bottom" title="Overdue!"><i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    }
+                    @todo.Date.ToString("dd MMM yyyy - HH:mm")
+                </div>
+            </div>
+            @*<i class="fas fa-eye-slash"></i>*@
+            <div class="col-auto px-0">
+                <button type="button" class="btn hover text-accent" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <div class="dropdown-menu co-dropdown">
+                    @if (Model.HideOption)
+                    {
+                        <a class="co-dropdown-item no-style todo-hide" href="#" onclick="hide(this)">
+                            <div class="co-dropdown-icon">
+                                <i class="fas fa-eye-slash"></i>
+                            </div>
+                            Hide
+                        </a>
+                    }
+                    <a asp-controller="Todos" asp-action="Edit" asp-route-id="@todo.Id" class="co-dropdown-item no-style">
+                        <div class="co-dropdown-icon">
+                            <i class="fas fa-pen"></i>
+                        </div>
+                        Edit
+                    </a>
+                    <a class="co-dropdown-item no-style" onclick='deleteAsk("todo", @Html.Raw(Json.Serialize(todo)), $(this))' data-toggle="modal" data-target="#deleteAskModal">
+                        <div class="co-dropdown-icon">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<script>
+    function complete(element) {
+        element = $(element);
+
+        const id = element.data("id");
+        const customCheckbox = element.parent().find(".checkbox-custom");
+        const listItem = element.closest('.co-list-item');
+
+        if (!customCheckbox.hasClass('checkbox-loading')) {
+
+            element.prop("checked", false);
+            customCheckbox.addClass('checkbox-loading');
+
+            $.ajax({
+                type: 'GET',
+                url: '/Todos/Complete',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data) {
+                        customCheckbox.removeClass('checkbox-loading');
+                        element.removeClass('popover-task popover-task-completed');
+                        if (data === 2) {
+                            element.prop("checked", true);
+                            listItem.addClass('completed');
+                            element.closest(".todo-list-item").find(".todo-overdue").addClass("d-none");
+                        } else if (data === 1) {
+                            element.prop("checked", false);
+                            listItem.removeClass('completed');
+                            element.closest(".todo-list-item").find(".todo-overdue").removeClass("d-none");
+                        }
+                    }
+                }
+
+            });
+        } else {
+            element.prop("checked", !element.prop("checked"));
+        }
+    }
+
+    function hide(element) {
+        element = $(element);
+
+        element.closest('.co-list-item').addClass('hidden');
+
+    }
+        
+    function showHidden() {
+        $(".todo-list-item.hidden").parent().removeClass('overflow-y-hidden');
+        $(".todo-list-item.hidden").removeClass('hidden');
+        $(".todo-list-item.completed").transition({ x: '0' }, 400);
+    }
+
+    function hideCompleted() {
+        $(".todo-list-item.completed").parent().addClass('overflow-y-hidden');
+        $(".todo-list-item.completed").transition({ x: '100%' }, 400, function () {
+            $(".todo-list-item.completed").addClass('hidden');
+            $(".todo-list-item.hidden").parent().removeClass('overflow-y-hidden');
+        });
+
+    }
+
+</script>

@@ -37,6 +37,7 @@
         <script src="~/lib/Chart.js/Chart.js"></script>
         <script src="~/lib/chartjs-plugin-zoom/chartjs-plugin-zoom.js"></script>
         <script src="~/lib/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.js"></script>
+        @*<script src="~/lib/chartjs-plugin-piechart-outlabels/dist/chartjs-plugin-piechart-outlabels.min.js"></script>*@
     </environment>
     <environment exclude="Development">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
@@ -56,24 +57,15 @@
         <script src="~/lib/Chart.js/Chart.min.js"></script>
         <script src="~/lib/chartjs-plugin-zoom/chartjs-plugin-zoom.min.js"></script>
         <script src="~/lib/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
+        @*<script src="~/lib/chartjs-plugin-piechart-outlabels/dist/chartjs-plugin-piechart-outlabels.min.js"></script>*@
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
-    <script>// TODO: Check if this is the correct way
-        function createLocalDateCookie() {
-            var expires = "";
-            var date = new Date();
-            var midnight = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-            expires = midnight.toString();
-
-            document.cookie = "localDate=" + moment().format("YYYY-MM-DD") + "; expires=" + expires + "; path=/";
-        }
-
-        createLocalDateCookie();
-
+    <script>
         // Unregister Chart.js Datalabels
-        Chart.plugins.unregister(ChartDataLabels);</script>
+        Chart.plugins.unregister(ChartDataLabels);
+    </script>
 
 
     <div id="pageWrapper" class="page-wrapper toggled">
@@ -105,13 +97,13 @@
                 {
                     @*<div>Welcome to CashOverflow</div>*@
                     <a role="button" asp-area="Identity" asp-page="/Account/Login" style="background: #9663b0" class="btn btn-sm text-light">Login</a>
-                    @:&nbsp;or&nbsp; 
+                    @:&nbsp;or&nbsp;
                     <a role="button" asp-area="Identity" asp-page="/Account/Register" style="background: #9663b0" class="btn btn-sm text-light">Register</a>
-                        
+
                     @*<div>
-                        <a asp-area="Identity" asp-page="/Account/Login">Login</a> to your account.
-                        If you don't have one you can <a asp-area="Identity" asp-page="/Account/Register">register</a> here.
-                    </div>*@
+                            <a asp-area="Identity" asp-page="/Account/Login">Login</a> to your account.
+                            If you don't have one you can <a asp-area="Identity" asp-page="/Account/Register">register</a> here.
+                        </div>*@
                 }
             </div>
             @*<div class="sidenav-separator"></div>*@
@@ -121,13 +113,18 @@
                     <li><a asp-area="" asp-controller="Dashboard" asp-action="Dashboard"><div class="icon"><i class="fas fa-tachometer-alt"></i></div>Dashboard</a></li>
                     <li><a asp-area="" asp-controller="Transactions" asp-action="All"><div class="icon"><i class="fas fa-coins"></i></div>Transactions</a></li>
                     <li><a asp-area="" asp-controller="Categories" asp-action="All"><div class="icon"><i class="fas fa-book"></i></div>Categories</a></li>
-                    <li><a asp-area="" asp-controller="Todos" asp-action="All"><div class="icon"><i class="fas fa-tasks"></i></div>Tasks</a></li>
+                    <li><a asp-area="" asp-controller="Todos" asp-action="All"><div class="icon"><i class="fas fa-tasks"></i></div>To-Dos</a></li>
                     <li><a asp-area="" asp-controller="Notes" asp-action="All"><div class="icon"><i class="fas fa-sticky-note"></i></div>Notes</a></li>
-                    <li><a asp-area="" asp-controller="Calendar" asp-action="Index"><div class="icon"><i class="fas fa-calendar-alt"></i></div>Calendar</a></li>
+                    <li><a asp-area="" asp-controller="Calendar" asp-action="Calendar"><div class="icon"><i class="fas fa-calendar-alt"></i></div>Calendar</a></li>
                     <li><a asp-area="" asp-controller="Map" asp-action="Map"><div class="icon"><i class="fas fa-map-marked-alt"></i></div>Map</a></li>
-
                     @if (SignInManager.IsSignedIn(User))
                     {
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="title">Admin</li>
+                            <li><a asp-area="" asp-controller="Transactions" asp-action="All"><div class="icon"><i class="fas fa-coins"></i></div>Transactions</a></li>
+                            <li><a asp-area="" asp-controller="Categories" asp-action="All"><div class="icon"><i class="fas fa-book"></i></div>Categories</a></li>
+                        }
                         <li class="title">Account</li>
                         <li><a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><div class="icon"><i class="fas fa-cog"></i></div>Settings</a></li>
                         <li>
@@ -141,18 +138,20 @@
                 </ul>
             </div>
             <div class="sidenav-item sidenav-footer">
-                &copy; 2019 - CashOverflow.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <div>
+                    Icons made by <a target="_blank" href="https://www.freepik.com/">Freepik</a> and <a target="_blank" href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a target="_blank" href="https://www.freepik.com/">www.flaticon.com</a>
+                </div>
+                -
+                <div>
+                    &copy; 2019 - CashOverflow.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </div>
             </div>
         </nav>
-        <main class="page-content py-4" role="main">
-            <div class="container">
+        <main class="page-content smooth-scrolling py-4" role="main">
+            <div class="container-fluid @*h-100*@" style="max-width: 1140px;">
                 @RenderBody()
             </div>
         </main>
-        @*<partial name="_CookieConsentPartial" />
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>*@
     </div>
 
 
@@ -171,35 +170,3 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
-
-@*<header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CashOverflow.Web</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="All">Transactions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="All">Categories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Calendar" asp-action="Index">Calendar</a>
-                        </li>
-                        <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>*@
