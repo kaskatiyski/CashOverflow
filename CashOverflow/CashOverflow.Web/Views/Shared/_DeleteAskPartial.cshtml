@@ -110,6 +110,16 @@
                 `);
             }
                 break;
+            case 'user': {
+                controller = "/Admin";
+                preview = $(`
+                    <div>
+                        <h5>${item.userName} ( ${item.email} )</h5>
+                        <div class="fs-2" style="margin-top: -8px">${item.id}</div>
+                    </div>
+                `);
+            }
+                break;
             default:
         }
 

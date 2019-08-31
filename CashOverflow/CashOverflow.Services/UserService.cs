@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace CashOverflow.Services
 {
@@ -26,6 +27,13 @@ namespace CashOverflow.Services
             var user = await this.db.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
             return user;
+        }
+
+        public async Task<IEnumerable<IdentityUser>> GetAllUsersAsync()
+        {
+            var users = await this.db.Users.ToListAsync();
+
+            return users;
         }
     }
 }

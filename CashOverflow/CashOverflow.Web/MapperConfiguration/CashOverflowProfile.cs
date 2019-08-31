@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CashOverflow.Models;
+using CashOverflow.Web.ViewModels.Admin;
 using CashOverflow.Web.ViewModels.Calendar;
 using CashOverflow.Web.ViewModels.Category;
 using CashOverflow.Web.ViewModels.Dashboard;
@@ -8,6 +9,7 @@ using CashOverflow.Web.ViewModels.Map;
 using CashOverflow.Web.ViewModels.Note;
 using CashOverflow.Web.ViewModels.Todo;
 using CashOverflow.Web.ViewModels.Transaction;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +46,9 @@ namespace CashOverflow.Web.MapperConfiguration
             this.CreateMap<Note, NoteViewModel>();
             this.CreateMap<Note, EditNoteInputModel>().ReverseMap();
             this.CreateMap<CreateNoteInputModel, Note>();
+
+            // Admin
+            this.CreateMap<IdentityUser, UserViewModel>();
 
         }
     }

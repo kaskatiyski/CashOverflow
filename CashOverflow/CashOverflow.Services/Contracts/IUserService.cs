@@ -11,5 +11,7 @@ namespace CashOverflow.Services.Contracts
     public interface IUserService
     {
         Task<IdentityUser> GetUserByUsernameAsync(string username);
+
+        Task<IEnumerable<IdentityUser>> GetAllUsersAsync();
     }
 }
