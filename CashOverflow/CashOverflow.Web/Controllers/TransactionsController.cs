@@ -36,7 +36,7 @@ namespace CashOverflow.App.Controllers
             this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
         }
 
-        public ActionResult All(string from, string to, string exact, bool allTime)
+        public ActionResult All(string from, string to, string exact, bool allTime = false)
         {
             IEnumerable<Transaction> transactions = new List<Transaction>();
 
