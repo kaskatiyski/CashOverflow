@@ -16,10 +16,11 @@
     },
     "CashOverflow.Web": {
       "commandName": "Project",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://192.168.0.100:5001;http://192.168.0.100:5000"
+      "applicationUrl": "https://localhost:1141;http://localhost:1140"
     }
   }
 }
