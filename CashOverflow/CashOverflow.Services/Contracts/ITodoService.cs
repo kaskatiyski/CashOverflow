@@ -11,11 +11,11 @@ namespace CashOverflow.Services.Contracts
     {
         Task CreateAsync(string username, Todo todo);
 
-        IEnumerable<Todo> GetTodos(string username);
+        Task<IEnumerable<Todo>> GetTodos(string username);
 
-        IEnumerable<Todo> GetTodosByDate(string username, DateTime date);
+        Task<IEnumerable<Todo>> GetTodosByDate(string username, DateTime date);
 
-        IEnumerable<Todo> GetTodosByMonth(string username, string date);
+        Task<IEnumerable<Todo>> GetTodosByMonth(string username, string date);
 
         Task<TodoStatus> CompleteAsync(string username, Todo todo);
 

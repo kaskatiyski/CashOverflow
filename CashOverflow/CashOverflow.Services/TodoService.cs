@@ -64,20 +64,22 @@ namespace CashOverflow.Services
             await this.db.SaveChangesAsync();
         }
 
-        public IEnumerable<Todo> GetTodosByDate(string username, DateTime date)
+        public async Task<IEnumerable<Todo>> GetTodosByDate(string username, DateTime date)
         {
-            var todos = db.Todos
-                .Where(t => t.User.UserName == username && (t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day));
+            var todos = await this.db.Todos
+                .Where(t => t.User.UserName == username && (t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day))
+                .ToListAsync();
 
             return todos;
         }
 
-        public IEnumerable<Todo> GetTodosByMonth(string username, string date)
+        public async Task<IEnumerable<Todo>> GetTodosByMonth(string username, string date)
         {
             DateTime dateParsed = DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
-            var todos = db.Todos
-                .Where(t => t.User.UserName == username && (t.Date.Year == dateParsed.Year && t.Date.Month == dateParsed.Month));
+            var todos = await this.db.Todos
+                .Where(t => t.User.UserName == username && (t.Date.Year == dateParsed.Year && t.Date.Month == dateParsed.Month))
+                .ToListAsync();
 
             return todos;
         }
@@ -108,9 +110,9 @@ namespace CashOverflow.Services
             }
         }
 
-        public IEnumerable<Todo> GetTodos(string username)
+        public async Task<IEnumerable<Todo>> GetTodos(string username)
         {
-            var todos = this.db.Todos.Where(todo => todo.User.UserName == username);
+            var todos = await this.db.Todos.Where(todo => todo.User.UserName == username).ToListAsync();
 
             return todos;
         }

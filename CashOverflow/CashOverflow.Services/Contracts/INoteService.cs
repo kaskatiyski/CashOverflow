@@ -8,7 +8,7 @@ namespace CashOverflow.Services.Contracts
 {
     public interface INoteService
     {
-        IEnumerable<Note> GetNotes(string username);
+        Task<IEnumerable<Note>> GetNotes(string username);
 
         Task<bool> DeleteAsync(string username, string id);
 

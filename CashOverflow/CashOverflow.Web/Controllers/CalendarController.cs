@@ -42,9 +42,9 @@ namespace CashOverflow.Web.Controllers
             return this.View(/*calendarViewModel*/);
         }
 
-        public JsonResult GetTransactionsForMonth(string date)
+        public async Task<JsonResult> GetTransactionsForMonth(string date)
         {
-            var transactions = this.transactionService.GetTransactionsByMonth(this.User.Identity.Name, date);
+            var transactions = await this.transactionService.GetTransactionsByMonth(this.User.Identity.Name, date);
            
 
             CalendarViewModel calendarViewModel = new CalendarViewModel();
@@ -55,7 +55,7 @@ namespace CashOverflow.Web.Controllers
 
             foreach (var kvp in calendarViewModel.Transactions)
             {
-                var todos = this.todoService.GetTodosByMonth(this.User.Identity.Name, date);
+                var todos = await this.todoService.GetTodosByMonth(this.User.Identity.Name, date);
 
                 calendarViewModel.Todos = todos.Select(t => mapper.Map<TodoViewModel>(t))
                                                .GroupBy(t => t.Date.ToString("yyyyMMdd"))

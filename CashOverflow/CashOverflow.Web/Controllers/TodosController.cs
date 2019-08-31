@@ -33,9 +33,9 @@ namespace CashOverflow.Web.Controllers
             this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
         }
 
-        public IActionResult All()
+        public async Task<IActionResult> All()
         {
-            var todos = this.todoService.GetTodos(this.User.Identity.Name);
+            var todos = await this.todoService.GetTodos(this.User.Identity.Name);
 
             AllTodosViewModel allTodosViewModel = new AllTodosViewModel();
             allTodosViewModel.Todos = todos.Select(todo => mapper.Map<TodoViewModel>(todo));

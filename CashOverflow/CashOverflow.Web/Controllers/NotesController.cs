@@ -30,12 +30,12 @@ namespace CashOverflow.Web.Controllers
             this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
         }
 
-        public IActionResult All()
+        public async Task<IActionResult> All()
         {
-            var notess = this.noteService.GetNotes(this.User.Identity.Name);
+            var notes = await this.noteService.GetNotes(this.User.Identity.Name);
 
             AllNotesViewModel allNotesViewModel = new AllNotesViewModel();
-            allNotesViewModel.Notes = notess.Select(note => mapper.Map<NoteViewModel>(note));
+            allNotesViewModel.Notes = notes.Select(note => mapper.Map<NoteViewModel>(note));
 
             return View(allNotesViewModel);
         }

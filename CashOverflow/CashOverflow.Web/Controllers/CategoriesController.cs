@@ -173,7 +173,7 @@ namespace CashOverflow.App.Controllers
 
             var detailsCategoryViewModel = mapper.Map<DetailsCategoryViewModel>(category);
 
-            var transactions = this.transactionService.GetTransactionsByCategoryAsync(this.User.Identity.Name, category.Id);
+            var transactions = await this.transactionService.GetTransactionsByCategoryAsync(this.User.Identity.Name, category.Id);
 
             detailsCategoryViewModel.Transactions = transactions.Select(t => mapper.Map<TransactionViewModel>(t)).OrderBy(t => t.Date).GroupBy(t => t.Date.ToString("MMMM yyyy"));
             

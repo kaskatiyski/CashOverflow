@@ -37,107 +37,115 @@ namespace CashOverflow.Services
             return dateParsed;
         }
 
-        public IEnumerable<Transaction> GetTransactionsByDay(string username, string date)
+        public async Task<IEnumerable<Transaction>> GetTransactionsByDay(string username, string date)
         {
             DateTime dateParsed = ParseDate(date);
 
-            var transactions = db.Transactions
+            var transactions = await this.db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username && t.Date.IsSameDay(dateParsed))
-                .OrderByDescending(x => x.Date);
-            
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
+
             return transactions;
         }
 
-        public IEnumerable<Transaction> GetTransactionsUntil(string username, string date)
+        public async Task<IEnumerable<Transaction>> GetTransactionsUntil(string username, string date)
         {
             DateTime dateParsed = ParseDate(date);
 
-            var transactions = db.Transactions
+            var transactions = await this.db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username && (t.Date <= dateParsed))
-                .OrderByDescending(x => x.Date);
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             return transactions;
         }
 
-        public IEnumerable<Transaction> GetTransactionsSince(string username, string date)
+        public async Task<IEnumerable<Transaction>> GetTransactionsSince(string username, string date)
         {
             DateTime dateParsed = ParseDate(date);
 
-            var transactions = db.Transactions
+            var transactions = await this.db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username && (t.Date >= dateParsed))
-                .OrderByDescending(x => x.Date);
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             return transactions;
         }
 
-        public IEnumerable<Transaction> GetTransactionsByMonth(string username, string date)
+        public async Task<IEnumerable<Transaction>> GetTransactionsByMonth(string username, string date)
             {
             DateTime dateParsed = ParseDate(date);
 
-            var transactions = db.Transactions
+            var transactions = await this.db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username && t.Date.IsSameMonth(dateParsed))
-                .OrderByDescending(x => x.Date);
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             return transactions;
         }
 
-        public IEnumerable<Transaction> GetTransactionsByMonth(string username)
+        public async Task<IEnumerable<Transaction>> GetTransactionsByMonth(string username)
         {
             DateTime dateParsed = DateTime.UtcNow;
 
-            var transactions = db.Transactions
+            var transactions = await this.db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username && t.Date.IsSameMonth(dateParsed))
-                .OrderByDescending(x => x.Date);
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             return transactions;
         }
 
-        public IEnumerable<Transaction> GetTransactionsByYear(string username, string date)
+        public async Task<IEnumerable<Transaction>> GetTransactionsByYear(string username, string date)
         {
             DateTime dateParsed = ParseDate(date);
 
-            var transactions = db.Transactions
+            var transactions = await this.db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username && t.Date.IsSameYear(dateParsed))
-                .OrderByDescending(x => x.Date);
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             return transactions;
         }
 
-        public IEnumerable<Transaction> GetAllTransactions(string username)
+        public async Task<IEnumerable<Transaction>> GetAllTransactions(string username)
         {
-            var transactions = db.Transactions
+            var transactions = await this.db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username)
-                .OrderByDescending(x => x.Date);
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             return transactions;
         }
 
-        public IEnumerable<Transaction> GetTransactionsInRange(string username, string startDate, string endDate)
+        public async Task<IEnumerable<Transaction>> GetTransactionsInRange(string username, string startDate, string endDate)
         {
             DateTime startDateParsed = ParseDate(startDate);
             DateTime endDateParsed = ParseDate(endDate);
 
-            var transactions = db.Transactions
+            var transactions = await db.Transactions
                 .Include(x => x.Category)
                 .Include(x => x.Location)
                 .Where(t => t.User.UserName == username
                     && (t.Date >= startDateParsed) 
                     && (t.Date <= endDateParsed))
-                .OrderByDescending(x => x.Date);
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             return transactions;
         }
@@ -221,11 +229,12 @@ namespace CashOverflow.Services
             }
         }
 
-        public IEnumerable<Transaction> GetTransactionsByCategoryAsync(string username, string categoryId)
+        public async Task<IEnumerable<Transaction>> GetTransactionsByCategoryAsync(string username, string categoryId)
         {
-            var count = this.db.Transactions
+            var count = await this.db.Transactions
                                .Include(t => t.Location)
-                               .Where(t => t.User.UserName == username && t.CategoryId == categoryId);
+                               .Where(t => t.User.UserName == username && t.CategoryId == categoryId)
+                               .ToListAsync();
 
             return count;
         }

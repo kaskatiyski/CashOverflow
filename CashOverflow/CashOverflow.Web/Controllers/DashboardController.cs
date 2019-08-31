@@ -32,21 +32,22 @@ namespace CashOverflow.Web.Controllers
             this.noteService = noteService;
         }
 
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
             DashboardViewModel dashboardViewModel = new DashboardViewModel();
 
-            dashboardViewModel.Transactions = this.transactionService.GetTransactionsByMonth(this.User.Identity.Name)
-                                                                     .Select(t => mapper.Map<TransactionViewModel>(t))
-                                                                     .ToList();
+            var transactions = await this.transactionService.GetTransactionsByMonth(this.User.Identity.Name);
+            var todos = await this.todoService.GetTodosByMonth(this.User.Identity.Name, DateTime.UtcNow.ToString("yyyy-MM-dd"));
+            var notes = await this.noteService.GetNotes(this.User.Identity.Name);
 
-            dashboardViewModel.Todos = this.todoService.GetTodosByMonth(this.User.Identity.Name, DateTime.UtcNow.ToString("yyyy-MM-dd"))
-                                                                     .Select(t => mapper.Map<TodoViewModel>(t))
-                                                                     .ToList();
+            dashboardViewModel.Transactions = transactions.Select(transaction => mapper.Map<TransactionViewModel>(transaction))
+                                                          .ToList();
 
-            dashboardViewModel.Notes = this.noteService.GetNotes(this.User.Identity.Name).ToList()
-                                                                     .Select(t => mapper.Map<NoteViewModel>(t))
-                                                                     .ToList(); ;
+            dashboardViewModel.Todos = todos.Select(todo => mapper.Map<TodoViewModel>(todo))
+                                                          .ToList();
+
+            dashboardViewModel.Notes = notes.Select(note => mapper.Map<NoteViewModel>(note))
+                                                          .ToList();
 
             return View(dashboardViewModel);
         }

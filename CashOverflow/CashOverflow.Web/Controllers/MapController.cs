@@ -30,9 +30,9 @@ namespace CashOverflow.Web.Controllers
             this.transactionService = transactionService;
         }
 
-        public IActionResult Map()
+        public async Task<IActionResult> Map()
         {
-            var transactions = this.transactionService.GetAllTransactions(this.User.Identity.Name);
+            var transactions = await this.transactionService.GetAllTransactions(this.User.Identity.Name);
 
             var mapViewModel = new MapViewModel() {
                 Transactions = transactions.Where(transaction => transaction.Location != null)

@@ -36,33 +36,33 @@ namespace CashOverflow.App.Controllers
             this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
         }
 
-        public ActionResult All(string from, string to, string exact, bool allTime = false)
+        public async Task<ActionResult> All(string from, string to, string exact, bool allTime = false)
         {
             IEnumerable<Transaction> transactions = new List<Transaction>();
 
             if (allTime)
             {
-                transactions = this.transactionService.GetAllTransactions(this.User.Identity.Name);
+                transactions = await this.transactionService.GetAllTransactions(this.User.Identity.Name);
             }
             else if (exact != null)
             {
-                transactions = this.transactionService.GetTransactionsByDay(this.User.Identity.Name, exact);
+                transactions = await this.transactionService.GetTransactionsByDay(this.User.Identity.Name, exact);
             }
             else if (from != null && to != null)
             {
-                transactions = this.transactionService.GetTransactionsInRange(this.User.Identity.Name, from, to);
+                transactions = await this.transactionService.GetTransactionsInRange(this.User.Identity.Name, from, to);
             }
             else if (from != null && to == null)
             {
-                transactions = this.transactionService.GetTransactionsSince(this.User.Identity.Name, from);
+                transactions = await this.transactionService.GetTransactionsSince(this.User.Identity.Name, from);
             }
             else if (from == null && to != null)
             {
-                transactions = this.transactionService.GetTransactionsUntil(this.User.Identity.Name, to);
+                transactions = await this.transactionService.GetTransactionsUntil(this.User.Identity.Name, to);
             }
             else
             {
-                transactions = this.transactionService.GetTransactionsByMonth(this.User.Identity.Name);
+                transactions = await this.transactionService.GetTransactionsByMonth(this.User.Identity.Name);
             }                       
 
             Func<TransactionViewModel, string> groupBy = x => x.Date.ToString("dddd, dd");

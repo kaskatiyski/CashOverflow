@@ -58,9 +58,9 @@ namespace CashOverflow.Services
             return note;
         }
 
-        public IEnumerable<Note> GetNotes(string username)
+        public async Task<IEnumerable<Note>> GetNotes(string username)
         {
-            var notes = this.db.Notes.Where(note => note.User.UserName == username);
+            var notes = await this.db.Notes.Where(note => note.User.UserName == username).ToListAsync();
 
             return notes;
         }
