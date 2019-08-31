@@ -13,9 +13,9 @@ namespace CashOverflow.Web.ViewModels.Location
 
         public string PlaceId { get; set; }
         
-        public decimal Latitude { get; set; }
+        public decimal? Latitude { get; set; }
 
-        public decimal Longitude { get; set; }
+        public decimal? Longitude { get; set; }
 
     }
 }

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+    <PackageReference Include="Moq" Version="4.12.0" />
+    <PackageReference Include="nunit" Version="3.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CashOverflow.Data\CashOverflow.Data.csproj" />
+    <ProjectReference Include="..\CashOverflow.Models\CashOverflow.Models.csproj" />
+    <ProjectReference Include="..\CashOverflow.Services\CashOverflow.Services.csproj" />
+    <ProjectReference Include="..\CashOverflow.Utilities\CashOverflow.Utilities.csproj" />
+    <ProjectReference Include="..\CashOverflow.Web\CashOverflow.Web.csproj" />
+  </ItemGroup>
+
+</Project>

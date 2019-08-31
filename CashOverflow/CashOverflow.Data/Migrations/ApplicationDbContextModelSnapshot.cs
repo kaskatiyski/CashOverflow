@@ -46,9 +46,11 @@ namespace WebApplication8.Data.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<decimal>("Latitude");
+                    b.Property<decimal>("Latitude")
+                        .HasColumnType("decimal(18,16)");
 
-                    b.Property<decimal>("Longitude");
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(18,16)");
 
                     b.Property<string>("Name");
 
@@ -57,6 +59,82 @@ namespace WebApplication8.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("CashOverflow.Models.Note", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("BackgroundColor");
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<bool>("IsSticky");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("TextColor");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("CashOverflow.Models.RecurringPayment", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Amount");
+
+                    b.Property<string>("CategoryId");
+
+                    b.Property<int>("Interval");
+
+                    b.Property<int>("Payments");
+
+                    b.Property<int>("Period");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RecurringPayments");
+                });
+
+            modelBuilder.Entity("CashOverflow.Models.Todo", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Alert");
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Todos");
                 });
 
             modelBuilder.Entity("CashOverflow.Models.Transaction", b =>
@@ -255,6 +333,31 @@ namespace WebApplication8.Data.Migrations
                 });
 
             modelBuilder.Entity("CashOverflow.Models.Category", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("CashOverflow.Models.Note", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("CashOverflow.Models.RecurringPayment", b =>
+                {
+                    b.HasOne("CashOverflow.Models.Category", "Category")
+                        .WithMany("RecurringPayments")
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("CashOverflow.Models.Todo", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()

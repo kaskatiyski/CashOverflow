@@ -1,10 +1,13 @@
 ﻿@model CashOverflow.Web.ViewModels.Home.HomeViewModel
 
 @using CashOverflow.Models.Enum
+@using CashOverflow.Web.ViewModels.Partial
 
 @{
     ViewData["Title"] = "Dashboard";
 }
+
+@await Html.PartialAsync("_DeleteAskPartial")
 
 <div class="row py-5 align-items-baseline">
     <div class="text-center col-sm-6 col-12 mb-5 mb-sm-0">
@@ -19,7 +22,7 @@
         <div class="font-weight-light fs-5">add new transaction</div>
         <div class="font-weight-light fs-3">or</div>
         <div style="width: 60px; cursor: pointer;" class="m-auto">
-            <a href="~/Transactions">
+            <a asp-controller="Dashboard" asp-action="Dashboard">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><path fill="#14a085" d="M32 7h10v45H32z" /><path fill="#f29c1f" d="M17 38h10v14H17z" /><path fill="#e57e25" d="M2 29h10v23H2z" /><path fill="#71c285" d="M47 15h10v37H47z" /><path d="M59 53H1a1 1 0 1 1 0-2h58a1 1 0 1 1 0 2z" fill="#556080" /></svg>
             </a>
         </div>
@@ -60,7 +63,6 @@
         }
     </div>
 </div>
-
-@await Html.PartialAsync("_TransactionsListPartial", Model.Transactions.GroupBy(x => "Today"))
+@await Html.PartialAsync("_TransactionsListPartial", new TransactionListViewModel() { Transactions = Model.Transactions.GroupBy(x => "Today") })
 
 

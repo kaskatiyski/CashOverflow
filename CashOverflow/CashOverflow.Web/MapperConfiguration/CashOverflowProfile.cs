@@ -1,9 +1,15 @@
 ﻿using AutoMapper;
 using CashOverflow.Models;
+using CashOverflow.Web.ViewModels.Admin;
 using CashOverflow.Web.ViewModels.Calendar;
 using CashOverflow.Web.ViewModels.Category;
+using CashOverflow.Web.ViewModels.Dashboard;
 using CashOverflow.Web.ViewModels.Location;
+using CashOverflow.Web.ViewModels.Map;
+using CashOverflow.Web.ViewModels.Note;
+using CashOverflow.Web.ViewModels.Todo;
 using CashOverflow.Web.ViewModels.Transaction;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,37 +26,29 @@ namespace CashOverflow.Web.MapperConfiguration
             this.CreateMap<EditTransactionInputModel, Transaction>().ReverseMap();
             this.CreateMap<Transaction, EditTransactionViewModel>();
             this.CreateMap<Transaction, TransactionViewModel>();
-            this.CreateMap<Transaction, TransactionAmountViewModel>();
-
-                // Calendar
-                this.CreateMap<Transaction, CalendarTransactionViewModel>();
-
-                // Categories
-                this.CreateMap<Transaction, CategoryTransactionViewModel>();
-
+            
             // Categories
             this.CreateMap<EditCategoryInputModel, Category>().ReverseMap();
             this.CreateMap<CreateCategoryInputModel, Category>();
             this.CreateMap<Category, DetailsCategoryViewModel>();
             this.CreateMap<Category, CategoryViewModel>();
 
-            // Transactions
-                this.CreateMap<Category, CreateTransactionCaregoryViewModel>();
-                this.CreateMap<Category, TransactionCategoryViewModel>();
-                this.CreateMap<Category, TransactionAmountViewModel>();
-
-            // Calendar
-            this.CreateMap<Category, CalendarCategoryViewModel>();
-
             // Locations
             this.CreateMap<CreateLocationInputModel, Location>().ReverseMap();
             this.CreateMap<Location, LocationViewModel>();
 
-                // Transactions
-                this.CreateMap<Location, TransactionLocationViewModel>();
-                this.CreateMap<Location, CalendarLocationViewModel>();
+            // Todos
+            this.CreateMap<Todo, TodoViewModel>();            
+            this.CreateMap<Todo, EditTodoInputModel>().ReverseMap();
+            this.CreateMap<CreateTodoInputModel, Todo>();
 
-            // Calendar
+            // Notes
+            this.CreateMap<Note, NoteViewModel>();
+            this.CreateMap<Note, EditNoteInputModel>().ReverseMap();
+            this.CreateMap<CreateNoteInputModel, Note>();
+
+            // Admin
+            this.CreateMap<IdentityUser, UserViewModel>();
 
         }
     }

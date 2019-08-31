@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CashOverflow.Models
 {
@@ -18,9 +19,11 @@ namespace CashOverflow.Models
         public string Address { get; set; }
 
         public string PlaceId { get; set; }
-        
+
+        [Column(TypeName = "decimal(18,16)")]
         public decimal Latitude { get; set; }
 
+        [Column(TypeName = "decimal(18,16)")]
         public decimal Longitude { get; set; }
 
         public virtual ICollection<Transaction> Transactions { get; set; }

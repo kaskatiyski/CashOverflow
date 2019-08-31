@@ -1,0 +1,145 @@
+﻿@model string
+
+<div class="modal fade" id="periodPicker" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Choose a period</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="fs-3 mb-3 btn-group btn-group-sm">
+                    <div class="btn" onclick="openDatepicker('year', 'yyyy')" style="cursor: pointer; color: white; background: var(--accent);">Year</div>
+                    <div class="btn" onclick="openDatepicker('month', 'M yyyy')" style="cursor: pointer; color: white; background: var(--accent);">Month</div>
+                    <div class="btn" onclick="openDatepicker('day', 'dd M yyyy')" style="cursor: pointer; color: white; background: var(--accent);">Day</div>
+                </div>
+                <div class="fs-3 mb-3 btn-group btn-group-sm">
+                    <div class="btn" onclick="openDatepicker('alltime', '&#8734;')" style="cursor: pointer; color: white; background: var(--accent);">All Time</div>
+                    <div class="btn" onclick="openDatepicker('from', 'dd M yyyy - &#8734;')" style="cursor: pointer; color: white; background: var(--accent);">From Date</div>
+                    <div class="btn" onclick="openDatepicker('to', '&#8734; - dd M yyyy')" style="cursor: pointer; color: white; background: var(--accent);">To Date</div>
+                    <div class="btn" onclick="openDatepicker('custom', 'dd M yyyy')" style="cursor: pointer; color: white; background: var(--accent);">Custom</div>
+
+                </div>
+                <div id="searchDatepicker" style="margin: auto"></div>
+                <br />
+                <form action="/" method="post" autocomplete="off">
+                    <div class="input-group">
+                        <input id="formattedDateInput" class="form-control" readonly="readonly" />
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon1" onclick="search()" style="cursor: pointer"><i class="fas fa-search"></i></span>
+                        </div>
+                    </div>
+                    <input id="rawDateInput" type="hidden" class="form-control" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let setFormattedValue;
+
+    let startDate, endDate, exactDate;
+    let searchType = "month";
+
+    let options = {
+        language: 'en',
+        inline: true,
+        multipleDatesSeparator: ' - ',
+        onSelect: function (formattedDate, date) {
+            setFormattedValue(formattedDate, date);
+        }
+    };
+
+
+    function search() {
+        let format = 'YYYY-MM-DD';
+
+        if (searchType == "alltime") {
+            window.location.href = "@Model?allTime=true";
+            return;
+        } else if (searchType == "day") {
+            window.location.href = "@Model?exact=" + exactDate.format(format);
+            return;
+        }
+
+         window.location.href = `@Model?${startDate ? "from=" + startDate.format(format) : ""}${endDate ? "&to=" + endDate.format(format) : ""}`;
+
+    }
+
+    function openDatepicker(type, formatDatepicker) {
+        let el = $("#searchDatepicker");
+
+        searchType = type;
+
+        let myDatepicker = el.datepicker().data('datepicker');
+        myDatepicker.destroy();
+
+        let newOptions = {
+            dateFormat: formatDatepicker
+        };
+
+        switch (type) {
+            case 'custom':
+                newOptions.range = true;
+                newOptions.dateFormat = formatDatepicker;
+                break;
+            case 'alltime':
+                search('alltime');
+                break;
+            case 'from':
+            case 'to':
+                newOptions.view = 'days';
+                newOptions.minView = 'days';
+                break;
+            default:
+                newOptions.view = type + 's';
+                newOptions.minView = type + 's';
+                break;
+        }
+
+        setFormattedValue = function (formattedDate, date) {
+            switch (type) {
+                case 'alltime':
+                    break;
+                case 'custom':
+                    startDate = moment(date[0]);
+                    endDate = moment(date[1]);
+                    break;
+                case 'from':
+                    startDate = moment(date).startOf(type);
+                    endDate = null;
+                    break;
+                case 'to':
+                    startDate = null;
+                    endDate = moment(date).endOf(type);
+                    break;
+                case 'day':
+                    exactDate = moment(date);
+                    startDate = null;
+                    endDate = null;
+                    break;
+                default:
+                    startDate = moment(date).startOf(type);
+                    endDate = moment(date).endOf(type);
+                    break;
+            }
+
+            $('#formattedDateInput').val(formattedDate);
+
+        }
+
+        if (type != 'alltime') {
+            el.datepicker({
+                ...newOptions,
+                ...options
+            });
+
+            el.trigger('focus');
+        }
+    }
+
+    openDatepicker(searchType, 'M yyyy')
+</script>

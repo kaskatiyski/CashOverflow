@@ -199,20 +199,16 @@ $(document).ready(function () {
             element.val(val.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 '));
 
             oldValue = val;
+            
+            $("#inputAmount").val(val);
         });
 
     }
 
-    oldValue = $('#inputAmount').val();
-    initializeCurrencyInput($('#inputAmount'));
+    oldValue = $('#inputAmountFormatted').val();
+    initializeCurrencyInput($('#inputAmountFormatted'));
 
 });
-
-
-let flag = {
-    category: false,
-    datepicker: false
-};
 
 // Change transaction type
 
@@ -271,13 +267,25 @@ function changeType(type) {
 function setCategoryId(id, name) {
     $('#inputCategoryId').val(id);
     $('#inputCategoryLabel').text(name);
-    if (!flag.category) {
-        $('#caregoryWrapper').collapse('hide');
-        $('#dateWrapper').collapse('show');
-        flag.category = true;
-    }
+    $('#caregoryWrapper').collapse('hide');
+    selectItem(id);
 }
 
+function selectItem(id) {
+    $(".category-item").removeClass("category-item-selected");
+    $("[data-id='" + id + "']").addClass("category-item-selected");    
+}
+
+function deleteLocation() {
+    $("#name").val("");
+    $("#addr").val("");
+    $("#plid").val("");
+    $("#lat").val("");
+    $("#lng").val("");
+
+    $('#inputLocationName').text("");
+    $('#inputLocationAddress').text("");
+}
 
 let options = {
     language: 'en',
@@ -286,15 +294,22 @@ let options = {
     onSelect: function (formattedDate, date) {
         $('#inputDateLabel').text(moment(date).format("DD MMM YYYY"));
         $('#inputDate').val(formattedDate);
-        if (!flag.datepicker) {
-            $('#dateWrapper').collapse('hide');
-            $('#inputAmount').focus();
-            flag.datepicker = true;
-        }
+        $('#dateWrapper').collapse('hide');
     }
 };
 
+$('#dateFormatted').datepicker({
+    language: 'en',
+    todayButton: new Date(),
+    dateFormat: "yyyy-mm-dd",
+    onSelect: function (formattedDate, date) {
+        $('#dateRaw').val(formattedDate);
+        $('#dateFormatted').val(moment(date).format("DD MMM YYYY"));
+    }
+});
 
 $(document).ready(function () {
     $('#inputDatepicker').datepicker(options);
+
+    $.validator.setDefaults({ ignore: null });
 });

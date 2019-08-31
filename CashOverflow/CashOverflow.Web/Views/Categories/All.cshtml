@@ -1,90 +1,188 @@
 ﻿@model CashOverflow.Web.ViewModels.Category.AllCategoriesViewModel
 
 @using CashOverflow.Models.Enum
+@using CashOverflow.Utilities.Extensions
 
 @{
     ViewData["Title"] = "All";
 }
 
 <style>
-
-    .category-image {
-        width: 75px;
-        height: 75px;
-        cursor: pointer;
-        transition: 0.1s;
+    .amount {
+        font-weight: bold;
     }
 
-        .category-image:hover {
-            transform: scale(1.1);
+        .amount.income {
+            color: var(--success);
         }
 
-    .category-image-small {
-        width: 50px !important;
-        height: 50px !important;
+        .amount.expense {
+            color: var(--danger);
+        }
+
+    .transactions-sum {
+        display: block
     }
 
-    .category-image-active {
-        border: 2px solid #007bff;
-        border-radius: 7px;
-        border-style: dashed;
+    .transactions-sum-sm {
+        display: none;
     }
 
-    .category-type-image {
-        height: 70px;
-        -webkit-filter: grayscale(100);
-        filter: grayscale(100);
-        transition: 0.2s;
-    }
+    @@media only screen and (max-width: 576px) {
+        .transactions-sum {
+            display: none;
+        }
 
-    category-type:hover, .category-type-active {
-        -webkit-filter: grayscale(0);
-        filter: grayscale(0);
+        .transactions-sum-sm {
+            display: block;
+        }
     }
 </style>
 
 
-<!-- Title -->
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            Categories
+        </div>
+    </div>
+</div>
 
-<h1>All Categories</h1>
-
-<!-- Create new category -->
-
-<a asp-action="Create" class="btn btn-primary btn-circle btn-float">
+<a asp-action="Create" class="btn btn-circle btn-float bg-accent">
     <i class="fas fa-plus"></i>
 </a>
 
-@await Html.PartialAsync("_CategoryDeleteModel")
+@{
+    var incomeCategories = Model.Categories.Where(category => category.Type == CategoryType.Income);
+    var expenseCategories = Model.Categories.Where(category => category.Type == CategoryType.Expense);
 
+    var incomeSum = incomeCategories.Sum(category => category.TransactionSum);
+    var expenseSum = expenseCategories.Sum(category => category.TransactionSum);
 
-@foreach (var group in Model.Categories.GroupBy(c => c.Type))
+    var incomeCount = incomeCategories.Sum(category => category.TransactionCount);
+    var expenseCount = expenseCategories.Sum(category => category.TransactionCount);
+}
+
+@if (Model.Categories.Count() > 0)
 {
-    <h3>@group.Key</h3>
-    <div class="custom-list-group row m-0">
-
-        @foreach (var category in group)
-        {
-
-            <div class="custom-list-group-item-wrapper col-12 col-sm-6" id="@category.Id">
-                <div class='custom-list-group-item'>
-                    <img class='category-image-small mr-3' src='@category.ImagePath'>
-                    <div class=''>
-                        <div class='font-weight-bold'><a asp-action="Details" asp-route-id="@category.Id" class="no-style">@category.Name</a></div>
-                        <div style='font-size: 0.8rem'><b>@category.TransactionCount</b> transactions</div>
+    <div class="row">
+        @* Income *@
+        <div class="col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Income</div>
+                        <div class="co-card-title-maintitle">@incomeSum BGN</div>
                     </div>
-                    <div class='text-right ml-auto'>
-                        <div style='font-size: 0.8rem' class='font-weight-bold @(category.Type == CategoryType.Expense ? "text-danger" : "text-success")'>@category.TransactionSum BGN</div>
+                    <div class="col-auto">
+                        <img src="https://image.flaticon.com/icons/svg/438/438526.svg" style="width:50px" />
                     </div>
+                    <div class="col-12">
+                        @incomeCount transactions
+                    </div>
+                </div>
 
-                    <div class="pl-3">
-                        <div><a class="col-12 p-0 no-style" asp-action="Edit" asp-route-id="@category.Id"><i class="fas fa-pen"></i></a></div>
-                        <div><button onclick='updateDeleteModal(@Html.Raw(Json.Serialize(category)))' class="btn m-0 p-0" data-toggle="modal" data-target="#deleteConfirmModal"><i class="fas fa-trash"></i></button></div>
+            </div>
+        </div>
+
+        @* Expenses *@
+        <div class="col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Expenses</div>
+                        <div class="co-card-title-maintitle">@expenseSum BGN</div>
+                    </div>
+                    <div class="col-auto">
+                        <img src="https://image.flaticon.com/icons/svg/1420/1420341.svg" style="width:50px" />
+                    </div>
+                    <div class="col-12">
+                        @expenseCount transactions
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    @*@await Html.PartialAsync("_CategoryDeleteModel")*@
+    @await Html.PartialAsync("_DeleteAskPartial")
+
+
+    @foreach (var type in (CategoryType[])Enum.GetValues(typeof(CategoryType)))
+    {
+        var categories = Model.Categories.Where(x => x.Type == type);
+        @if (categories.Count() > 0)
+        {
+            @*<div class="custom-list-group row m-0">*@
+            <div class="co-card co-anchor-parent">
+                <div class="co-card-header">
+                    <div class="co-card-title">
+                        <div class="co-card-title-subtitle">
+                            @type.ToString()
+                        </div>
+                        <div class="co-card-title-maintitle">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="co-card-body">
+                    @foreach (var category in categories.OrderByDescending(cat => cat.TransactionCount))
+                    {
+                        <div class="row align-items-center p-3 co-list-item category-list-item co-anchor">
+                            <div class="col-auto pl-2 px-0">
+                                <img src="@category.ImagePath" class="co-list-item-image-md" />
+                            </div>
+                            <div class="col">
+                                <div class="font-weight-bold" style="line-height: 1">
+                                    <a asp-action="Details" asp-route-id="@category.Id" class="no-style">@category.Name</a>
+                                </div>
+                                <div class="fs-2">
+                                    <b>@category.TransactionCount</b> transactions
+                                </div>
+                                <div class="fs-2 transactions-sum-sm">
+                                    Total:
+                                    <span class="font-weight-bold amount @(category.Type == CategoryType.Expense ? "expense" : "income")">
+                                        @category.TransactionSum.FormatCurrency("BGN")
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-auto text-right transactions-sum" style="font-size: 0.9rem;">
+                                <div>
+                                    Total:
+                                </div>
+                                <div class="font-weight-bold amount @(category.Type == CategoryType.Expense ? "expense" : "income")">
+                                    @category.TransactionSum.FormatCurrency("BGN")
+                                </div>
+                            </div>
+                            <div class="col-auto px-0">
+                                <button type="button" class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h" style="color: #9663b0"></i>
+                                </button>
+                                <div class="dropdown-menu co-dropdown">
+                                    <a asp-action="Edit" asp-route-id="@category.Id" class="co-dropdown-item no-style">
+                                        <div class="co-dropdown-icon">
+                                            <i class="fas fa-pen"></i>
+                                        </div>
+                                        Edit
+                                    </a>
+                                    <a class="co-dropdown-item no-style" onclick='deleteAsk("category", @Html.Raw(Json.Serialize(category)), $(this))' data-toggle="modal" data-target="#deleteAskModal">
+                                        <div class="co-dropdown-icon">
+                                            <i class="fas fa-trash"></i>
+                                        </div>
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         }
-
+    }
+}
+else
+{
+    <div class="no-data">
+        You haven't added any categories yet.
     </div>
 }
-

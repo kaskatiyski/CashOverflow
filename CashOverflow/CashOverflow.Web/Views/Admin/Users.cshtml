@@ -1,0 +1,24 @@
+﻿@model CashOverflow.Web.ViewModels.Admin.AllUsersAdminViewModel
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+@await Html.PartialAsync("_DeleteAskPartial")
+
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            Users
+        </div>
+    </div>
+</div>
+
+@foreach (var user in Model.Users)
+{
+    <div class="mb-5 co-anchor">
+        <h5>@user.UserName ( @user.Email )</h5>
+        <div class="fs-2" style="margin-top: -8px">@user.Id</div>
+    </div>
+}
+

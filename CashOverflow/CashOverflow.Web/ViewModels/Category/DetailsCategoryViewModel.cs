@@ -19,10 +19,6 @@ namespace CashOverflow.Web.ViewModels.Category
 
         public string ImagePath { get; set; }
 
-        public string UserId { get; set; }
-
         public IEnumerable<IGrouping<string, TransactionViewModel>> Transactions { get; set; }
-
-        //public IEnumerable<CategoryTransactionViewModel> Transactions { get; set; }
     }
 }

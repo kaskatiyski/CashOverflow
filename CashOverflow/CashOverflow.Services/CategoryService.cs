@@ -1,6 +1,7 @@
 ﻿using CashOverflow.Models;
 using CashOverflow.Models.Enum;
 using CashOverflow.Services.Contracts;
+using CashOverflow.Utilities.Exceptions;
 using CashOverflow.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +17,15 @@ namespace CashOverflow.Services
     {
         private readonly ApplicationDbContext db;
         private readonly IUserService userService;
+        private readonly ITransactionService transactionService;
 
         public CategoryService(ApplicationDbContext db,
-                               IUserService userService)
+                               IUserService userService,
+                               ITransactionService transactionService)
         {
             this.db = db;
             this.userService = userService;
+            this.transactionService = transactionService;
         }
 
         public async Task CreateAsync(string username, Category category)
@@ -52,20 +56,19 @@ namespace CashOverflow.Services
 
         }
 
-        public async Task<bool> DeleteCategoryAsync(string username, string id)
+        public async Task DeleteCategoryAsync(string username, string id)
         {
             var category = await this.GetCategoryByIdAsync(username, id);
 
-            try
+            bool categoryIsEmpty = await this.transactionService.CategoryIsEmpty(username, category.Id);
+
+            if (categoryIsEmpty)
             {
-                this.db.Categories.Remove(category);
-                await this.db.SaveChangesAsync();
-                return true;
+                throw new CategoryNotEmptyException("You cannot delete this category, because it has transactions.");
             }
-            catch (Exception)
-            {
-                return false;
-            }
+
+            this.db.Categories.Remove(category);
+            await this.db.SaveChangesAsync();
         }
 
         public async Task UpdateCategoryAsync(string username, Category category)

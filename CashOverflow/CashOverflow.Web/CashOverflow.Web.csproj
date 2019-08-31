@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -23,6 +23,11 @@
     <ProjectReference Include="..\CashOverflow.Data\CashOverflow.Data.csproj" />
     <ProjectReference Include="..\CashOverflow.Services\CashOverflow.Services.csproj" />
     <ProjectReference Include="..\CashOverflow.Utilities\CashOverflow.Utilities.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\resources\fonts\" />
   </ItemGroup>
 
 

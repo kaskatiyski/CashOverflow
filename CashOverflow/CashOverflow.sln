@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashOverflow.Services", "Ca
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CashOverflow.Utilities", "CashOverflow.Utilities\CashOverflow.Utilities.csproj", "{E23F5F1F-5ACA-4DA8-A1A4-E416BC6AC5C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CashOverflow.Tests", "CashOverflow.Tests\CashOverflow.Tests.csproj", "{A2B5B21D-AEC5-4465-A85C-49379B9C3D27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E23F5F1F-5ACA-4DA8-A1A4-E416BC6AC5C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E23F5F1F-5ACA-4DA8-A1A4-E416BC6AC5C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E23F5F1F-5ACA-4DA8-A1A4-E416BC6AC5C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B5B21D-AEC5-4465-A85C-49379B9C3D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B5B21D-AEC5-4465-A85C-49379B9C3D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B5B21D-AEC5-4465-A85C-49379B9C3D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B5B21D-AEC5-4465-A85C-49379B9C3D27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

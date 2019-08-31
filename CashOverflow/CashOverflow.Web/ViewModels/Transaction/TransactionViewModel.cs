@@ -19,8 +19,8 @@ namespace CashOverflow.Web.ViewModels.Transaction
 
         public DateTime Date { get; set; }
 
-        public virtual TransactionCategoryViewModel Category { get; set; }
+        public virtual CategoryViewModel Category { get; set; }
 
-        public virtual TransactionLocationViewModel Location { get; set; }
+        public virtual LocationViewModel Location { get; set; }
     }
 }

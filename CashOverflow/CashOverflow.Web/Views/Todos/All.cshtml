@@ -1,0 +1,98 @@
+﻿@model CashOverflow.Web.ViewModels.Todo.AllTodosViewModel
+
+@using CashOverflow.Web.ViewModels.Partial
+@using CashOverflow.Models.Enum
+@{
+    ViewData["Title"] = "All";
+}
+
+@await Html.PartialAsync("_DeleteAskPartial")
+@await Html.PartialAsync("_PeriodPickerPartial", Url.Action("All"))
+
+@{
+    var completed = Model.Todos.Where(todo => todo.Status == TodoStatus.Completed);
+    var pending = Model.Todos.Where(todo => todo.Status == TodoStatus.Pending);
+    var overdue = pending.Where(todo => todo.Date != null && todo.Date < DateTime.UtcNow);
+}
+
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            To-dos
+        </div>
+    </div>
+    <div class="page-title-actions col-auto">
+        @if (Model.Todos.Count() > 0)
+        {
+            <button type="button" class="btn btn-sm btn-accent" onclick="showHidden()">Show Hidden</button>
+            <button type="button" class="btn btn-sm btn-accent" onclick="hideCompleted()">Hide Completed</button>
+            @*<button type="button" class="btn btn-sm btn-accent" data-toggle="modal" data-target="#periodPicker" data-direction='bottom'>Period</button>*@
+        }
+    </div>
+</div>
+
+<a asp-action="Create" class="btn bg-accent btn-circle btn-float">
+    <i class="fas fa-plus"></i>
+</a>
+
+@if (Model.Todos.Count() > 0)
+{
+    <div class="row">
+        <div class="col-md-4 col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Completed</div>
+                        <div class="co-card-title-maintitle">@completed.Count()</div>
+                    </div>
+                    <div class="col-auto">
+                        @*<img src="https://image.flaticon.com/icons/svg/340/340061.svg" style="width:50px" />*@
+                        <img src="https://image.flaticon.com/icons/svg/138/138839.svg" style="width:50px" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Not Completed</div>
+                        <div class="co-card-title-maintitle">@pending.Count()</div>
+                    </div>
+                    <div class="col-auto">
+                        @*<img src="https://image.flaticon.com/icons/svg/340/340063.svg" style="width:50px" />*@
+                        <img src="https://image.flaticon.com/icons/svg/138/138838.svg" style="width:50px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Overdue</div>
+                        <div class="co-card-title-maintitle">@overdue.Count()</div>
+                    </div>
+                    <div class="col-auto">
+                        @*<img src="https://image.flaticon.com/icons/svg/340/340066.svg" style="width:50px" />*@
+                        <img src="https://image.flaticon.com/icons/svg/138/138857.svg" style="width:50px" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="co-card">
+        <div class="co-card-body">
+            @await Html.PartialAsync("_TodoListPartial", new TodoListViewModel() { Todos = Model.Todos.OrderBy(todo => todo.Date) })
+        </div>
+    </div>
+}
+else
+{
+    <div class="no-data">
+        You haven't created any todos yet.
+    </div>
+}

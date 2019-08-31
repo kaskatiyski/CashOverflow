@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using CashOverflow.Models;
 using CashOverflow.Services.Contracts;
+using CashOverflow.Utilities.Exceptions;
 using CashOverflow.Web.Data;
 using CashOverflow.Web.ViewModels.Category;
 using CashOverflow.Web.ViewModels.Transaction;
@@ -17,25 +21,39 @@ namespace CashOverflow.App.Controllers
     [Authorize]
     public class CategoriesController : Controller
     {
-        private readonly ApplicationDbContext db;
         private readonly IMapper mapper;
-        private readonly IUserService userService;
         private readonly ICategoryService categoryService;
         private readonly ITransactionService transactionService;
 
-        public CategoriesController(ApplicationDbContext db,
-                                    IMapper mapper,
-                                    IUserService userService,
+        public CategoriesController(IMapper mapper,
                                     ICategoryService categoryService,
                                     ITransactionService transactionService)
         {
-            this.db = db;
             this.mapper = mapper;
-            this.userService = userService;
             this.categoryService = categoryService;
             this.transactionService = transactionService;
         }
-               
+
+        private void SetReturnUrl()
+        {
+            this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
+        }
+
+        private void GetCategoryImages()
+        {
+            WebClient client = new WebClient();
+
+            string baseURL = "http://ivanpetrov.eu/CashOverflow/Resources/Icons/CategoryIcons/";
+            string filesHTML = client.DownloadString(baseURL);
+
+            var regex = new Regex("<a\\s+(?:[^>]*?\\s+)?href=\"([^\"]*)\"",
+                RegexOptions.IgnoreCase);
+
+            client.Dispose();
+
+            this.ViewData["CategoryImages"] = regex.Matches(filesHTML).Select(match => baseURL + match.Groups[1].Value).Skip(1);
+        }
+
         public async Task<ActionResult> All()
         {
             var categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name);
@@ -53,29 +71,41 @@ namespace CashOverflow.App.Controllers
                 category.TransactionCount = count;
                 category.TransactionSum = sum;
             }
-            
+
             return this.View(allCategoriesViewModel);
         }
-        
+
         public ActionResult Create()
         {
-            this.ViewData["CategoryExpenseImages"] = new DirectoryInfo(@"wwwroot\resources\icons\expense").GetFiles().Select(f => @"\resources\icons\expense\" + f.Name);
-            this.ViewData["CategoryIncomeImages"] = new DirectoryInfo(@"wwwroot\resources\icons\income").GetFiles().Select(f => @"\resources\icons\income\" + f.Name);
+            GetCategoryImages();
+            SetReturnUrl();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCategoryInputModel model)
+        public async Task<IActionResult> Create(CreateCategoryInputModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
                 await this.categoryService.CreateAsync(this.User.Identity.Name, mapper.Map<Category>(model));
+
+                if (returnUrl != null)
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(All));
+                }
             }
+
+            SetReturnUrl();
 
             return this.Redirect("/");
         }
+        
 
         public async Task<IActionResult> Edit(string id)
         {
@@ -91,9 +121,9 @@ namespace CashOverflow.App.Controllers
                 return NotFound();
             }
 
-            this.ViewData["CategoryExpenseImages"] = new DirectoryInfo(@"wwwroot\resources\icons\expense").GetFiles().Select(f => @"\resources\icons\expense\" + f.Name);
-            this.ViewData["CategoryIncomeImages"] = new DirectoryInfo(@"wwwroot\resources\icons\income").GetFiles().Select(f => @"\resources\icons\income\" + f.Name);
-
+            GetCategoryImages();
+            SetReturnUrl();
+        
             var editCategoryInputModel = mapper.Map<EditCategoryInputModel>(category);
 
             return View(editCategoryInputModel);
@@ -102,48 +132,50 @@ namespace CashOverflow.App.Controllers
         // POST: Categories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditCategoryInputModel model)
+        public async Task<IActionResult> Edit(string id, EditCategoryInputModel model, string returnUrl)
         {
             var category = mapper.Map<Category>(model);
 
-            //if (id != transaction.Id)
-            //{
-            //    return NotFound();
-            //}
+            if (id != category.Id)
+            {
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
-                //try
-                //{
                 await this.categoryService.UpdateCategoryAsync(this.User.Identity.Name, category);
-                //}
-                //catch (DbUpdateConcurrencyException)
-                //{
-                //    if (!TransactionExists(transaction.Id))
-                //    {
-                //        return NotFound();
-                //    }
-                //    else
-                //    {
-                //        throw;
-                //    }
-                //}
-                return RedirectToAction(nameof(All));
+
+                if (returnUrl != null)
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(All));
+                }
             }
-            //ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", transaction.CategoryId);
-            //ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", transaction.LocationId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", transaction.UserId);
+
             return View(category);
         }
 
 
         public async Task<ActionResult> Details(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var category = await this.categoryService.GetCategoryByIdAsync(this.User.Identity.Name, id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
 
             var detailsCategoryViewModel = mapper.Map<DetailsCategoryViewModel>(category);
 
-            var transactions = this.transactionService.GetTransactionsByCategoryAsync(this.User.Identity.Name, category.Id);
+            var transactions = await this.transactionService.GetTransactionsByCategoryAsync(this.User.Identity.Name, category.Id);
 
             detailsCategoryViewModel.Transactions = transactions.Select(t => mapper.Map<TransactionViewModel>(t)).OrderBy(t => t.Date).GroupBy(t => t.Date.ToString("MMMM yyyy"));
             
@@ -156,9 +188,22 @@ namespace CashOverflow.App.Controllers
         // POST: Transactions1/Delete/5
         [HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
-        public async Task<bool> DeleteConfirmed(string id)
+        public async Task<string> DeleteConfirmed(string id)
         {
-            return await this.categoryService.DeleteCategoryAsync(this.User.Identity.Name, id);
+            try
+            {
+                await this.categoryService.DeleteCategoryAsync(this.User.Identity.Name, id);
+
+                return "true";
+            }
+            catch (CategoryNotEmptyException ex)
+            {
+                return ex.Message;
+            }
+            catch (Exception)
+            {
+                return "false";
+            }
         }
 
     }

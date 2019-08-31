@@ -13,6 +13,7 @@ namespace CashOverflow.Models
         {
             this.Id = Guid.NewGuid().ToString();
             this.Transactions = new List<Transaction>();
+            this.RecurringPayments = new List<RecurringPayment>();
         }
 
         public string Id { get; set; }
@@ -29,5 +30,7 @@ namespace CashOverflow.Models
         public virtual IdentityUser User { get; set; }
 
         public virtual ICollection<Transaction> Transactions { get; set; }
+
+        public virtual ICollection<RecurringPayment> RecurringPayments { get; set; }
     }
 }

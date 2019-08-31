@@ -7,6 +7,7 @@ using CashOverflow.Web.ViewModels.Home;
 using CashOverflow.Web.ViewModels.Transaction;
 using AutoMapper;
 using System;
+using System.Threading.Tasks;
 
 namespace CashOverflow.Web.Controllers
 {
@@ -23,13 +24,13 @@ namespace CashOverflow.Web.Controllers
         }
 
         // TODO: Research if this is a correct way of checking authorization users and returning another view
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (this.User.Identity.IsAuthenticated)
             {
                 // TODO: Find a way to get client date
-                var date = this.Request.Cookies["localDate"] != null ? this.Request.Cookies["localDate"] : DateTime.UtcNow.ToString("yyyy-MM-dd");
-                var transactions = this.transactionService.GetTransactionsByDay(this.User.Identity.Name, date).ToList();
+                var date = Request.Cookies["localDate"] != null ? this.Request.Cookies["localDate"] : DateTime.UtcNow.ToString("yyyy-MM-dd");
+                var transactions = await this.transactionService.GetTransactionsByDay(this.User.Identity.Name, date);
 
                 HomeViewModel homeViewModel = new HomeViewModel()
                 {

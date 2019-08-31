@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CashOverflow.Models;
 using CashOverflow.Services.Contracts;
+using CashOverflow.Utilities.Extensions;
+using CashOverflow.Web.ViewModels.Category;
 using CashOverflow.Web.ViewModels.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,95 +31,126 @@ namespace CashOverflow.App.Controllers
             this.mapper = mapper;
         }
 
-        public ActionResult All(string date)
+        private void SetReturnUrl()
         {
-            if (date == null)
-            {
-                date = DateTime.Parse(this.Request.Cookies["localDate"]).ToString("yyyy-MM");
-            }
+            this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
+        }
 
+        public async Task<ActionResult> All(string from, string to, string exact, bool allTime = false)
+        {
             IEnumerable<Transaction> transactions = new List<Transaction>();
-            IEnumerable<Category> categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name);
+
+            if (allTime)
+            {
+                transactions = await this.transactionService.GetAllTransactions(this.User.Identity.Name);
+            }
+            else if (exact != null)
+            {
+                transactions = await this.transactionService.GetTransactionsByDay(this.User.Identity.Name, exact);
+            }
+            else if (from != null && to != null)
+            {
+                transactions = await this.transactionService.GetTransactionsInRange(this.User.Identity.Name, from, to);
+            }
+            else if (from != null && to == null)
+            {
+                transactions = await this.transactionService.GetTransactionsSince(this.User.Identity.Name, from);
+            }
+            else if (from == null && to != null)
+            {
+                transactions = await this.transactionService.GetTransactionsUntil(this.User.Identity.Name, to);
+            }
+            else
+            {
+                transactions = await this.transactionService.GetTransactionsByMonth(this.User.Identity.Name);
+            }                       
+
             Func<TransactionViewModel, string> groupBy = x => x.Date.ToString("dddd, dd");
 
-            if (date.Contains('>'))
+            var firstTransaction = transactions.FirstOrDefault();
+            var lastTransaction = transactions.LastOrDefault();
+
+            if (firstTransaction != null && lastTransaction != null)
             {
-                var split = date.Split('>');
-                var startDate = split[0];
-                var endDate = split[1];
-
-                transactions = this.transactionService.GetTransactionsByRange(this.User.Identity.Name, startDate, endDate);
-
-            } else {
-                var parts = date.Split('-');
-
-                switch (parts.Length)
+                if (!firstTransaction.Date.IsSameYear(lastTransaction.Date))
                 {
-                    case 1:
-                        transactions = this.transactionService.GetTransactionsByYear(this.User.Identity.Name, date);
-
-                        groupBy = x => x.Date.ToString("MMMM");
-
-                        break;
-                    case 2:
-                        transactions = this.transactionService.GetTransactionsByMonth(this.User.Identity.Name, date);
-
-                        break;
-                    case 3:
-                        transactions = this.transactionService.GetTransactionsByDay(this.User.Identity.Name, date);
-
-                        break;
+                    groupBy = x => x.Date.ToString("MMMM yyyy");
+                }
+                else if (!firstTransaction.Date.IsSameMonth(lastTransaction.Date))
+                {
+                    groupBy = x => x.Date.ToString("MMMM, dd");
                 }
             }
 
             AllTransactionsViewModel allTransactionsViewModel = new AllTransactionsViewModel()
             {
-                Transactions = transactions.Select(x => mapper.Map<TransactionViewModel>(x)).GroupBy(groupBy),
-                Categories = categories.Select(x => mapper.Map<TransactionCategoryViewModel>(x)).GroupBy(x => x.Type.ToString())
+                Transactions = mapper.Map<IEnumerable<TransactionViewModel>>(transactions).GroupBy(groupBy)
             };
-            
+
             return View(allTransactionsViewModel);
         }
-        
-        public ActionResult Create()
-        {
-            var createTransactionViewModel = new CreateTransactionViewModel();
 
-            createTransactionViewModel.Categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name)
-                .Select(x => mapper.Map<CreateTransactionCaregoryViewModel>(x))
-                .ToList();
+        public ActionResult Create(string type, string categoryId)
+        {
+            var categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name);
+
+            if (categories.Count() <= 0)
+            {
+                return this.RedirectToAction("Create", "Categories");
+            }
+
+            var createTransactionViewModel = new CreateTransactionViewModel
+            {
+                Categories = mapper.Map<List<CategoryViewModel>>(categories)
+            };
 
             this.ViewData["Categories"] = createTransactionViewModel;
+
+            if (type != null)
+            {
+                this.ViewData["Type"] = type;
+            }
+
+            if (categoryId != null)
+            {
+                this.ViewData["Category"] = categoryId;
+            }
+
+            SetReturnUrl();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CreateTransactionInputModel model)
+        public async Task<ActionResult> Create(CreateTransactionInputModel model, string returnUrl)
         {
-            try
+            if (ModelState.IsValid)
             {
                 await this.transactionService.CreateAsync(this.User.Identity.Name, mapper.Map<Transaction>(model));
 
-                return this.Redirect("/");
+                if (returnUrl != null)
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(All));
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            return RedirectToAction(nameof(Create));
         }
 
         // GET: Transactions1/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            var editTransactionViewModel = new EditTransactionViewModel();
-
-            editTransactionViewModel.Categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name)
-                .Select(x => mapper.Map<CreateTransactionCaregoryViewModel>(x))
-                .ToList();
-
-            this.ViewData["Categories"] = editTransactionViewModel;
+            var editTransactionViewModel = new EditTransactionViewModel
+            {
+                Categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name)
+                .Select(x => mapper.Map<CategoryViewModel>(x))
+                .ToList()
+            };
 
             if (id == null)
             {
@@ -130,6 +164,9 @@ namespace CashOverflow.App.Controllers
                 return NotFound();
             }
 
+            this.ViewData["Categories"] = editTransactionViewModel;
+            SetReturnUrl();
+
             var editTransactionInputModel = mapper.Map<EditTransactionInputModel>(transaction);
 
             return View(editTransactionInputModel);
@@ -140,38 +177,30 @@ namespace CashOverflow.App.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditTransactionInputModel model)
+        public async Task<IActionResult> Edit(string id, EditTransactionInputModel model, string returnUrl)
         {
             var transaction = mapper.Map<Transaction>(model);
 
-            //if (id != transaction.Id)
-            //{
-            //    return NotFound();
-            //}
+            if (id != transaction.Id)
+            {
+                return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
-                //try
-                //{
-                    await this.transactionService.UpdateTransactionAsync(this.User.Identity.Name, transaction);
-                //}
-                //catch (DbUpdateConcurrencyException)
-                //{
-                //    if (!TransactionExists(transaction.Id))
-                //    {
-                //        return NotFound();
-                //    }
-                //    else
-                //    {
-                //        throw;
-                //    }
-                //}
-                return RedirectToAction(nameof(All));
+                await this.transactionService.UpdateTransactionAsync(this.User.Identity.Name, transaction);
+
+                if (returnUrl != null)
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(All));
+                }
             }
-            //ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", transaction.CategoryId);
-            //ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Id", transaction.LocationId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", transaction.UserId);
-            return View(transaction);
+            
+            return await this.Edit(model.Id);
         }
 
         // POST: Transactions1/Delete/5

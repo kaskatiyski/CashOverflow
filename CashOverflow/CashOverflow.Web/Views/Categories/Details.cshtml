@@ -1,42 +1,17 @@
 ﻿@model CashOverflow.Web.ViewModels.Category.DetailsCategoryViewModel
 
 @using CashOverflow.Models.Enum
+@using CashOverflow.Web.ViewModels.Partial
+@using CashOverflow.Utilities.Extensions
 
 @{
     ViewData["Title"] = "Details";
+
+    var hasTransactions = Model.Transactions.Any();
 }
 
-<style>
-
-    .page-title-wrapper {
-
-    }
-
-    .page-title {
-
-    }
-
-    .page-maintitle {
-        font-size: 1.8rem;
-        line-height: 1;
-    }
-
-    .page-subtitle {
-        font-size: 1rem;
-    }
-
-    .page-title-actions {
-
-    }
-
-        .page-title-actions .btn {
-            /*rgb(143, 95, 218)*/
-            background: var(--accent-color);
-            color: white;
-            font-size: 0.75rem;
-        }
-
-</style>
+@await Html.PartialAsync("_PeriodPickerPartial", Url.Action(""))
+@await Html.PartialAsync("_DeleteAskPartial")
 
 <div class="page-title-wrapper row align-items-center">
     <div class="page-title col">
@@ -44,173 +19,160 @@
             @Model.Name
         </div>
         <div class="page-subtitle">
-            Categories
+            @Html.DisplayFor(model => model.Type) Categories
         </div>
     </div>
     <div class="page-title-actions col-auto">
-        @*<button class="btn btn-sm btn-primary text-light">
-            @Html.ActionLink("Edit", "Edit", new
-            {
-                id = Model.Id,
-            })
-        </button>*@
-        <a role="button" href="/Categories/Edit/@Model.Id" class="btn btn-sm">Edit</a>
-        <a role="button" asp-action="All" class="btn btn-sm">List</a>
-        <button class="btn btn-sm">Filters</button>
+        @*<button type="button" class="btn btn-sm btn-accent" data-toggle="modal" data-target="#exampleModal" data-direction='bottom'>Period</button>*@
+        @*<a role="button" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-accent">Budget</a>*@
+        <a role="button" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-accent">Edit</a>
+        <a role="button" asp-action="All" class="btn btn-sm btn-accent">Back to List</a>
     </div>
 </div>
 
-@*<div>
-    @Html.ActionLink("Edit", "Edit", new
-    {
-        id = Model.Id
-    }) |
-    <a asp-action="All">Back to List</a>
-</div>*@
+<a asp-controller="Transactions" asp-action="Create" asp-route-type="@Model.Type" asp-route-categoryId="@Model.Id" class="btn bg-accent btn-circle btn-float">
+    <i class="fas fa-plus"></i>
+</a>
 
 @await Html.PartialAsync("_CategoryDeleteModel")
 
-<div class="row">
-    <div class="col-xl-3 col-md-6">
-        <div class="custom-card">
-            <div class="custom-card-header cursor-unset">
-                <div class="custom-card-header-title">
-                    <div class="custom-card-header-subtitle">
-                        transactions
-                    </div>
-                    <div class="custom-card-header-maintitle">
-                        <span id="count">@Model.Transactions.Select(x => x.Count()).Sum()</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="custom-card">
-            <div class="custom-card-header cursor-unset">
-                <div class="custom-card-header-title">
-                    <div class="custom-card-header-subtitle">
-                        amount
-                    </div>
-                    <div class="custom-card-header-maintitle">
-                        <span id="sum"></span> BGN
-                        @*@Model.Transactions.Select(x => x.Select(y => y.Ammount).Sum()).Sum()*@
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="custom-card">
-            <div class="custom-card-header cursor-unset">
-                <div class="custom-card-header-title">
-                    <div class="custom-card-header-subtitle">
-                        average
-                    </div>
-                    <div class="custom-card-header-maintitle">
-                        <span id="avg"></span> BGN per month
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <style>
-
-        .progress-wrapper {
-            width: 100%;
-            font-size: 0.9rem;
-        }
-
-        .progress-title-wrapper {
-
-        }
-
-        .progress-title-text {
-
-        }
-
-        .progress-title-value {
-            float: right;
-        }
-
-        .progress-bar-wrapper {
-            width: 100%;
-            height: 7px;
-            background: rgb(246, 245, 246);
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 37.5543%;
-            background: #c45850;
-            border-radius: 5px;
-        }
-    </style>
-    <div class="col-xl-3 col-md-6">
-        <div class="custom-card">
-            <div class="custom-card-header cursor-unset">
-                <div class="custom-card-header-title">
-                    <div class="custom-card-header-subtitle">
-                        budget
-                    </div>
-                    @*<div class="custom-card-header-maintitle">
-
-                    </div>*@
-                </div>
-            </div>
-            <div class="custom-card-body">
-                <div class="progress-wrapper">
-                    <div class="progress-title-wrapper">
-                        Bills
-                        <span class="progress-title-value">215.59 / 600</span>
-                    </div>
-                    <div class="progress-bar-wrapper">
-                        <div class="progress-bar"></div>
-                    </div>
-                </div>
-                @*You haven't set a budget for this category yet.
-                <br />
-                To set a budget <a href="">click here.</a>*@
-            </div>
-        </div>
-    </div>
-</div>
-
-<div>
-
-    @*<hr />*@
+@if (hasTransactions)
+{
     <div class="row">
-        <dt class="col-sm-2 col-12">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class="col-sm-10 col-12">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        @*<dt class="col-sm-2 col-12">
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </dt>
-            <dd class="col-sm-10 col-12">
-                @Html.DisplayFor(model => model.ImagePath)
-            </dd>*@
+        <div class="col-xl-4 col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Transactions</div>
+                        <div class="co-card-title-maintitle"><span id="count">@Model.Transactions.Select(x => x.Count()).Sum()</span></div>
+                    </div>
+                    <div class="col-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:50px" viewBox="0 0 512.001 512.001"><linearGradient id="a" gradientUnits="userSpaceOnUse" x1="254.119" y1="190.663" x2="254.119" y2="514.792" gradientTransform="matrix(1.0039 0 0 -1.0039 .192 516.56)"><stop offset="0" stop-color="#fff465" /><stop offset="1" stop-color="#ffe600" /></linearGradient><circle cx="255.308" cy="256" r="160.306" fill="url(#a)" /><linearGradient id="b" gradientUnits="userSpaceOnUse" x1="254.119" y1="325.013" x2="254.119" y2="16.913" gradientTransform="matrix(1.0039 0 0 -1.0039 .192 516.56)"><stop offset="0" stop-color="#fff465" /><stop offset="1" stop-color="#ffe600" /></linearGradient><circle cx="255.308" cy="256" r="152.375" fill="url(#b)" /><linearGradient id="c" gradientUnits="userSpaceOnUse" x1="309.679" y1="203.983" x2="122.389" y2="391.273" gradientTransform="matrix(1.0039 0 0 -1.0039 .192 516.56)"><stop offset="0" stop-color="#fff465" /><stop offset="1" stop-color="#ffe600" /></linearGradient><circle cx="255.308" cy="256" r="122.95" fill="url(#c)" /><linearGradient id="d" gradientUnits="userSpaceOnUse" x1="380.307" y1="181.26" x2="138.327" y2="313.32" gradientTransform="matrix(1.0039 0 0 -1.0039 .192 516.56)"><stop offset="0" stop-color="#ffe600" stop-opacity="0" /><stop offset="1" stop-color="#f59500" /></linearGradient><path d="M378.097 262.26l-76.564-76.564c-1.702-2.964-5.236-5.411-10.61-7.344-5.515-1.979-11.392-3.326-17.618-4.069l-8.222-7.335c-.165-1.16-.844-2.212-2.105-3.141-1.453-1.066-3.017-1.603-4.694-1.603-1.832 0-3.4.537-4.696 1.603-1.299 1.07-1.947 2.291-1.947 3.664v6.643c-12.369 1.374-22.715 5.496-31.036 12.368-8.325 6.872-12.484 16.942-12.484 30.206 0 4.724.533 9.029 1.603 12.916 1.067 3.886 2.824 7.276 5.269 10.172 2.441 2.895 4.771 5.372 6.985 7.43.117.109.248.218.371.326l29.291 29.358v38.319c-6.767-.458-12.726-2.208-17.881-5.258-5.153-3.045-9.201-5.901-12.149-8.571-2.95-2.666-5.329-4.002-7.14-4.002-2.735 0-5.161 1.45-7.287 4.344-2.125 2.895-3.185 5.791-3.185 8.686 0 4.746 2.753 9.421 8.237 14.027l54.022 54.022c60.718-5.359 108.763-54.849 111.84-116.197z" fill="url(#d)" /><path d="M203.997 310.409c0-2.895 1.06-5.791 3.185-8.686 2.125-2.895 4.553-4.344 7.287-4.344 1.81 0 4.19 1.334 7.14 4.001 2.949 2.669 6.996 5.526 12.149 8.571 5.154 3.049 11.113 4.8 17.881 5.258v-53.716c-4.58-1.675-8.096-3.01-10.535-4.002-2.445-.988-5.691-2.438-9.736-4.341-4.047-1.904-7.178-3.886-9.391-5.944-2.215-2.058-4.545-4.535-6.985-7.43-2.446-2.895-4.201-6.285-5.269-10.172-1.07-3.886-1.603-8.192-1.603-12.916 0-13.264 4.159-23.334 12.484-30.206 8.32-6.872 18.667-10.994 31.036-12.368v-6.643c0-1.374.648-2.594 1.947-3.664 1.296-1.066 2.863-1.603 4.696-1.603 1.678 0 3.243.537 4.694 1.603 1.45 1.07 2.177 2.291 2.177 3.664v6.184c9.312.307 17.903 1.872 25.769 4.695 7.864 2.827 11.796 6.756 11.796 11.796 0 2.749-.927 5.612-2.773 8.59-1.846 2.978-4.313 4.466-7.391 4.466-1.217 0-4.563-1.296-10.031-3.894-5.473-2.595-11.263-4.123-17.37-4.581v46.418c6.074 2.287 11.124 4.459 15.146 6.516 4.023 2.058 8.278 4.914 12.759 8.571s7.86 8.267 10.137 13.829c2.276 5.562 3.417 12.078 3.417 19.544 0 13.642-3.722 24.487-11.163 32.532-7.444 8.045-17.541 12.988-30.295 14.827v7.652c0 1.349-.726 2.548-2.177 3.6-1.453 1.049-3.017 1.575-4.694 1.575-1.832 0-3.4-.526-4.696-1.571-1.299-1.052-1.947-2.251-1.947-3.6v-6.968c-13.285-.154-24.548-3.192-33.785-9.119-9.241-5.923-13.859-11.965-13.859-18.124zm26.8-96.003c0 5.944 1.85 10.479 5.554 13.6 3.7 3.124 9.256 6.059 16.663 8.8v-41.64c-14.813 1.832-22.217 8.245-22.217 19.24zm32.983 100.345c13.436-2.438 20.157-9.982 20.157-22.629 0-6.703-1.758-11.961-5.269-15.769-3.514-3.808-8.474-7.086-14.888-9.831v48.229z" fill="#ffb92d" /><radialGradient id="e" cx="251.579" cy="261.313" r="253.369" gradientTransform="matrix(1.0039 0 0 -1.0039 .192 516.56)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00a2f3" /><stop offset=".273" stop-color="#03a4f3" /><stop offset=".463" stop-color="#0caaf4" /><stop offset=".627" stop-color="#1bb4f5" /><stop offset=".777" stop-color="#31c2f7" /><stop offset=".916" stop-color="#4dd4f9" /><stop offset="1" stop-color="#62e1fb" /></radialGradient><path d="M497.248 116.044c-10.356-3.789-21.691.536-27.079 9.726-16.986-28.038-39.411-52.569-66.422-72.39-43.283-31.758-94.613-48.544-148.442-48.544S150.145 21.622 106.863 53.38c-42.391 31.104-73.507 73.8-89.986 123.468-3.907 11.777 2.473 24.492 14.25 28.399 11.781 3.909 24.493-2.473 28.399-14.25 13.527-40.771 39.088-75.831 73.92-101.389 35.52-26.063 77.657-39.84 121.859-39.84s86.338 13.777 121.859 39.841c20.744 15.22 38.198 33.812 51.781 54.972-10.336-1.553-20.685 4.307-24.416 14.505-4.265 11.653 1.726 24.556 13.379 28.82l46.781 17.117c.112.041.226.068.338.107.393.137.789.261 1.189.376.214.061.427.124.641.18.404.103.811.19 1.221.271.209.041.418.089.626.124.435.073.873.124 1.314.173.179.019.358.049.537.063.613.051 1.23.08 1.85.08h.002c.583 0 1.164-.024 1.74-.069.138-.011.275-.034.413-.047a21.7 21.7 0 0 0 1.326-.159c.17-.027.339-.067.51-.098.409-.074.816-.151 1.219-.247.189-.045.376-.103.565-.154.382-.101.761-.205 1.135-.326.056-.018.112-.03.169-.048.111-.037.215-.088.326-.126a23.248 23.248 0 0 0 2.081-.84c.47-.219.931-.456 1.385-.707.144-.079.294-.15.436-.232a22.52 22.52 0 0 0 1.595-1.027c.203-.142.396-.293.592-.441a23.11 23.11 0 0 0 1.557-1.276c.378-.341.744-.697 1.099-1.064.098-.102.204-.199.3-.303.463-.497.906-1.017 1.325-1.559.029-.038.055-.078.084-.116.373-.49.727-1 1.062-1.525.089-.141.174-.284.26-.427.259-.426.504-.861.737-1.308.095-.184.191-.367.281-.554.203-.419.39-.847.569-1.283.083-.202.172-.401.249-.605.026-.07.059-.137.085-.208l17.118-46.781c4.265-11.655-1.725-24.559-13.377-28.823z" fill="url(#e)" /><radialGradient id="f" cx="169.192" cy="805.963" r="253.372" gradientTransform="matrix(-1.0039 0 0 1.0039 429.108 -551.34)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#be3f45" /><stop offset=".317" stop-color="#c14046" /><stop offset=".538" stop-color="#ca4148" /><stop offset=".729" stop-color="#d9444b" /><stop offset=".902" stop-color="#ef4950" /><stop offset="1" stop-color="#ff4c54" /></radialGradient><path d="M14.753 395.955c10.356 3.789 21.691-.536 27.079-9.726 16.986 28.038 39.411 52.569 66.422 72.39 43.282 31.758 94.613 48.546 148.442 48.546s105.16-16.787 148.442-48.546c42.391-31.104 73.507-73.799 89.987-123.468 3.907-11.777-2.473-24.492-14.25-28.399-11.781-3.908-24.493 2.473-28.399 14.25-13.527 40.771-39.088 75.831-73.92 101.389-35.52 26.063-77.657 39.84-121.859 39.84s-86.338-13.776-121.859-39.84c-20.744-15.22-38.198-33.812-51.781-54.972 10.336 1.553 20.685-4.307 24.416-14.505 4.265-11.652-1.726-24.556-13.379-28.82l-46.781-17.117c-.112-.041-.226-.068-.338-.107a22.457 22.457 0 0 0-1.189-.376c-.214-.061-.427-.124-.641-.18-.404-.103-.811-.19-1.221-.271-.209-.041-.418-.089-.626-.124a23.827 23.827 0 0 0-1.314-.173c-.179-.019-.358-.049-.537-.063a22.31 22.31 0 0 0-1.85-.08h-.002c-.583 0-1.164.024-1.74.069-.138.011-.275.034-.413.047a21.7 21.7 0 0 0-1.326.159c-.17.027-.339.067-.51.098-.409.074-.816.151-1.219.247-.189.045-.376.103-.565.154-.381.101-.761.205-1.135.326-.056.018-.112.03-.169.048-.111.037-.215.088-.326.126a23.248 23.248 0 0 0-2.081.84c-.47.219-.931.456-1.385.707-.144.079-.294.15-.436.232a22.52 22.52 0 0 0-1.595 1.027c-.203.142-.396.293-.592.441a23.11 23.11 0 0 0-1.557 1.276c-.378.341-.744.697-1.099 1.064-.098.102-.204.199-.3.303a22.277 22.277 0 0 0-1.325 1.559c-.029.038-.055.078-.084.116-.373.49-.727 1-1.062 1.525-.089.141-.174.284-.26.427-.259.426-.504.861-.737 1.308-.095.184-.191.367-.281.554-.203.419-.39.847-.569 1.283-.083.202-.172.401-.249.605-.026.07-.059.137-.085.208l-17.12 46.783c-4.265 11.652 1.725 24.557 13.378 28.82z" fill="url(#f)" /></svg>
+                    </div>
+                    <div class="col-12">
 
-        <dd>
+                    </div>
+                    <div class="col mt-1">
+                        @Model.Transactions.Select(x => x.Where(t => t.Date.IsSameMonth(DateTime.UtcNow)).Count()).Sum() this month
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-6">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Total</div>
+                        <div class="co-card-title-maintitle">
+                            @Model.Transactions.Select(x => x.Select(y => y.Ammount).Sum()).Sum() BGN
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50px" viewBox="0 0 57 57"><path d="M22 51V35c0-3.314 4.253-6 9.5-6 1.237 0 2.416.154 3.5.426V0H3v56h23.253C23.691 54.925 22 53.088 22 51" fill="#6e8c61" /><path d="M8 21.094C10.301 17.438 14.361 15 19 15s8.699 2.437 11 6.094V10.975A5.5 5.5 0 0 1 24.025 5h-10.05A5.5 5.5 0 0 1 8 10.975v10.119zM22 43v-2.356c-.963.229-1.966.356-3 .356-4.639 0-8.699-2.437-11-6.094v10.119A5.5 5.5 0 0 1 13.975 51H22v-8zM27 5.5C27 4.121 28.121 3 29.5 3S32 4.121 32 5.5 30.879 8 29.5 8A2.502 2.502 0 0 1 27 5.5M6 5.5C6 4.121 7.121 3 8.5 3S11 4.121 11 5.5 9.879 8 8.5 8A2.502 2.502 0 0 1 6 5.5M6 50.5C6 49.121 7.121 48 8.5 48s2.5 1.121 2.5 2.5S9.879 53 8.5 53A2.502 2.502 0 0 1 6 50.5" fill="#e9e8d3" /><path d="M41 35c0 3.314-4.253 6-9.5 6S22 38.314 22 35s4.253-6 9.5-6 9.5 2.686 9.5 6" fill="#fcc62d" /><path d="M31.5 53c-5.247 0-9.5-2.686-9.5-6v4c0 3.314 4.253 6 9.5 6s9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#d19d18" /><path d="M31.5 49c-5.247 0-9.5-2.686-9.5-6v4c0 3.314 4.253 6 9.5 6s9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#e4af18" /><path d="M31.5 45c-5.247 0-9.5-2.686-9.5-6v4c0 3.314 4.253 6 9.5 6s9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#d19d18" /><path d="M31.5 41c-5.247 0-9.5-2.686-9.5-6v4c0 3.314 4.253 6 9.5 6s9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#e4af18" /><path d="M54 23c0 3.314-4.253 6-9.5 6S35 26.314 35 23s4.253-6 9.5-6 9.5 2.686 9.5 6" fill="#fcc62d" /><path d="M24.919 30.679C27.018 26.929 25 23 25 23c-.853-.249-3.352.496-3.639 1.306A4.971 4.971 0 0 0 18 23c-1.625 0-2.313 1.7-2.807 1.871a2.41 2.41 0 0 1-.744.129c-.746.012-1.444-.373-1.946-.924l-3.726-4.089A12.932 12.932 0 0 0 6 28c0 3.026 1.043 5.804 2.776 8.013l3.693-4.059c.607-.666 1.501-1.07 2.388-.915.126.023.251.054.375.096.321.108 1.893 1.783 2.238 1.822 1.048 2.471 3.334 1.482 4.903.391.468-1.031 1.355-1.946 2.546-2.669" fill="#e9e8d3" /><path d="M44.5 53c-1.356 0-2.642-.182-3.809-.505-.455 1.117-1.401 2.106-2.691 2.872C39.7 56.377 41.982 57 44.5 57c5.247 0 9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#e4af18" /><path d="M44.5 49c-1.237 0-2.416-.154-3.5-.426V51c0 .517-.115 1.016-.309 1.495 1.167.323 2.453.505 3.809.505 5.247 0 9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#d19d18" /><path d="M44.5 45c-1.237 0-2.416-.154-3.5-.426v4c1.084.272 2.263.426 3.5.426 5.247 0 9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#e4af18" /><path d="M44.5 41c-1.237 0-2.416-.154-3.5-.426v4c1.084.272 2.263.426 3.5.426 5.247 0 9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#d19d18" /><path d="M44.5 37c-1.237 0-2.416-.154-3.5-.426v4c1.084.272 2.263.426 3.5.426 5.247 0 9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#e4af18" /><path d="M44.5 33c-1.648 0-3.198-.266-4.549-.732C40.617 33.088 41 34.015 41 35v1.574c1.084.272 2.263.426 3.5.426 5.247 0 9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#d19d18" /><path d="M44.5 29c-5.247 0-9.5-2.686-9.5-6v4c0 .985.383 1.912 1.049 2.732 1.671.577 3.031 1.464 3.902 2.536 1.351.466 2.901.732 4.549.732 5.247 0 9.5-2.686 9.5-6v-4c0 3.314-4.253 6-9.5 6" fill="#e4af18" /><path d="M44 17.016V0h-3v17.426a14.295 14.295 0 0 1 3-.41" fill="#607b53" /><path d="M41 17.426V0h-3v18.633c.864-.514 1.878-.926 3-1.207" fill="#546949" /><path d="M38 18.632V.001h-3v23c0-1.725 1.157-3.274 3-4.369" fill="#607b53" /></svg>
+                    </div>
 
-        </dd>
+                    <div class="col-12 mt-1">
+                        @Model.Transactions.Select(x => x.Where(t => t.Date.IsSameMonth(DateTime.UtcNow)).Select(y => y.Ammount).Sum()).Sum() BGN this month
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-sm-12">
+            <div class="co-card">
+                <div class="row co-card-header">
+                    <div class="col co-card-title">
+                        <div class="co-card-title-subtitle">Average</div>
+                        <div class="co-card-title-maintitle"><span id="avg"></span> BGN per month</div>
+                    </div>
+                    <div class="col-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="50px" viewBox="1 -15 512 511" width="50px"><path d="M55.805 160.031l72.367 47.028-8.54 13.144-72.37-47.031zm0 0M281.023 104.93l67 21.761-4.843 14.907-66.996-21.758zm0 0M457.902 43.07l10.946 11.22-78.168 76.233-10.942-11.218zm0 0M234.113 117.188l11.52 10.628-79.961 86.621-11.516-10.632zm0 0" fill="#2c92bf" /><g fill="#ff8e1d"><path d="M0 254.855h63.2V481.81H0zm0 0M112.2 327.785h63.202V481.81H112.2zm0 0M224.398 206.234h63.204V481.81h-63.204zm0 0M336.598 242.7H399.8v239.109h-63.203zm0 0M448.8 133.309H512v348.5h-63.2zm0 0" /></g><path d="M63.203 153.648c0 17.454-14.148 31.602-31.601 31.602C14.148 185.25 0 171.102 0 153.648c0-17.453 14.148-31.601 31.602-31.601 17.453 0 31.601 14.148 31.601 31.601zm0 0M512 32.102c0 17.453-14.148 31.601-31.602 31.601-17.453 0-31.601-14.148-31.601-31.601C448.797 14.648 462.945.5 480.398.5 497.852.5 512 14.648 512 32.102zm0 0M399.8 141.496c0 17.45-14.148 31.598-31.6 31.598s-31.602-14.149-31.602-31.598c0-17.453 14.148-31.601 31.601-31.601s31.602 14.148 31.602 31.601zm0 0M287.602 105.031c0 17.45-14.149 31.598-31.602 31.598s-31.602-14.149-31.602-31.598c0-17.453 14.149-31.601 31.602-31.601s31.602 14.148 31.602 31.601zm0 0M175.402 226.578c0 17.453-14.148 31.602-31.601 31.602s-31.602-14.149-31.602-31.602 14.149-31.601 31.602-31.601 31.601 14.148 31.601 31.601zm0 0" fill="#ff491f" /></svg>
+                    </div>
+                    <div class="col-12">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+
+            .progress-wrapper {
+                width: 100%;
+                font-size: 0.9rem;
+            }
+
+            .progress-title-wrapper {
+            }
+
+            .progress-title-text {
+            }
+
+            .progress-title-value {
+                float: right;
+            }
+
+            .progress-bar-wrapper {
+                width: 100%;
+                height: 7px;
+                background: rgb(246, 245, 246);
+                border-radius: 5px;
+                margin-top: 5px;
+            }
+
+            .progress-bar {
+                height: 100%;
+                width: 37.5543%;
+                background: #c45850;
+                border-radius: 5px;
+            }
+        </style>
+        <div class="col-xl-3 col-sm-6 d-none">
+            <div class="co-card">
+                <div class="co-card-header cursor-unset">
+                    <div class="co-card-title">
+                        <div class="co-card-title-subtitle">
+                            budget
+                        </div>
+                        @*<div class="custom-card-header-maintitle">
+
+                            </div>*@
+                    </div>
+                </div>
+                <div class="co-card-body">
+                    <div class="progress-wrapper">
+                        <div class="progress-title-wrapper">
+                            @Model.Name
+                            <span class="progress-title-value">215.59 / 600</span>
+                        </div>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                    @*You haven't set a budget for this category yet.
+                        <br />
+                        To set a budget <a href="">click here.</a>*@
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div>
-    <canvas id="chartTransactions" width="400" height="400"></canvas>
-</div>
+    <div class="co-card">
+        <div class="co-card-header">
+            <div class="co-card-title">
+                <div class="co-card-title-subtitle">
+                    Analytics
+                </div>
+            </div>
+        </div>
+        <div class="co-card-body">
+            <canvas id="chartTransactions" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_TransactionsListPartial", new TransactionListViewModel() { Transactions = Model.Transactions, ShowDate = true })
 
 
-@await Html.PartialAsync("_TransactionsListPartial", Model.Transactions)
 
-
-
-<script>
+    <script>
     let transactions = { };
 
     @{
@@ -236,8 +198,8 @@
             @:transactions['@key'] = @sum;
 
             currentDate = currentDate.AddMonths(1);
-                }
-                }
+        }
+    }
 
 
 
@@ -331,4 +293,10 @@ let transactionsChart = new Chart(transactionsChartElement, {
 });
 
 
-</script>
+    </script>
+} else
+{
+    <div class="no-data">
+        You haven't added any transactions in this category yet.
+    </div>
+}

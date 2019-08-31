@@ -1,0 +1,502 @@
+﻿@{
+    ViewData["Title"] = "View";
+}
+
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            Calendar
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .calendar {
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+        font-size: 0.9rem;
+    }
+
+    .calendar-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+    .calendar-arrow {
+    }
+
+    .calendar-arrow-prev {
+    }
+
+    .calendar-arrow-next {
+    }
+
+    .calendar-week-names {
+        display: flex;
+        margin-bottom: 5px;
+    }
+
+    .calendar-week-name {
+        flex: 0 0 14.285714285714285714285714285714%;
+        max-width: 14.285714285714285714285714285714%;
+        flex: auto;
+        text-align: center;
+        text-transform: uppercase;
+        padding: 0.4rem;
+        border-bottom: 1px solid #e5eaeb;
+    }
+
+    .calendar-body {
+        position: relative;
+    }
+
+    .calendar-week {
+        display: flex;
+    }
+
+    .calendar-week-info {
+        border-top: 1px solid #e5eaeb;
+        padding: 20px 15px;
+    }
+
+    .calendar-day {
+        flex: 0 0 14.285714285714285714285714285714%;
+        max-width: 14.285714285714285714285714285714%;
+        padding: 0.25rem 0.75rem;
+        height: 90px;
+        cursor: pointer;
+        /*border: 1px solid #f6f6f6;
+        margin-top: -1px;
+        margin-left: -1px;*/
+        transition: 0.1s;
+    }
+
+    .calendar-day-today .calendar-day-number {
+        font-weight: 900;
+        transform: scale(1.2);
+        transform-origin: left;
+    }
+
+    .calendar-day-number {
+        display: flex;
+        align-items: center;
+    }
+
+    .has-todo {
+        display: inline-block;
+        height: 7px;
+        width: 7px;
+        margin-left: 5px;
+        margin-bottom: -2px;
+        border-radius: 20px;
+        background: var(--warning);
+    }
+
+    .calendar-day-expense {
+        color: var(--expense);
+        font-weight: bold;
+    }
+
+    .calendar-day-income {
+        color: var(--income);
+        font-weight: bold;
+    }
+
+    @@media only screen and (max-width: 768px) {
+        .calendar-day {
+            font-size: 0.7rem;
+            padding: 2px;
+        }
+    }
+
+    .calendar-day-selected {
+        background: #f3f7f7;
+    }
+
+    .calendar-day-other-month {
+        color: gray;
+        background: #f3f7f7;
+    }
+
+    .tooltip > .tooltip-inner {
+        background-color: white;
+        text-align: left;
+        color: black;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.19);
+    }
+
+    .tooltip.show {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+
+    .bs-tooltip-auto[x-placement^=bottom] .arrow::before,
+    .bs-tooltip-bottom .arrow::before {
+        border-bottom-color: white; /* Red */
+    }
+
+
+
+    .details-cards-wrapper {
+        width: 90%;
+        max-width: 320px;
+        margin: auto;
+        white-space: nowrap;
+    }
+
+    .details-cards {
+    }
+
+    .details-card-wrapper {
+        width: 100%;
+        display: inline-block;
+    }
+
+    .details-card {
+        width: 90%;
+        background: white;
+        border-radius: 5px;
+        padding: 12px;
+        margin: auto;
+        position: relative;
+    }
+
+    .details-card-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+
+    .details-card-date {
+        text-align: center;
+        margin-bottom: -5px;
+        /*float: left;*/
+    }
+
+    .details-card-date-day {
+        text-transform: uppercase;
+        font-weight: 900;
+        font-family: sans-serif;
+        font-size: 2rem;
+        line-height: 0.7;
+    }
+
+    .details-card-date-month {
+        text-transform: uppercase;
+        font-weight: 900;
+        font-family: sans-serif;
+    }
+
+    .details-card-summary {
+        margin: 1rem 0;
+    }
+
+    #details-card-template {
+        display: none;
+    }
+
+
+    .popover-body {
+        /*font-family: Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";*/
+    }
+
+    .popover-actions {
+        text-transform: uppercase;
+        font-weight: 900;
+        font-family: sans-serif;
+        font-size: 0.65rem;
+        text-align: center;
+    }
+
+    .popover-actions-link {
+        cursor: pointer;
+    }
+
+    .popover-action {
+    }
+
+    .popover-action-icon, .popover-action-bigtext {
+        font-size: 1rem;
+    }
+
+    .popover-task, .popover-task-completed {
+        display: inline-block;
+        position: relative;
+        transition: all 0.5s cubic-bezier(.55, 0, .1, 1);
+        cursor: pointer;
+    }
+
+        .popover-task:after {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 1px;
+            margin-top: -0.7em;
+            background: black;
+            transform-origin: center left;
+            transform: scaleX(0);
+        }
+
+        .popover-task:hover:after {
+            transform: scaleX(1);
+            transform-origin: center left;
+            animation: strikethrough 0.5s 0.5s cubic-bezier(.55, 0, .1, 1) 1;
+            transition: transform 0.3s cubic-bezier(.55, 0, .1, 1);
+        }
+
+        .popover-task-completed:after {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 1px;
+            margin-top: -0.7em;
+            background: black;
+            transform-origin: center left;
+            transform: scaleX(1);
+        }
+
+        .popover-task-completed:hover:after {
+            transform: scaleX(0);
+            transform-origin: center left;
+            animation: strikethrough 0.5s 0.5s cubic-bezier(.55, 0, .1, 1) 1;
+            transition: transform 0.3s cubic-bezier(.55, 0, .1, 1);
+        }
+
+    /*.popover-task:hover {
+        text-decoration: line-through;
+    }
+
+    .popover-task.completed {
+        text-decoration: line-through;
+    }*/
+
+    
+
+</style>
+
+<div id="calendar" class="calendar">
+    <div class="calendar-title fs-7 mb-4">
+        <button onclick="changeMonth(-1)" class="btn fs-4">
+            <i class="fas fa-angle-left"></i>
+            <div id="prevMonth" class="fs-2" style="margin-top: -10px"></div>
+        </button>
+        <span id="calendarTitle" class="px-3"></span>
+        <button onclick="changeMonth(1)" class="btn fs-4">
+            <i class="fas fa-angle-right"></i>
+            <div id="nextMonth" class="fs-2" style="margin-top: -10px"></div>
+        </button>
+    </div>
+    <div id="calendarWeekNames" class="calendar-week-names"></div>
+    <div id="calendarBody" class="calendar-body">
+
+    </div>
+</div>
+
+<script>
+
+    let transactions = {};
+    let todos = {};
+
+    let currentMonth = moment();
+
+    function sum(items, prop) {
+        if (items == null) {
+            return 0;
+        }
+        return items.reduce(function (a, b) {
+            return b[prop] == null ? a : a + b[prop];
+        }, 0);
+    };
+
+    function changeMonth(value) {
+        currentMonth.add(value, 'month');
+        getTransactions(currentMonth);
+    }
+
+    $(document).ready(function () {
+        getTransactions(currentMonth);
+
+    });
+
+    function getTransactions(date) {
+
+            if (transactions.hasOwnProperty(date.format("YYYYMM"))) {
+                updateCalendar(transactions[date.format("YYYYMM")]);
+                return;
+        }
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetTransactionsForMonth")',
+                dataType: 'json',
+                data: {
+                    date: date.format("YYYY-MM-DD")
+                },
+                success: function (data) {
+                    transactions = { ...transactions, ...data.transactions };
+                    todos = { ...todos, ...data.todos };
+
+                    updateCalendar(data);
+                }
+
+            });
+    }
+
+
+    function drawCalendar() {
+        let calendar = [];
+        const startDay = currentMonth.clone().startOf('month').startOf('isoWeek');
+        const endDay = currentMonth.clone().endOf('month').endOf('isoWeek');
+
+
+        let date = startDay.clone().subtract(1, 'day');
+
+        while (date.isBefore(endDay, 'day')) {
+            calendar.push({
+                days: Array(7).fill(0).map(() => date.add(1, 'day').clone())
+            })
+        }
+
+        $('#calendarTitle').text(currentMonth.format("MMMM YYYY"));
+        $('#prevMonth').text(currentMonth.clone().add(-1, 'months').format("MMM"));
+        $('#nextMonth').text(currentMonth.clone().add(1, 'months').format("MMM"));
+
+        $("#calendarBody").text("");
+
+        if (!$("#calendarWeekNames").text()) {
+            let days = moment.weekdays()
+            days.push(days.shift()); moment.euweekdays = days;
+
+            for (var i = 0; i < days.length; i++) {
+                $("#calendarWeekNames").append("<div class='calendar-week-name'>" + days[i].slice(0, 3) + "</div>")
+            }
+        }
+
+        let curr = 1;
+
+        for (var i = 0; i < calendar.length; i++) {
+
+
+            let week = $('<div class="calendar-week">');
+
+            for (var j = 0; j < calendar[i].days.length; j++) {
+                let id = calendar[i].days[j].format("YYYYMMDD");
+
+                let day = $('<div class="calendar-day"></div>');
+                //let day = $('<div data-toggle="popover" data-trigger="focus" data-html="true" data-placement="bottom" class="calendar-day"></div>');
+
+                day.attr("id", id);
+
+                
+
+
+                if (calendar[i].days[j] < currentMonth.clone().startOf('month') || calendar[i].days[j] > currentMonth.clone().endOf('month')) {
+                    day.addClass('calendar-day-other-month');
+                }
+                else {
+                    if (moment().isSame(calendar[i].days[j], 'd')) {
+                        day.addClass('calendar-day-today');
+                    }
+
+                    day.on('click', function () {
+                        selectDay(this);
+                    });
+
+                    day.data("day", curr);
+                    curr++;
+                }
+
+
+                let dayNumber = $('<div class="calendar-day-number"><span class="date"></span><div class="has-todo d-none"></div></div>');
+                let dayExpense = $('<div class="calendar-day-expense"></div>');
+                let dayIncome = $('<div class="calendar-day-income"></div>');
+                dayExpense[0].innerHTML = "&nbsp;";
+                dayIncome[0].innerHTML = "&nbsp;";
+
+                day.append(dayNumber);
+                day.append(dayIncome);
+                day.append(dayExpense);
+                week.append(day);
+
+                dayNumber.find('.date').text(calendar[i].days[j].format("DD"));
+
+                
+            }
+
+             $("#calendarBody").append(week);
+        }
+    }
+
+    let currentDay = 0;
+
+    function selectDay(dayElement) {
+        let day = $(dayElement).data("day");
+
+        if (currentDay === day) {
+            $('.calendar-day-selected').removeClass('calendar-day-selected');
+
+            currentDay = 0;                 
+        } else if (currentDay !== day) {
+            currentDay = day;
+
+            $('.calendar-day-selected').removeClass('calendar-day-selected');
+            $(dayElement).addClass('calendar-day-selected');
+        }
+    }
+
+
+    function updateCalendar(data) {
+        drawCalendar();
+
+        let keysTransactions = Object.keys(data.transactions);
+        let valuesTransactions = Object.values(data.transactions);
+
+        for (var i = 0; i < valuesTransactions.length; i++) {
+            let expenses = JSON.parse(JSON.stringify(valuesTransactions[i])).filter(x => x.category.type === 2);
+            let income = JSON.parse(JSON.stringify(valuesTransactions[i])).filter(x => x.category.type === 1);
+
+            let expenseTotal = expenses.reduce(function(prev, cur) {return prev + cur.ammount;}, 0);
+            let incomeTotal = income.reduce(function (prev, cur) { return prev + cur.ammount; }, 0);
+
+            let profit = incomeTotal - expenseTotal;
+            let date = keysTransactions[i].slice(keysTransactions[i].length - 2, keysTransactions[i].length) + " " + currentMonth.format("MMM YYYY");
+
+
+            if (expenseTotal) {
+                $('#' + keysTransactions[i]).children(".calendar-day-expense").text(expenseTotal.toFixed(2));
+            }
+
+            if (incomeTotal) {
+                $('#' + keysTransactions[i]).children(".calendar-day-income").text(incomeTotal.toFixed(2));
+
+            }  
+            //let week = Math.floor(moment(keys[i]).date() / 7);
+        }
+
+        let keysTodos = Object.keys(data.todos);
+        let valuesTodos = Object.values(data.todos);
+
+        for (var i = 0; i < valuesTodos.length; i++) {
+            if (data.todos[keysTodos[i]]) {
+                $('#' + keysTodos[i]).find(".has-todo").removeClass("d-none");
+
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+</script>
