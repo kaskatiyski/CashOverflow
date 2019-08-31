@@ -1,0 +1,34 @@
+﻿@inject  Microsoft.AspNetCore.Hosting.IHostingEnvironment env
+
+@{
+    ViewData["Title"] = "Environment";
+}
+
+<div class="page-title-wrapper row align-items-center">
+    <div class="page-title col">
+        <div class="page-maintitle">
+            Environment
+        </div>
+    </div>
+</div>
+
+<div class="co-card">
+    <div class="co-card-body">
+        <div><b>ContentRootPath</b>: @env.ContentRootPath</div>
+        <div><b>WebRootPath</b>: @env.WebRootPath</div>
+        <div><b>EnvironmentName</b>: @env.EnvironmentName</div>
+        <div><b>ApplicationName</b>: @env.ApplicationName</div>
+    </div>
+</div>
+
+<div class="co-card">
+    <div class="co-card-body">
+        @foreach (var prop in typeof(Environment).GetProperties().Where(p => p.CanRead))
+        {
+        <div class="mb-3">
+            <h4 style="line-height: 0.5">@prop.Name</h4>
+            <div>@prop.GetMethod.Invoke(null, new object[] { })</div>
+        </div>
+        }
+    </div>
+</div>

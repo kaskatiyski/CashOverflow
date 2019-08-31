@@ -35,5 +35,10 @@ namespace CashOverflow.Web.Controllers
 
             return View(allUsersAdminViewModel);
         }
+
+        public ActionResult Environment()
+        {
+            return View();
+        }
     }
 }
