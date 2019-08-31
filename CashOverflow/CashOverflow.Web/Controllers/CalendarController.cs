@@ -45,13 +45,14 @@ namespace CashOverflow.Web.Controllers
         public async Task<JsonResult> GetTransactionsForMonth(string date)
         {
             var transactions = await this.transactionService.GetTransactionsByMonth(this.User.Identity.Name, date);
-           
 
-            CalendarViewModel calendarViewModel = new CalendarViewModel();
 
-            calendarViewModel.Transactions = transactions.Select(t => mapper.Map<TransactionViewModel>(t))
+            CalendarViewModel calendarViewModel = new CalendarViewModel
+            {
+                Transactions = transactions.Select(t => mapper.Map<TransactionViewModel>(t))
                                                          .GroupBy(t => t.Date.ToString("yyyyMMdd"))
-                                                         .ToDictionary(group => group.Key, group => group.ToList());
+                                                         .ToDictionary(group => group.Key, group => group.ToList())
+            };
 
             foreach (var kvp in calendarViewModel.Transactions)
             {

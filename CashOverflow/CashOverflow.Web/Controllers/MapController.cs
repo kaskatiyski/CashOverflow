@@ -15,18 +15,12 @@ namespace CashOverflow.Web.Controllers
     public class MapController : Controller
     {
         private readonly IMapper mapper;
-        private readonly IUserService userService;
-        private readonly ICategoryService categoryService;
         private readonly ITransactionService transactionService;
 
         public MapController(IMapper mapper,
-                             IUserService userService,
-                             ICategoryService categoryService,
                              ITransactionService transactionService)
         {
             this.mapper = mapper;
-            this.userService = userService;
-            this.categoryService = categoryService;
             this.transactionService = transactionService;
         }
 

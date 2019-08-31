@@ -37,8 +37,10 @@ namespace CashOverflow.Web.Controllers
         {
             var todos = await this.todoService.GetTodos(this.User.Identity.Name);
 
-            AllTodosViewModel allTodosViewModel = new AllTodosViewModel();
-            allTodosViewModel.Todos = todos.Select(todo => mapper.Map<TodoViewModel>(todo));
+            AllTodosViewModel allTodosViewModel = new AllTodosViewModel
+            {
+                Todos = todos.Select(todo => mapper.Map<TodoViewModel>(todo))
+            };
 
             return View(allTodosViewModel);
         }

@@ -49,6 +49,8 @@ namespace CashOverflow.App.Controllers
             var regex = new Regex("<a\\s+(?:[^>]*?\\s+)?href=\"([^\"]*)\"",
                 RegexOptions.IgnoreCase);
 
+            client.Dispose();
+
             this.ViewData["CategoryImages"] = regex.Matches(filesHTML).Select(match => baseURL + match.Groups[1].Value).Skip(1);
         }
 

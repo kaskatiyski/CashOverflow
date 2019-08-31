@@ -34,8 +34,10 @@ namespace CashOverflow.Web.Controllers
         {
             var notes = await this.noteService.GetNotes(this.User.Identity.Name);
 
-            AllNotesViewModel allNotesViewModel = new AllNotesViewModel();
-            allNotesViewModel.Notes = notes.Select(note => mapper.Map<NoteViewModel>(note));
+            AllNotesViewModel allNotesViewModel = new AllNotesViewModel
+            {
+                Notes = notes.Select(note => mapper.Map<NoteViewModel>(note))
+            };
 
             return View(allNotesViewModel);
         }

@@ -99,8 +99,10 @@ namespace CashOverflow.App.Controllers
                 return this.RedirectToAction("Create", "Categories");
             }
 
-            var createTransactionViewModel = new CreateTransactionViewModel();
-            createTransactionViewModel.Categories = mapper.Map<List<CategoryViewModel>>(categories);
+            var createTransactionViewModel = new CreateTransactionViewModel
+            {
+                Categories = mapper.Map<List<CategoryViewModel>>(categories)
+            };
 
             this.ViewData["Categories"] = createTransactionViewModel;
 
@@ -143,12 +145,13 @@ namespace CashOverflow.App.Controllers
         // GET: Transactions1/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            var editTransactionViewModel = new EditTransactionViewModel();
-
-            editTransactionViewModel.Categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name)
+            var editTransactionViewModel = new EditTransactionViewModel
+            {
+                Categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name)
                 .Select(x => mapper.Map<CategoryViewModel>(x))
-                .ToList();
-                       
+                .ToList()
+            };
+
             if (id == null)
             {
                 return NotFound();

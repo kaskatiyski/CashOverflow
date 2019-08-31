@@ -29,7 +29,7 @@ namespace CashOverflow.Web.Controllers
             if (this.User.Identity.IsAuthenticated)
             {
                 // TODO: Find a way to get client date
-                var date = this.Request.Cookies["localDate"] != null ? this.Request.Cookies["localDate"] : DateTime.UtcNow.ToString("yyyy-MM-dd");
+                var date = Request.Cookies["localDate"] != null ? this.Request.Cookies["localDate"] : DateTime.UtcNow.ToString("yyyy-MM-dd");
                 var transactions = await this.transactionService.GetTransactionsByDay(this.User.Identity.Name, date);
 
                 HomeViewModel homeViewModel = new HomeViewModel()
