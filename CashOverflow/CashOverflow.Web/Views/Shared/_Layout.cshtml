@@ -87,7 +87,7 @@
             <div class="sidenav-item sidenav-profile">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <img class="user-image" src="https://cheerscreative.com/wp-content/uploads/2014/12/LEGO_LOGO_RGB-300x300.jpg" width="45px" height="45px" />
+                    <img class="user-image" src="https://cheerscreative.com/wp-content/uploads/2014/12/LEGO_LOGO_RGB-300x300.jpg"/>
                     <div class="">
                         <a class="user-name" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@User.Identity.Name</a>
                         <div class="user-title">Administrator</div>
@@ -127,11 +127,13 @@
                         <li class="title">Account</li>
                         <li><a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><div class="icon"><i class="fas fa-cog"></i></div>Settings</a></li>
                         <li>
-                            <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                <span style="margin-left: -2px" onclick="document.getElementById('logoutForm').submit()" class="">
-                                    <div class="icon"><i class="fas fa-sign-out-alt"></i></div>Logout
-                                </span>
-                            </form>
+                            <a>
+                                <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                    <div style="margin-left: -2px" onclick="document.getElementById('logoutForm').submit()" class="">
+                                        <div class="icon"><i class="fas fa-sign-out-alt"></i></div>Logout
+                                    </div>
+                                </form>
+                            </a>
                         </li>
                     }
                 </ul>
