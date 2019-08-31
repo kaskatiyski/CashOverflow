@@ -159,7 +159,17 @@ namespace CashOverflow.App.Controllers
 
         public async Task<ActionResult> Details(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var category = await this.categoryService.GetCategoryByIdAsync(this.User.Identity.Name, id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
 
             var detailsCategoryViewModel = mapper.Map<DetailsCategoryViewModel>(category);
 
