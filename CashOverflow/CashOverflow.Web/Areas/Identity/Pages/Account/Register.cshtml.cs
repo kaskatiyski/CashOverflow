@@ -70,7 +70,7 @@ namespace CashOverflow.Web.Areas.Identity.Pages.Account
                 user.SecurityStamp = Guid.NewGuid().ToString();
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                await _userManager.AddToRoleAsync(user, "Admin");
+                await _userManager.AddToRoleAsync(user, "User");
 
                 if (result.Succeeded)
                 {
