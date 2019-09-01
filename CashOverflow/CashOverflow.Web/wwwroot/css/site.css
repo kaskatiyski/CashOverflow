@@ -403,10 +403,6 @@ ___] | |__/ |___ | \| |  |  \/
     font-size: 0.8rem;
 }
 
-
-
-
-
 /*
 ██╗   ██╗██╗
 ██║   ██║██║
@@ -725,151 +721,14 @@ ____ ____ ____ _  _    ____ ____ _  _ ___ ____ ____ _    ____
     height: 2rem;
 }
 
-
-
-
-
-
-
 /*
-    Custom List
+██████╗  █████╗ ████████╗███████╗██████╗ ██╗ ██████╗██╗  ██╗███████╗██████╗ 
+██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗██║██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+██║  ██║███████║   ██║   █████╗  ██████╔╝██║██║     █████╔╝ █████╗  ██████╔╝
+██║  ██║██╔══██║   ██║   ██╔══╝  ██╔═══╝ ██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
+██████╔╝██║  ██║   ██║   ███████╗██║     ██║╚██████╗██║  ██╗███████╗██║  ██║
+╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 */
-
-.custom-list-group {
-}
-
-.custom-list-group-key {
-    font-weight: 300;
-}
-
-.custom-list-group-item {
-    border-radius: 6px !important;
-    padding: 0.75rem 1.25rem;
-    background-color: #fff;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-}
-
-.custom-list-group-item-wrapper {
-    padding: 0 0.5rem;
-}
-
-/*
-    Custom Card
-*/
-
-.custom-card {
-    background: white;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
-    margin: 0.5rem 0;
-}
-
-.custom-card-header {
-    padding: 0.85rem 1.25rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-.custom-card-header-non-interactive {
-    cursor: initial;
-    display: block;
-}
-
-.custom-card-header-title {
-    width: 100%;
-}
-
-    .custom-card-header-title .form-control {
-        margin: 3px 0 0 0;
-        /*font-weight: 300;*/
-        font-size: 1.2rem;
-        padding: 0;
-        border: none;
-    }
-
-.custom-card-header-arrow {
-    margin-left: auto;
-}
-
-.custom-card-header-maintitle {
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
-    .custom-card-header-maintitle.regular {
-        font-weight: normal;
-    }
-
-.custom-card-header-subtitle {
-    text-transform: uppercase;
-    font-weight: 900;
-    font-size: 0.75rem;
-    color: #767676;
-    margin-bottom: -2px;
-}
-
-    .custom-card-header-subtitle.regular {
-        font-weight: normal;
-        text-transform: none;
-        font-weight: normal;
-        font-size: 0.85rem;
-        color: #212529;
-    }
-
-.custom-card-body {
-    font-size: 0.9rem;
-    padding: 0.85rem 1.25rem;
-    border-top: 1px solid #ebebeb;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-.no-data {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 75%;
-    color: #0000009c;
-    text-align: center;
-}
-
-
-
-
-
-
-
-@media only screen and (max-width: 576px) {
-    .modal-dialog {
-        position: absolute;
-        margin: 0;
-        width: 100%;
-        max-width: none;
-        bottom: 0;
-    }
-
-        .modal-dialog .modal-content {
-            border: 0;
-            border-radius: 13px 13px 0 0;
-        }
-}
-
-
-
 
 .datepicker {
     margin: auto;
@@ -894,26 +753,6 @@ ____ ____ ____ _  _    ____ ____ _  _ ___ ____ ____ _    ____
 .datepicker--cell.-in-range- {
     background: rgba(159, 92, 239, 0.1) !important;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
  ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗██████╗  ██████╗ ██╗  ██╗███████╗███████╗
@@ -1094,4 +933,126 @@ ____ ____ ____ _  _    ____ ____ _  _ ___ ____ ____ _    ____
         -ms-transform: rotate(0deg); /* IE 9 */
         transform: rotate(0deg); /* Firefox 16+, IE 10+, Opera */
     }
+}
+
+
+.no-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 75%;
+    color: #0000009c;
+    text-align: center;
+}
+
+@media only screen and (max-width: 576px) {
+    .modal-dialog {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        max-width: none;
+        bottom: 0;
+    }
+
+        .modal-dialog .modal-content {
+            border: 0;
+            border-radius: 13px 13px 0 0;
+        }
+}
+
+
+/*
+    Custom List
+*/
+
+.custom-list-group {
+}
+
+.custom-list-group-key {
+    font-weight: 300;
+}
+
+.custom-list-group-item {
+    border-radius: 6px !important;
+    padding: 0.75rem 1.25rem;
+    background-color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.custom-list-group-item-wrapper {
+    padding: 0 0.5rem;
+}
+
+/*
+    Custom Card
+*/
+
+.custom-card {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+    margin: 0.5rem 0;
+}
+
+.custom-card-header {
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.custom-card-header-non-interactive {
+    cursor: initial;
+    display: block;
+}
+
+.custom-card-header-title {
+    width: 100%;
+}
+
+    .custom-card-header-title .form-control {
+        margin: 3px 0 0 0;
+        /*font-weight: 300;*/
+        font-size: 1.2rem;
+        padding: 0;
+        border: none;
+    }
+
+.custom-card-header-arrow {
+    margin-left: auto;
+}
+
+.custom-card-header-maintitle {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+    .custom-card-header-maintitle.regular {
+        font-weight: normal;
+    }
+
+.custom-card-header-subtitle {
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 0.75rem;
+    color: #767676;
+    margin-bottom: -2px;
+}
+
+    .custom-card-header-subtitle.regular {
+        font-weight: normal;
+        text-transform: none;
+        font-weight: normal;
+        font-size: 0.85rem;
+        color: #212529;
+    }
+
+.custom-card-body {
+    font-size: 0.9rem;
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid #ebebeb;
 }
