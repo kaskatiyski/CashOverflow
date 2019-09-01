@@ -37,7 +37,7 @@ namespace CashOverflow.Web.Controllers
             DashboardViewModel dashboardViewModel = new DashboardViewModel();
 
             var transactions = await this.transactionService.GetTransactionsByMonth(this.User.Identity.Name);
-            var todos = await this.todoService.GetTodosByMonth(this.User.Identity.Name, DateTime.UtcNow.ToString("yyyy-MM-dd"));
+            var todos = await this.todoService.GetTodos(this.User.Identity.Name);
             var notes = await this.noteService.GetNotes(this.User.Identity.Name);
 
             dashboardViewModel.Transactions = transactions.Select(transaction => mapper.Map<TransactionViewModel>(transaction))
