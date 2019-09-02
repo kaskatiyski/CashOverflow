@@ -231,12 +231,13 @@ namespace CashOverflow.Services
 
         public async Task<IEnumerable<Transaction>> GetTransactionsByCategoryAsync(string username, string categoryId)
         {
-            var count = await this.db.Transactions
+            var transactions = await this.db.Transactions
                                .Include(t => t.Location)
                                .Where(t => t.User.UserName == username && t.CategoryId == categoryId)
+                               .OrderByDescending(x => x.Date)
                                .ToListAsync();
 
-            return count;
+            return transactions;
         }
 
         public async Task<int> GetTransactionsCountByCategoryAsync(string username, string categoryId)

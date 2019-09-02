@@ -74,7 +74,8 @@ namespace CashOverflow.App.Controllers
             {
                 if (!firstTransaction.Date.IsSameYear(lastTransaction.Date))
                 {
-                    groupBy = x => x.Date.ToString("MMMM yyyy");
+                    //groupBy = x => x.Date.ToString("MMMM yyyy");
+                    groupBy = x => x.Date.ToString("yyyy, MMMM dd");
                 }
                 else if (!firstTransaction.Date.IsSameMonth(lastTransaction.Date))
                 {
@@ -90,7 +91,7 @@ namespace CashOverflow.App.Controllers
             return View(allTransactionsViewModel);
         }
 
-        public ActionResult Create(string type, string categoryId)
+        public ActionResult Create(string type, string categoryId, string date)
         {
             var categories = this.categoryService.GetCategoriesByUsername(this.User.Identity.Name);
 
@@ -114,6 +115,11 @@ namespace CashOverflow.App.Controllers
             if (categoryId != null)
             {
                 this.ViewData["Category"] = categoryId;
+            }
+
+            if (date != null)
+            {
+                this.ViewData["Date"] = date;
             }
 
             SetReturnUrl();

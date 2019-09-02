@@ -12,9 +12,15 @@
     @foreach (var group in Model.Transactions)
     {
         <div class="custom-list-group co-anchor-parent">
-
-            <div class="custom-list-group-key mb-2">
-                <div class="fs-9">@group.Key</div>
+            <div class="custom-list-group-key mb-2 d-flex align-items-center">
+                <div class="fs-9 col">@group.Key</div>
+                <div class="col-auto btn-group">
+                    @if (!Model.IsCategoryView)
+                    {
+                        <a class="btn btn-sm btn-success" asp-controller="Transactions" asp-action="Create" asp-route-type="Income" asp-route-date="@group.FirstOrDefault().Date.ToString("yyyy-MM-dd")"><i class="fas fa-plus"></i></a>
+                        <a class="btn btn-sm btn-danger" asp-controller="Transactions" asp-action="Create" asp-route-type="Expense" asp-route-date="@group.FirstOrDefault().Date.ToString("yyyy-MM-dd")"><i class="fas fa-plus"></i></a>
+                    }
+                </div>
             </div>
 
             @foreach (var transaction in group.ToList())
@@ -54,7 +60,7 @@
                                 </div>
                             }
 
-                            @if (Model.ShowDate)
+                            @if (Model.ShowDate || Model.IsCategoryView)
                             {
                                 <div class="fs-2">
                                     @transaction.Date.ToString("dd MMM yyyy")

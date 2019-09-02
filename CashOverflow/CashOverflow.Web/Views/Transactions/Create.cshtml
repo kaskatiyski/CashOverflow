@@ -161,7 +161,7 @@
 </div>
 <script>
     $(document).ready(function () {
-        @if (@ViewData["Category"] != null)
+        @if (ViewData["Category"] != null)
 	    {
 		    <text>
                 let id = "@ViewData["Category"].ToString()";
@@ -172,14 +172,25 @@
                 selectItem(id);
             </text>
         } else {
-            @if (@ViewData["Type"] != null)
+            @if (ViewData["Type"] != null)
 	        {
-		            @:changeType("@ViewData["Type"].ToString()");
+		        @:changeType("@ViewData["Type"].ToString()");
 	        }
         }
 
-        $('#dateRaw').val(moment().format('YYYY-MM-DD'));
-        $("#dateFormatted").val(moment().format('DD MMM YYYY'));
+        let date;
+
+        @if (ViewData["Date"] != null)
+        {
+            @:date = moment('@ViewData["Date"]');
+        }
+        else
+        {
+            @:date = moment();
+        }
+
+        $('#dateRaw').val(date.format('YYYY-MM-DD'));
+        $("#dateFormatted").val(date.format('DD MMM YYYY'));
     });
 
 
