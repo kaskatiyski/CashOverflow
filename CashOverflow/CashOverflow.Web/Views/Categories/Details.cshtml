@@ -168,7 +168,7 @@
         </div>
     </div>
 
-    @await Html.PartialAsync("_TransactionsListPartial", new TransactionListViewModel() { Transactions = Model.Transactions, ShowDate = true })
+    @await Html.PartialAsync("_TransactionsListPartial", new TransactionListViewModel() { Transactions = Model.Transactions, IsCategoryView = true })
 
 
 

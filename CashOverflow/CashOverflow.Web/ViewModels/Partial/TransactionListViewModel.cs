@@ -10,6 +10,8 @@ namespace CashOverflow.Web.ViewModels.Partial
     {
         public bool ShowDate { get; set; } = false;
 
+        public bool IsCategoryView { get; set; } = false;
+
         public IEnumerable<IGrouping<string, TransactionViewModel>> Transactions { get; set; }
     }
 }
