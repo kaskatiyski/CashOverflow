@@ -33,17 +33,23 @@ namespace CashOverflow.Services
 
         }
 
-        public async Task<TodoStatus> CompleteAsync(string username, Todo todo)
+        public async Task<string> CompleteAsync(string username, string id)
         {
             var user = await this.userService.GetUserByUsernameAsync(username);
+
+            var todo = await GetTodoByIdAsync(username, id);
+
+            string status;
 
             if (todo.Status == TodoStatus.Pending)
             {
                 todo.Status = TodoStatus.Completed;
+                status = "true";
             }
             else
             {
                 todo.Status = TodoStatus.Pending;
+                status = "false";
             }
 
             todo.UserId = user.Id;
@@ -51,7 +57,7 @@ namespace CashOverflow.Services
             this.db.Todos.Update(todo);
             await this.db.SaveChangesAsync();
 
-            return todo.Status;
+            return status;
         }
 
         public async Task CreateAsync(string username, Todo todo)

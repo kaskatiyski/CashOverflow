@@ -17,7 +17,7 @@ namespace CashOverflow.Services.Contracts
 
         Task<IEnumerable<Todo>> GetTodosByMonth(string username, string date);
 
-        Task<TodoStatus> CompleteAsync(string username, Todo todo);
+        Task<string> CompleteAsync(string username, string id);
 
         Task<Todo> GetTodoByIdAsync(string username, string id);
 

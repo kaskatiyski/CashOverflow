@@ -132,9 +132,7 @@ namespace CashOverflow.Web.Controllers
 
         public async Task<JsonResult> Complete(string id)
         {
-            var todo = await this.todoService.GetTodoByIdAsync(this.User.Identity.Name, id);
-
-            var status = await this.todoService.CompleteAsync(this.User.Identity.Name, todo);
+            var status = await this.todoService.CompleteAsync(this.User.Identity.Name, id);
 
             return this.Json(status);
         }
