@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CashOverflow.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
         private readonly IMapper mapper;
         private readonly IUserService userService;

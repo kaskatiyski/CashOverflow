@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace CashOverflow.Web.Controllers
 {
     [Authorize]
-    public class NotesController : Controller
+    public class NotesController : BaseController
     {
         private readonly IMapper mapper;
         private readonly INoteService noteService;
@@ -23,11 +23,6 @@ namespace CashOverflow.Web.Controllers
         {
             this.mapper = mapper;
             this.noteService = noteService;
-        }
-
-        private void SetReturnUrl()
-        {
-            this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
         }
 
         public async Task<IActionResult> All()
@@ -61,7 +56,7 @@ namespace CashOverflow.Web.Controllers
 
         public IActionResult Create()
         {
-            SetReturnUrl();
+            // SetReturnUrl();
 
             return View();
         }
@@ -103,7 +98,7 @@ namespace CashOverflow.Web.Controllers
                 return NotFound();
             }
 
-            SetReturnUrl();
+            // SetReturnUrl();
 
             var editNoteInputModel = mapper.Map<EditNoteInputModel>(note);
 
