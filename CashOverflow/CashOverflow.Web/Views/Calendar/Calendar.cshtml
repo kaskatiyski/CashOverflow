@@ -299,6 +299,16 @@
     </div>
 </div>
 
+<div id="loading" class="no-data d-none">
+    <div class="spinner-bars">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+    </div>
+</div>
+
 <script>
 
     let transactions = {};
@@ -322,39 +332,43 @@
 
     $(document).ready(function () {
         getTransactions(currentMonth);
-
     });
 
     function getTransactions(date) {
 
-            if (transactions.hasOwnProperty(date.format("YYYYMM"))) {
-                updateCalendar(transactions[date.format("YYYYMM")]);
-                return;
+        $("#loading").removeClass("d-none");
+        $('#calendar').addClass("d-none");
+
+        if (transactions.hasOwnProperty(date.format("YYYYMM"))) {
+            updateCalendar(transactions[date.format("YYYYMM")]);
+            return;
         }
 
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Action("GetTransactionsForMonth")',
-                dataType: 'json',
-                data: {
-                    date: date.format("YYYY-MM-DD")
-                },
-                success: function (data) {
-                    transactions = { ...transactions, ...data.transactions };
-                    todos = { ...todos, ...data.todos };
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetTransactionsForMonth")',
+            dataType: 'json',
+            data: {
+                date: date.format("YYYY-MM-DD")
+            },
+            success: function (data) {
+                transactions = { ...transactions, ...data.transactions };
+                todos = { ...todos, ...data.todos };
 
-                    updateCalendar(data);
-                }
+                updateCalendar(data);
+            }
 
-            });
+        });
     }
 
 
     function drawCalendar() {
+        $("#loading").addClass("d-none");
+        $('#calendar').removeClass("d-none");
+
         let calendar = [];
         const startDay = currentMonth.clone().startOf('month').startOf('isoWeek');
         const endDay = currentMonth.clone().endOf('month').endOf('isoWeek');
-
 
         let date = startDay.clone().subtract(1, 'day');
 
@@ -382,8 +396,6 @@
         let curr = 1;
 
         for (var i = 0; i < calendar.length; i++) {
-
-
             let week = $('<div class="calendar-week">');
 
             for (var j = 0; j < calendar[i].days.length; j++) {
@@ -393,9 +405,6 @@
                 //let day = $('<div data-toggle="popover" data-trigger="focus" data-html="true" data-placement="bottom" class="calendar-day"></div>');
 
                 day.attr("id", id);
-
-                
-
 
                 if (calendar[i].days[j] < currentMonth.clone().startOf('month') || calendar[i].days[j] > currentMonth.clone().endOf('month')) {
                     day.addClass('calendar-day-other-month');
@@ -427,7 +436,7 @@
 
                 dayNumber.find('.date').text(calendar[i].days[j].format("DD"));
 
-                
+
             }
 
              $("#calendarBody").append(week);
@@ -442,7 +451,7 @@
         if (currentDay === day) {
             $('.calendar-day-selected').removeClass('calendar-day-selected');
 
-            currentDay = 0;                 
+            currentDay = 0;
         } else if (currentDay !== day) {
             currentDay = day;
 
@@ -468,7 +477,6 @@
             let profit = incomeTotal - expenseTotal;
             let date = keysTransactions[i].slice(keysTransactions[i].length - 2, keysTransactions[i].length) + " " + currentMonth.format("MMM YYYY");
 
-
             if (expenseTotal) {
                 $('#' + keysTransactions[i]).children(".calendar-day-expense").text(expenseTotal.toFixed(2));
             }
@@ -476,17 +484,18 @@
             if (incomeTotal) {
                 $('#' + keysTransactions[i]).children(".calendar-day-income").text(incomeTotal.toFixed(2));
 
-            }  
-            //let week = Math.floor(moment(keys[i]).date() / 7);
+            }
         }
 
-        let keysTodos = Object.keys(data.todos);
-        let valuesTodos = Object.values(data.todos);
+        if(data.todos) {
+            let keysTodos = Object.keys(data.todos);
+            let valuesTodos = Object.values(data.todos);
 
-        for (var i = 0; i < valuesTodos.length; i++) {
-            if (data.todos[keysTodos[i]]) {
-                $('#' + keysTodos[i]).find(".has-todo").removeClass("d-none");
+            for (var i = 0; i < valuesTodos.length; i++) {
+                if (data.todos[keysTodos[i]]) {
+                    $('#' + keysTodos[i]).find(".has-todo").removeClass("d-none");
 
+                }
             }
         }
     }
