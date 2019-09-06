@@ -30,5 +30,15 @@ namespace CashOverflow.Utilities.Extensions
         {
             return DateTime.ParseExact(date, parseFormat, CultureInfo.InvariantCulture);
         }
+
+        public static string ReformatDate(this DateTime date, string format = "dd MMM yyyy")
+        {
+            return date.ToString(format);
+        }
+
+        public static string ReformatDate(this string date, string format = "dd MMM yyyy")
+        {
+            return date.ParseDate().ToString(format);
+        }
     }
 }

@@ -34,27 +34,27 @@ namespace CashOverflow.Web.Controllers
             else if (exact != null)
             {
                 transactions = await transactionService.GetTransactionsByDay(this.User.Identity.Name, exact);
-                this.ViewData["Period"] = exact.ParseDate();
+                this.ViewData["Period"] = exact.ReformatDate();
             }
             else if (from != null && to != null)
             {
                 transactions = await transactionService.GetTransactionsInRange(this.User.Identity.Name, from, to);
-                this.ViewData["Period"] = "";
+                this.ViewData["Period"] = from.ReformatDate() + " - " + to.ReformatDate();
             }
             else if (from != null && to == null)
             {
                 transactions = await transactionService.GetTransactionsSince(this.User.Identity.Name, from);
-                this.ViewData["Period"] = "";
+                this.ViewData["Period"] = from.ReformatDate() + " - ∞";
             }
             else if (from == null && to != null)
             {
                 transactions = await transactionService.GetTransactionsUntil(this.User.Identity.Name, to);
-                this.ViewData["Period"] = "";
+                this.ViewData["Period"] = "∞ - " + to.ReformatDate();
             }
             else
             {
                 transactions = await transactionService.GetTransactionsByMonth(this.User.Identity.Name);
-                this.ViewData["Period"] = "";
+                this.ViewData["Period"] = DateTime.UtcNow.ReformatDate();
             }
 
             return transactions;
