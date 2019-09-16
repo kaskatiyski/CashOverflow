@@ -4,7 +4,6 @@
     /* Always set the map height explicitly to define the size of the div
         * element that contains the map. */
     #map {
-
     }
     /* Optional: Makes the sample page fill the window. */
     html, body {
@@ -17,7 +16,6 @@
         padding-top: 0px !important;
         padding-bottom: 0px !important;
         padding-right: 0px !important;
-
         overflow: hidden;
     }
 
@@ -25,20 +23,19 @@
         padding: 0;
         max-width: 100% !important;
     }
-
 </style>
 
 
 <div id="map" style="height: 100vh;"></div>
 
 <style>
-        .gm-style.iw, .gm-style-iw {
-          padding: 12px !important;
-         }    
-        .gm-style-iw-d {
-          /*overflow: hidden !important;*/
-         } 
+    .gm-style.iw, .gm-style-iw {
+        padding: 12px !important;
+    }
 
+    .gm-style-iw-d {
+        /*overflow: hidden !important;*/
+    }
 </style>
 
 <script>
@@ -91,7 +88,7 @@
                 infoWindow.setContent(`<h6 class="">${markers.length} transactions:</h6>${array.join("")}`);
                 infoWindow.setPosition(cluster.getCenter());
                 infoWindow.open(map);
-            
+
         });
 
         for (i = 0; i < markers.length; i++) {
@@ -117,12 +114,9 @@
 
 </script>
 
-<!-- Load the API from the specified URL
-    * The async attribute allows the browser to render the page while the API loads
-    * The key parameter will contain your own API key (which is not needed for this tutorial)
-        * The callback parameter executes the initMap() function
-        -->
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1Mqcpg5m9oGtEVrYQX2hChKwWKYR34hM&callback=initMap&libraries=places"
-        type="text/javascript"></script>
+
+@section scripts{
+    @await Html.PartialAsync("_GoogleMapsAPIScriptsPartial")
+}
