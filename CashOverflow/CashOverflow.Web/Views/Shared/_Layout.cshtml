@@ -115,13 +115,13 @@
             <div class="sidenav-item sidenav-menu">
                 <ul>
                     <li class="title">General</li>
-                    <li><a asp-area="" asp-controller="Dashboard" asp-action="Dashboard"><div class="icon"><i class="fas fa-tachometer-alt"></i></div>Dashboard</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Dashboard"><div class="icon"><i class="fas fa-tachometer-alt"></i></div>Dashboard</a></li>
                     <li><a asp-area="" asp-controller="Transactions" asp-action="All"><div class="icon"><i class="fas fa-coins"></i></div>Transactions</a></li>
                     <li><a asp-area="" asp-controller="Categories" asp-action="All"><div class="icon"><i class="fas fa-book"></i></div>Categories</a></li>
                     <li><a asp-area="" asp-controller="Todos" asp-action="All"><div class="icon"><i class="fas fa-tasks"></i></div>To-Dos</a></li>
                     <li><a asp-area="" asp-controller="Notes" asp-action="All"><div class="icon"><i class="fas fa-sticky-note"></i></div>Notes</a></li>
                     <li><a asp-area="" asp-controller="Calendar" asp-action="Calendar"><div class="icon"><i class="fas fa-calendar-alt"></i></div>Calendar</a></li>
-                    <li><a asp-area="" asp-controller="Map" asp-action="Map"><div class="icon"><i class="fas fa-map-marked-alt"></i></div>Map</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Map"><div class="icon"><i class="fas fa-map-marked-alt"></i></div>Map</a></li>
                     @if (SignInManager.IsSignedIn(User))
                     {
                         @if (User.IsInRole("Admin"))

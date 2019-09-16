@@ -16,10 +16,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CashOverflow.App.Controllers
+namespace CashOverflow.Web.Controllers
 {
     [Authorize]
-    public class CategoriesController : Controller
+    public class CategoriesController : BaseController
     {
         private readonly IMapper mapper;
         private readonly ICategoryService categoryService;
@@ -32,11 +32,6 @@ namespace CashOverflow.App.Controllers
             this.mapper = mapper;
             this.categoryService = categoryService;
             this.transactionService = transactionService;
-        }
-
-        private void SetReturnUrl()
-        {
-            this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
         }
 
         private void GetCategoryImages()
@@ -78,7 +73,7 @@ namespace CashOverflow.App.Controllers
         public ActionResult Create()
         {
             GetCategoryImages();
-            SetReturnUrl();
+            // SetReturnUrl();
 
             return View();
         }
@@ -101,7 +96,7 @@ namespace CashOverflow.App.Controllers
                 }
             }
 
-            SetReturnUrl();
+            // SetReturnUrl();
 
             return this.Redirect("/");
         }
@@ -122,7 +117,7 @@ namespace CashOverflow.App.Controllers
             }
 
             GetCategoryImages();
-            SetReturnUrl();
+            // SetReturnUrl();
         
             var editCategoryInputModel = mapper.Map<EditCategoryInputModel>(category);
 

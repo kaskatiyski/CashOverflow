@@ -27,6 +27,9 @@
     <div class="page-title-actions col-auto">
         <button type="button" class="btn btn-sm btn-accent" data-toggle="modal" data-target="#periodPicker" data-direction='bottom'>Period</button>
     </div>
+    <div class="col-12">
+        @ViewData["Period"].ToString()
+    </div>
 </div>
 
 <a asp-action="Create" class="btn btn-float btn-accent btn-circle">

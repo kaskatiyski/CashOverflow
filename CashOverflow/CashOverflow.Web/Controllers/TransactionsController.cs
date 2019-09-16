@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,12 +10,11 @@ using CashOverflow.Web.ViewModels.Category;
 using CashOverflow.Web.ViewModels.Transaction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace CashOverflow.App.Controllers
+namespace CashOverflow.Web.Controllers
 {
     [Authorize]
-    public class TransactionsController : Controller
+    public class TransactionsController : BaseController
     {
         private readonly IMapper mapper;
         private readonly ITransactionService transactionService;
@@ -31,39 +29,9 @@ namespace CashOverflow.App.Controllers
             this.mapper = mapper;
         }
 
-        private void SetReturnUrl()
+        public async Task<ActionResult> All(string from = null, string to = null, string exact = null, bool allTime = false)
         {
-            this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
-        }
-
-        public async Task<ActionResult> All(string from, string to, string exact, bool allTime = false)
-        {
-            IEnumerable<Transaction> transactions = new List<Transaction>();
-
-            if (allTime)
-            {
-                transactions = await this.transactionService.GetAllTransactions(this.User.Identity.Name);
-            }
-            else if (exact != null)
-            {
-                transactions = await this.transactionService.GetTransactionsByDay(this.User.Identity.Name, exact);
-            }
-            else if (from != null && to != null)
-            {
-                transactions = await this.transactionService.GetTransactionsInRange(this.User.Identity.Name, from, to);
-            }
-            else if (from != null && to == null)
-            {
-                transactions = await this.transactionService.GetTransactionsSince(this.User.Identity.Name, from);
-            }
-            else if (from == null && to != null)
-            {
-                transactions = await this.transactionService.GetTransactionsUntil(this.User.Identity.Name, to);
-            }
-            else
-            {
-                transactions = await this.transactionService.GetTransactionsByMonth(this.User.Identity.Name);
-            }                       
+            IEnumerable<Transaction> transactions = await this.GetTransactions(transactionService, from, to, exact, allTime);
 
             Func<TransactionViewModel, string> groupBy = x => x.Date.ToString("dddd, dd");
 
@@ -122,7 +90,7 @@ namespace CashOverflow.App.Controllers
                 this.ViewData["Date"] = date;
             }
 
-            SetReturnUrl();
+            // SetReturnUrl();
 
             return View();
         }
@@ -171,7 +139,7 @@ namespace CashOverflow.App.Controllers
             }
 
             this.ViewData["Categories"] = editTransactionViewModel;
-            SetReturnUrl();
+            // SetReturnUrl();
 
             var editTransactionInputModel = mapper.Map<EditTransactionInputModel>(transaction);
 

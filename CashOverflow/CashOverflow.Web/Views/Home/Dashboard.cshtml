@@ -187,9 +187,18 @@
                             @foreach (var group in Model.Transactions.GroupBy(x => x.Date.ToString("dd MMMM yyyy")))
                             {
                                 <div class="co-anchor-parent">
-                                    <div class="font-weight-bold @(group.Key != DateTime.UtcNow.ToString("dd MMMM yyyy") ? "transaction-month" : "")">
-                                        @group.Key
+                                    <div class="font-weight-bold row align-items-center @(group.Key != DateTime.UtcNow.ToString("dd MMMM yyyy") ? "transaction-month" : "")">
+                                        <div class="col">
+                                            @group.Key
+                                        </div>
+
+                                        <div class="col-auto btn-group">
+                                            <a class="btn btn-sm btn-success" asp-controller="Transactions" asp-action="Create" asp-route-type="Income" asp-route-date="@group.FirstOrDefault().Date.ToString("yyyy-MM-dd")"><i class="fas fa-plus"></i></a>
+                                            <a class="btn btn-sm btn-danger" asp-controller="Transactions" asp-action="Create" asp-route-type="Expense" asp-route-date="@group.FirstOrDefault().Date.ToString("yyyy-MM-dd")"><i class="fas fa-plus"></i></a>
+
+                                        </div>
                                     </div>
+
                                     @foreach (var transaction in group)
                                     {
                                         <div class="row align-items-center p-3 co-list-item co-anchor @(!transaction.Date.IsSameDay(DateTime.UtcNow) ? "transaction-month" : "")">

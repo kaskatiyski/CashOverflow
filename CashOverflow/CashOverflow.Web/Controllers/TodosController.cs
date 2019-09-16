@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace CashOverflow.Web.Controllers
 {
     [Authorize]
-    public class TodosController : Controller
+    public class TodosController : BaseController
     {
         private readonly IMapper mapper;
         private readonly ITodoService todoService;
@@ -26,11 +26,6 @@ namespace CashOverflow.Web.Controllers
         {
             this.mapper = mapper;
             this.todoService = todoService;
-        }
-
-        private void SetReturnUrl()
-        {
-            this.ViewData["ReturnUrl"] = Request.Headers["Referer"].ToString();
         }
 
         public async Task<IActionResult> All()
@@ -47,7 +42,7 @@ namespace CashOverflow.Web.Controllers
         
         public IActionResult Create()
         {
-            SetReturnUrl();
+            // SetReturnUrl();
 
             return View();
         }
@@ -91,7 +86,7 @@ namespace CashOverflow.Web.Controllers
                 return NotFound();
             }
 
-            SetReturnUrl();
+            // SetReturnUrl();
 
             var editTodoInputModel = mapper.Map<EditTodoInputModel>(todo);
 
@@ -137,9 +132,7 @@ namespace CashOverflow.Web.Controllers
 
         public async Task<JsonResult> Complete(string id)
         {
-            var todo = await this.todoService.GetTodoByIdAsync(this.User.Identity.Name, id);
-
-            var status = await this.todoService.CompleteAsync(this.User.Identity.Name, todo);
+            var status = await this.todoService.CompleteAsync(this.User.Identity.Name, id);
 
             return this.Json(status);
         }

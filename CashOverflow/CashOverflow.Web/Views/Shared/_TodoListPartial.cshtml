@@ -78,68 +78,66 @@
     }
 }
 
-<script>
-    function complete(element) {
-        element = $(element);
+        <script>function complete(element) {
+                element = $(element);
 
-        const id = element.data("id");
-        const customCheckbox = element.parent().find(".checkbox-custom");
-        const listItem = element.closest('.co-list-item');
+                const id = element.data("id");
+                const customCheckbox = element.parent().find(".checkbox-custom");
+                const listItem = element.closest('.co-list-item');
 
-        if (!customCheckbox.hasClass('checkbox-loading')) {
+                if (!customCheckbox.hasClass('checkbox-loading')) {
 
-            element.prop("checked", false);
-            customCheckbox.addClass('checkbox-loading');
+                    element.prop("checked", false);
+                    customCheckbox.addClass('checkbox-loading');
 
-            $.ajax({
-                type: 'GET',
-                url: '/Todos/Complete',
-                dataType: 'json',
-                data: {
-                    id: id
-                },
-                success: function (data) {
-                    if (data) {
-                        customCheckbox.removeClass('checkbox-loading');
-                        element.removeClass('popover-task popover-task-completed');
-                        if (data === 2) {
-                            element.prop("checked", true);
-                            listItem.addClass('completed');
-                            element.closest(".todo-list-item").find(".todo-overdue").addClass("d-none");
-                        } else if (data === 1) {
-                            element.prop("checked", false);
-                            listItem.removeClass('completed');
-                            element.closest(".todo-list-item").find(".todo-overdue").removeClass("d-none");
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Todos/Complete',
+                        dataType: 'json',
+                        data: {
+                            id: id
+                        },
+                        success: function (data) {
+                            if (data) {
+                                customCheckbox.removeClass('checkbox-loading');
+                                element.removeClass('popover-task popover-task-completed');
+
+                                if (data == true || data == "true") {
+                                    element.prop("checked", true);
+                                    listItem.addClass('completed');
+                                    element.closest(".todo-list-item").find(".todo-overdue").addClass("d-none");
+                                } else if (data == false || data == "false") {
+                                    element.prop("checked", false);
+                                    listItem.removeClass('completed');
+                                    element.closest(".todo-list-item").find(".todo-overdue").removeClass("d-none");
+                                }
+                            }
                         }
-                    }
+
+                    });
+                } else {
+                    element.prop("checked", !element.prop("checked"));
                 }
+            }
 
-            });
-        } else {
-            element.prop("checked", !element.prop("checked"));
-        }
-    }
+            function hide(element) {
+                element = $(element);
 
-    function hide(element) {
-        element = $(element);
+                element.closest('.co-list-item').addClass('hidden');
 
-        element.closest('.co-list-item').addClass('hidden');
+            }
 
-    }
-        
-    function showHidden() {
-        $(".todo-list-item.hidden").parent().removeClass('overflow-y-hidden');
-        $(".todo-list-item.hidden").removeClass('hidden');
-        $(".todo-list-item.completed").transition({ x: '0' }, 400);
-    }
+            function showHidden() {
+                $(".todo-list-item.hidden").parent().removeClass('overflow-y-hidden');
+                $(".todo-list-item.hidden").removeClass('hidden');
+                $(".todo-list-item.completed").transition({ x: '0' }, 400);
+            }
 
-    function hideCompleted() {
-        $(".todo-list-item.completed").parent().addClass('overflow-y-hidden');
-        $(".todo-list-item.completed").transition({ x: '100%' }, 400, function () {
-            $(".todo-list-item.completed").addClass('hidden');
-            $(".todo-list-item.hidden").parent().removeClass('overflow-y-hidden');
-        });
+            function hideCompleted() {
+                $(".todo-list-item.completed").parent().addClass('overflow-y-hidden');
+                $(".todo-list-item.completed").transition({ x: '100%' }, 400, function () {
+                    $(".todo-list-item.completed").addClass('hidden');
+                    $(".todo-list-item.hidden").parent().removeClass('overflow-y-hidden');
+                });
 
-    }
-
-</script>
+            }</script>
